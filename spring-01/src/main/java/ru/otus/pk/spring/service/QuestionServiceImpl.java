@@ -1,6 +1,5 @@
 package ru.otus.pk.spring.service;
 
-import com.opencsv.exceptions.CsvException;
 import ru.otus.pk.spring.dao.QuestionDao;
 import ru.otus.pk.spring.domain.Question;
 
@@ -16,7 +15,7 @@ public class QuestionServiceImpl implements QuestionService {
         this.dao = dao;
     }
 
-    public List<Question> findAll() throws IOException, CsvException, URISyntaxException {
+    public List<Question> findAll() throws IOException, URISyntaxException {
         return dao.findAll();
     }
 }

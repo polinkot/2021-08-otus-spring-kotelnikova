@@ -1,8 +1,10 @@
 package ru.otus.pk.spring.dao;
 
-
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
+import com.opencsv.bean.AbstractCsvConverter;
+import com.opencsv.bean.CsvBindAndSplitByName;
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvToBeanBuilder;
+import lombok.Data;
 import ru.otus.pk.spring.domain.Answer;
 import ru.otus.pk.spring.domain.Question;
 
@@ -10,43 +12,59 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.lang.ClassLoader.getSystemResource;
 import static java.nio.file.Files.newBufferedReader;
-import static org.springframework.util.CollectionUtils.isEmpty;
+import static java.util.stream.Collectors.toList;
 
 public class QuestionDaoSimple implements QuestionDao {
+    private final String source;
 
-    public List<Question> findAll() throws CsvException, IOException, URISyntaxException {
-        List<Question> questions = new ArrayList<>();
+    public QuestionDaoSimple(String source) {
+        if (isNullOrEmpty(source)) {
+            throw new IllegalStateException("Empty source CSV path!!!");
+        }
 
-        List<String[]> lines = readAll("csv/questions.csv");
-        lines.forEach(line -> {
-            List<Answer> answers = Arrays.stream(line).skip(1)
-                    .filter(s -> !s.isEmpty())
-                    .map(Answer::new)
-                    .collect(Collectors.toList());
-
-            if (!isEmpty(answers)) {
-                questions.add(new Question(line[0], answers));
-            }
-        });
-
-        return questions;
+        this.source = source;
     }
 
-    private static List<String[]> readAll(String path) throws URISyntaxException, IOException, CsvException {
-        Reader reader = newBufferedReader(Paths.get(getSystemResource(path).toURI()));
+    public List<Question> findAll() throws IOException, URISyntaxException {
+        Reader reader = newBufferedReader(Paths.get(getSystemResource(source).toURI()));
 
-        CSVReader csvReader = new CSVReader(reader);
-        List<String[]> list = csvReader.readAll();
+        List<CsvQuestion> csvQuestions = new CsvToBeanBuilder<CsvQuestion>(reader)
+                .withType(CsvQuestion.class)
+                .build()
+                .parse();
+
         reader.close();
-        csvReader.close();
 
-        return list;
+        return csvQuestions.stream().map(CsvQuestion::toQuestion).collect(toList());
+    }
+
+    //Вопрос - как лучше делать?
+    //Этот класс вспомогательный для чтения записей из CSV, он нужен только здесь.
+    // Оставить его здесь или вынести в отдельный класс?
+    @Data
+    public static class CsvQuestion {
+
+        @CsvBindByName(column = "question")
+        private String question;
+
+        @CsvBindAndSplitByName(elementType = Answer.class, splitOn = "\\|", converter = TextToAnswer.class)
+        List<Answer> answers;
+
+        public static class TextToAnswer extends AbstractCsvConverter {
+
+            @Override
+            public Object convertToRead(String value) {
+                return new Answer(value);
+            }
+        }
+
+        public Question toQuestion() {
+            return new Question(question, answers);
+        }
     }
 }

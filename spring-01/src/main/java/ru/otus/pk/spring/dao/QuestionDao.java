@@ -1,6 +1,5 @@
 package ru.otus.pk.spring.dao;
 
-import com.opencsv.exceptions.CsvException;
 import ru.otus.pk.spring.domain.Question;
 
 import java.io.IOException;
@@ -9,5 +8,5 @@ import java.util.List;
 
 public interface QuestionDao {
 
-    List<Question> findAll() throws CsvException, IOException, URISyntaxException;
+    List<Question> findAll() throws IOException, URISyntaxException;
 }
