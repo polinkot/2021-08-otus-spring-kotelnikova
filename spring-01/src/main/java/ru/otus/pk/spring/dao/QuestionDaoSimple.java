@@ -8,15 +8,10 @@ import lombok.Data;
 import ru.otus.pk.spring.domain.Answer;
 import ru.otus.pk.spring.domain.Question;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URISyntaxException;
-import java.nio.file.Paths;
+import java.io.*;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
-import static java.lang.ClassLoader.getSystemResource;
-import static java.nio.file.Files.newBufferedReader;
 import static java.util.stream.Collectors.toList;
 
 public class QuestionDaoSimple implements QuestionDao {
@@ -30,22 +25,28 @@ public class QuestionDaoSimple implements QuestionDao {
         this.source = source;
     }
 
-    public List<Question> findAll() throws IOException, URISyntaxException {
-        Reader reader = newBufferedReader(Paths.get(getSystemResource(source).toURI()));
+    public List<Question> findAll() throws IOException {
+        try (InputStream in = getClass().getResourceAsStream(source);
+             Reader reader = new BufferedReader(new InputStreamReader(in))
+        ) {
+            List<CsvQuestion> csvQuestions = new CsvToBeanBuilder<CsvQuestion>(reader)
+                    .withType(CsvQuestion.class)
+                    .build()
+                    .parse();
 
-        List<CsvQuestion> csvQuestions = new CsvToBeanBuilder<CsvQuestion>(reader)
-                .withType(CsvQuestion.class)
-                .build()
-                .parse();
-
-        reader.close();
-
-        return csvQuestions.stream().map(CsvQuestion::toQuestion).collect(toList());
+            return csvQuestions.stream().map(CsvQuestion::toQuestion).collect(toList());
+        }
     }
 
     //Вопрос - как лучше делать?
-    //Этот класс вспомогательный для чтения записей из CSV, он нужен только здесь.
+    //Это вспомогательный ДТО для чтения записей из CSV, он нужен только здесь.
     // Оставить его здесь или вынести в отдельный класс?
+
+    //Второй вопрос - стоит ли вообще заводить этот класс?
+    //Доменный класс Question такой же, только без CSV аннотаций.
+    //Подумала, что в доменном классе лучше CSV аннотации не указывать.
+    //Поэтому пришлось создать вот этот CsvQuestion - копия доменного Question, только с CSV аннотациями.
+    //Как лучше поступить?
     @Data
     public static class CsvQuestion {
 
