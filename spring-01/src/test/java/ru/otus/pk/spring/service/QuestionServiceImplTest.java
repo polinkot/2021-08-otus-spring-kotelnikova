@@ -1,6 +1,7 @@
 package ru.otus.pk.spring.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.pk.spring.domain.Question;
@@ -12,6 +13,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+//Вопрос - как назвать тест?
+//QuestionServiceImplTest или QuestionServiceTest?
 class QuestionServiceImplTest {
 
     private QuestionService service;
@@ -22,8 +25,9 @@ class QuestionServiceImplTest {
         service = context.getBean(QuestionService.class);
     }
 
+    @DisplayName("правильное количество вопросов")
     @Test
-    void findAll() {
+    void shouldReturnCorrectNumberOfQuestions() {
         try {
             List<Question> all = service.findAll();
             assertEquals(5, all.size());
@@ -32,8 +36,9 @@ class QuestionServiceImplTest {
         }
     }
 
+    @DisplayName("правильное количество вопросов в опросе")
     @Test
-    void findQuiz() {
+    void shouldReturnQuizWithCorrectNumberOfQuestions() {
         try {
             Quiz quiz = service.findQuiz();
             assertEquals(5, quiz.getQuestions().size());
@@ -41,14 +46,4 @@ class QuestionServiceImplTest {
             e.printStackTrace();
         }
     }
-
-
-//    todo
-//@DisplayName("корректно создаётся конструктором")
-//@Test
-//void shouldHaveCorrectConstructor() {
-
-    //create module test
-
-    //module main
 }
