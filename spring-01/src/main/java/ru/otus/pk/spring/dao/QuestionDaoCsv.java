@@ -7,17 +7,21 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.Data;
 import ru.otus.pk.spring.domain.Answer;
 import ru.otus.pk.spring.domain.Question;
+import ru.otus.pk.spring.exception.AppException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.stream.Collectors.toList;
 
-public class QuestionDaoSimple implements QuestionDao {
+public class QuestionDaoCsv implements QuestionDao {
     private final String source;
 
-    public QuestionDaoSimple(String source) {
+    public QuestionDaoCsv(String source) {
         if (isNullOrEmpty(source)) {
             throw new IllegalStateException("Empty source CSV path!!!");
         }
@@ -25,7 +29,7 @@ public class QuestionDaoSimple implements QuestionDao {
         this.source = source;
     }
 
-    public List<Question> findAll() throws IOException {
+    public List<Question> findAll() {
         try (InputStream in = getClass().getResourceAsStream(source);
              Reader reader = new BufferedReader(new InputStreamReader(in))
         ) {
@@ -35,18 +39,11 @@ public class QuestionDaoSimple implements QuestionDao {
                     .parse();
 
             return csvQuestions.stream().map(CsvQuestion::toQuestion).collect(toList());
+        } catch (Exception e) {
+            throw new AppException("Failed to fetch questions. ", e);
         }
     }
 
-    //Вопрос - как лучше делать?
-    //Это вспомогательный ДТО для чтения записей из CSV, он нужен только здесь.
-    // Оставить его здесь или вынести в отдельный класс?
-
-    //Второй вопрос - стоит ли вообще заводить этот класс?
-    //Доменный класс Question такой же, только без CSV аннотаций.
-    //Подумала, что в доменном классе лучше CSV аннотации не указывать.
-    //Поэтому пришлось создать вот этот CsvQuestion - копия доменного Question, только с CSV аннотациями.
-    //Как лучше поступить?
     @Data
     public static class CsvQuestion {
 
@@ -54,7 +51,7 @@ public class QuestionDaoSimple implements QuestionDao {
         private String question;
 
         @CsvBindAndSplitByName(elementType = Answer.class, splitOn = "\\|", converter = TextToAnswer.class)
-        List<Answer> answers;
+        private List<Answer> answers;
 
         public static class TextToAnswer extends AbstractCsvConverter {
 

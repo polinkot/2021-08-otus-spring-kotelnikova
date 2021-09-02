@@ -2,25 +2,38 @@ package ru.otus.pk.spring.service;
 
 import ru.otus.pk.spring.dao.QuestionDao;
 import ru.otus.pk.spring.domain.Question;
-import ru.otus.pk.spring.domain.Quiz;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionDao dao;
 
-    public QuestionServiceImpl(QuestionDao dao) {
+    private final InOutService inOutService;
+
+    public QuestionServiceImpl(QuestionDao dao, InOutService inOutService) {
         this.dao = dao;
+        this.inOutService = inOutService;
     }
 
-    public List<Question> findAll() throws IOException, URISyntaxException {
+    public List<Question> findAll() {
         return dao.findAll();
     }
 
-    public Quiz findQuiz() throws IOException, URISyntaxException {
-        return new Quiz(findAll());
+    public String asString(List<Question> questions) {
+        StringBuilder result = new StringBuilder();
+
+        questions.forEach(question -> {
+            result.append(String.format("\n%s", question.getValue()));
+            question.getAnswers().forEach(answer -> result.append(String.format("\n\t%s", answer.getValue())));
+        });
+
+        return result.toString();
+    }
+
+    public void printQuestions() {
+        String questions = asString(findAll());
+        System.out.println(questions);
+        inOutService.getOut().println(questions);    //todo!!! doesnt work
     }
 }
