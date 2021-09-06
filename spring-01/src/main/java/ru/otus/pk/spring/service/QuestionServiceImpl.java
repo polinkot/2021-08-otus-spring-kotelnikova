@@ -33,7 +33,6 @@ public class QuestionServiceImpl implements QuestionService {
 
     public void printQuestions() {
         String questions = asString(findAll());
-        System.out.println(questions);
-        inOutService.getOut().println(questions);    //todo!!! doesnt work
+        inOutService.getOut().println(questions);
     }
 }
