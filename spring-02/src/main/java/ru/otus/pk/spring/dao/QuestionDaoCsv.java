@@ -44,21 +44,27 @@ public class QuestionDaoCsv implements QuestionDao {
     public static class CsvQuestion {
 
         @CsvBindByName(column = "question")
-        private String question;
+        private String questionValue;
 
         @CsvBindAndSplitByName(elementType = Answer.class, splitOn = "\\|", converter = TextToAnswer.class)
         private List<Answer> answers;
 
         public static class TextToAnswer extends AbstractCsvConverter {
+            static final String CORRECT_SIGN = "(*)";
 
             @Override
             public Object convertToRead(String value) {
-                return new Answer(value);
+                return value.contains(CORRECT_SIGN) ?
+//                        new Answer(1, value.replace(CORRECT_SIGN, ""), true) :
+                        new Answer(value, true) :     // TODO: 14.09.2021  CORRECT_SIGN
+                        new Answer(value, false);
             }
         }
 
         public Question toQuestion() {
-            return new Question(question, answers);
+            Question question = new Question(questionValue);
+            question.setAnswers(answers);
+            return question;
         }
     }
 }

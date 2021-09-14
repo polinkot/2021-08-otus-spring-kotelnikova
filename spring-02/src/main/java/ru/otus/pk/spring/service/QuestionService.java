@@ -7,8 +7,4 @@ import java.util.List;
 public interface QuestionService {
 
     List<Question> findAll();
-
-    String asString(List<Question> questions);
-
-    void printQuestions();
 }

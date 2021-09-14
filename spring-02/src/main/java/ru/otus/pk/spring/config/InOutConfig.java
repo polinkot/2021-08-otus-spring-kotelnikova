@@ -10,6 +10,6 @@ public class InOutConfig {
 
     @Bean
     public InOutService getInOutService() {
-        return new InOutServiceImpl(System.out);
+        return new InOutServiceImpl(System.in, System.out);
     }
 }
