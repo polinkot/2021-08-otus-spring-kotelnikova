@@ -4,3 +4,4 @@
  
  Домашние задания  
  * Введение в Spring Framework - spring-01
+ * Конфигурирование Spring-приложений - spring-02
