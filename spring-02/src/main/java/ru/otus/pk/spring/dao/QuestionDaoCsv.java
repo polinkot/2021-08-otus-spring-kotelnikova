@@ -55,8 +55,7 @@ public class QuestionDaoCsv implements QuestionDao {
             @Override
             public Object convertToRead(String value) {
                 return value.contains(CORRECT_SIGN) ?
-//                        new Answer(1, value.replace(CORRECT_SIGN, ""), true) :
-                        new Answer(value, true) :     // TODO: 14.09.2021  CORRECT_SIGN
+                        new Answer(value.replace(CORRECT_SIGN, ""), true) :
                         new Answer(value, false);
             }
         }

@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.pk.spring.domain.Question;
 import ru.otus.pk.spring.domain.Result;
@@ -9,8 +10,14 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
 
+import static java.lang.String.format;
+
 @Service
 public class QuizServiceImpl implements QuizService {
+
+    @Value("${questions.correct.min}")
+    private int correctMin;
+
     private final QuestionService questionService;
     private final Scanner in;
     private final PrintStream out;
@@ -29,7 +36,8 @@ public class QuizServiceImpl implements QuizService {
         result.setLastName(in.nextLine());
 
         out.println("Please, answer the questions: ");
-        questionService.findAll().forEach(question -> {
+        List<Question> questions = questionService.findAll();
+        questions.forEach(question -> {
             out.println(question.asString());
 
             int correctAnswer = question.getCorrectAnswer().getNumber();
@@ -39,7 +47,10 @@ public class QuizServiceImpl implements QuizService {
             }
         });
 
-        out.println(result); // TODO: 14.09.2021
+        out.println(format("\nYou have answered correctly %d questions of %d.", result.getCorrectAnswers(), questions.size()));
+        out.println(result.getCorrectAnswers() >= correctMin ?
+                "Congratulations! You have passed the test!" :
+                "You haven't passed the test. Try again!");
     }
 
     public void printQuestions() {
