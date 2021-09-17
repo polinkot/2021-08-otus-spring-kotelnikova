@@ -1,6 +1,5 @@
 package ru.otus.pk.spring.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.pk.spring.dao.QuestionDao;
@@ -9,27 +8,28 @@ import ru.otus.pk.spring.domain.Question;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
+@DisplayName("Класс QuestionServiceImpl")
 class QuestionServiceImplTest {
 
-    private final QuestionDao daoMock = mock(QuestionDao.class);
+    private final QuestionDao dao = mock(QuestionDao.class);
 
-    @BeforeEach
-    void setUp() {
-        when(daoMock.findAll()).thenReturn(asList(
-                new Question("q1"),
-                new Question("q2")
-        ));
-    }
+    private final QuestionServiceImpl service = new QuestionServiceImpl(dao);
 
     @DisplayName("правильное количество вопросов")
     @Test
     void shouldReturnCorrectNumberOfQuestions() {
-        QuestionServiceImpl service = new QuestionServiceImpl(daoMock);
-        List<Question> all = service.findAll();
-        assertEquals(2, all.size());
+        Question questions1 = new Question("q1");
+        Question questions2 = new Question("questions1");
+        List<Question> questions = asList(questions1, questions2);
+
+        given(dao.findAll()).willReturn(questions);
+
+        assertThat(service.findAll())
+                .hasSize(2)
+                .containsExactly(questions1, questions2);
     }
 }

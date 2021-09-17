@@ -10,8 +10,6 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
 
-import static java.lang.String.format;
-
 @Service
 public class QuizServiceImpl implements QuizService {
 
@@ -47,7 +45,7 @@ public class QuizServiceImpl implements QuizService {
             }
         });
 
-        out.println(format("\nYou have answered correctly %d questions of %d.", result.getCorrectAnswers(), questions.size()));
+        out.printf("\nYou have answered correctly %d questions of %d.%n", result.getCorrectAnswers(), questions.size());
         out.println(result.getCorrectAnswers() >= correctMin ?
                 "Congratulations! You have passed the test!" :
                 "You haven't passed the test. Try again!");

@@ -22,8 +22,11 @@ import static java.util.stream.Collectors.toList;
 @Repository
 public class QuestionDaoCsv implements QuestionDao {
 
-    @Value("${questions.source}")
-    private String source;
+    private final String source;
+
+    public QuestionDaoCsv(@Value("${questions.source}") String source) {
+        this.source = source;
+    }
 
     public List<Question> findAll() {
         try (InputStream in = getClass().getResourceAsStream(source);
