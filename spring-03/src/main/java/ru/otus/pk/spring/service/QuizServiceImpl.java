@@ -1,6 +1,7 @@
 package ru.otus.pk.spring.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
 import ru.otus.pk.spring.domain.Question;
 import ru.otus.pk.spring.domain.Result;
@@ -13,25 +14,28 @@ import java.util.Scanner;
 @Service
 public class QuizServiceImpl implements QuizService {
 
-    private int correctMin;
-
     private final QuestionService questionService;
     private final Scanner in;
     private final PrintStream out;
+    private final MessageSourceAccessor messageSourceAccessor;
+
+    private final int correctMin;
 
     public QuizServiceImpl(QuestionService questionService, InOutService inOutService,
+                           MessageSourceAccessor messageSourceAccessor,
                            @Value("${questions.correct.min}") int correctMin) {
         this.questionService = questionService;
         this.in = new Scanner(inOutService.getIn());
         this.out = inOutService.getOut();
+        this.messageSourceAccessor = messageSourceAccessor;
         this.correctMin = correctMin;
     }
 
     public void interview() {
         Result result = new Result();
-        out.println("Please, input your first name: ");
+        out.println(getMessage("interview.firstname"));
         result.setFirstName(in.nextLine());
-        out.println("Please, input your last name: ");
+        out.println(getMessage("interview.lastname"));
         result.setLastName(in.nextLine());
 
         out.println("Please, answer the questions: ");
@@ -55,6 +59,10 @@ public class QuizServiceImpl implements QuizService {
     public void printQuestions() {
         List<Question> questions = questionService.findAll();
         questions.forEach(question -> out.println(question.asString()));
+    }
+
+    private String getMessage(String key) {
+        return messageSourceAccessor.getMessage(key);
     }
 
     private int readAnswer() {

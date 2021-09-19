@@ -2,3 +2,10 @@ questions:
   source: /csv/questions.csv
   correct:
     min: 4
+
+spring:
+  messages:
+    basename: i18n/messages
+
+app:
+  locale: en
