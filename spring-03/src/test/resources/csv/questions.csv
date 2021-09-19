@@ -1,0 +1,4 @@
+QUESTION,ANSWERS
+Question1,Answer1_1(*)|Answer1_2|Answer1_3
+Question2,Answer2_1|Answer2_2(*)
+Question3,Answer3_1|Answer3_2|Answer3_3|Answer3_4(*)
