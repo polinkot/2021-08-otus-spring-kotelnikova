@@ -11,15 +11,20 @@ import java.util.Locale;
 @Configuration
 public class MessageSourceConfig {
 
-    @Bean("messageSourceAccessor")
-    @ConditionalOnProperty(value = "app.locale", havingValue = "ru")
-    public MessageSourceAccessor getMessageSourceAccessorRu(MessageSource messageSource) {
-        return new MessageSourceAccessor(messageSource, Locale.forLanguageTag("ru-RU"));
+    @Bean("userLocale")
+    @ConditionalOnProperty(value = "lang", havingValue = "ru")
+    public Locale getUserLocaleRu() {
+        return Locale.forLanguageTag("ru-RU");
+    }
+
+    @Bean("userLocale")
+    @ConditionalOnProperty(value = "lang", havingValue = "en", matchIfMissing = true)
+    public Locale getUserLocaleEn() {
+        return Locale.US;
     }
 
     @Bean("messageSourceAccessor")
-    @ConditionalOnProperty(value = "app.locale", havingValue = "en", matchIfMissing = true)
-    public MessageSourceAccessor getMessageSourceAccessorEn(MessageSource messageSource) {
-        return new MessageSourceAccessor(messageSource, Locale.US);
+    public MessageSourceAccessor getMessageSourceAccessor(MessageSource messageSource, Locale userLocale) {
+        return new MessageSourceAccessor(messageSource, userLocale);
     }
 }

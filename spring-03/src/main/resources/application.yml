@@ -5,6 +5,3 @@ quiz:
 spring:
   messages:
     basename: i18n/messages
-
-app:
-    locale: en
