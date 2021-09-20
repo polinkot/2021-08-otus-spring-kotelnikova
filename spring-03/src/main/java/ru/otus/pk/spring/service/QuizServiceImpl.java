@@ -38,7 +38,7 @@ public class QuizServiceImpl implements QuizService {
         out.println(getMessage("interview.lastname"));
         result.setLastName(in.nextLine());
 
-        out.println("Please, answer the questions: ");
+        out.println(getMessage("interview.questions"));
         List<Question> questions = questionService.findAll();
         questions.forEach(question -> {
             out.println(question.asString());
@@ -50,10 +50,13 @@ public class QuizServiceImpl implements QuizService {
             }
         });
 
-        out.printf("\nYou have answered correctly %d questions of %d.%n", result.getCorrectAnswers(), questions.size());
+        out.println();
+        out.printf(getMessage("interview.result"), result.getFirstName(), result.getLastName(),
+                result.getCorrectAnswers(), questions.size());
         out.println(result.getCorrectAnswers() >= correctMin ?
-                "Congratulations! You have passed the test!" :
-                "You haven't passed the test. Try again!");
+                getMessage("interview.success") :
+                getMessage("interview.failure"));
+        out.println();
     }
 
     public void printQuestions() {
@@ -67,15 +70,15 @@ public class QuizServiceImpl implements QuizService {
 
     private int readAnswer() {
         for (int i = 0; i < 3; i++) {
-            out.println("Please enter an integer number: ");
+            out.println(getMessage("interview.enter-integer"));
             if (in.hasNextInt()) {
                 return in.nextInt();
             }
 
             in.next();
-            out.println("Incorrect format.");
+            out.println(getMessage("interview.incorrect-format"));
         }
 
-        throw new AppException("Error!!! Incorrect answer format!!!");
+        throw new AppException(getMessage("interview.error"));
     }
 }
