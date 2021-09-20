@@ -1,4 +1,4 @@
-questions:
+quiz:
   correct:
     min: 4
 
@@ -7,4 +7,4 @@ spring:
     basename: i18n/messages
 
 app:
-  locale: en
+    locale: en

@@ -1,8 +1,8 @@
 package ru.otus.pk.spring.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
+import ru.otus.pk.spring.config.QuizConfig;
 import ru.otus.pk.spring.domain.Question;
 import ru.otus.pk.spring.domain.Result;
 import ru.otus.pk.spring.exception.AppException;
@@ -23,12 +23,12 @@ public class QuizServiceImpl implements QuizService {
 
     public QuizServiceImpl(QuestionService questionService, InOutService inOutService,
                            MessageSourceAccessor messageSourceAccessor,
-                           @Value("${questions.correct.min}") int correctMin) {
+                           QuizConfig quizConfig) {
         this.questionService = questionService;
         this.in = new Scanner(inOutService.getIn());
         this.out = inOutService.getOut();
         this.messageSourceAccessor = messageSourceAccessor;
-        this.correctMin = correctMin;
+        this.correctMin = quizConfig.getCorrect().getMin();
     }
 
     public void startQuiz() {
