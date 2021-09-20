@@ -21,7 +21,7 @@ public class MyRunner implements CommandLineRunner {
     @Override
     public void run(String... args) {
         try {
-            service.interview();
+            service.startQuiz();
         } catch (AppException ae) {
             inOutService.getOut().println("\n" + ae.getMessage());
         }

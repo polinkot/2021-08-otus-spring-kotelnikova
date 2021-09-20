@@ -31,14 +31,14 @@ public class QuizServiceImpl implements QuizService {
         this.correctMin = correctMin;
     }
 
-    public void interview() {
+    public void startQuiz() {
         Result result = new Result();
-        out.println(getMessage("interview.firstname"));
+        out.println(getMessage("quiz.firstname"));
         result.setFirstName(in.nextLine());
-        out.println(getMessage("interview.lastname"));
+        out.println(getMessage("quiz.lastname"));
         result.setLastName(in.nextLine());
 
-        out.println(getMessage("interview.questions"));
+        out.println(getMessage("quiz.questions"));
         List<Question> questions = questionService.findAll();
         questions.forEach(question -> {
             out.println(question.asString());
@@ -51,11 +51,11 @@ public class QuizServiceImpl implements QuizService {
         });
 
         out.println();
-        out.printf(getMessage("interview.result"), result.getFirstName(), result.getLastName(),
+        out.printf(getMessage("quiz.result"), result.getFirstName(), result.getLastName(),
                 result.getCorrectAnswers(), questions.size());
         out.println(result.getCorrectAnswers() >= correctMin ?
-                getMessage("interview.success") :
-                getMessage("interview.failure"));
+                getMessage("quiz.success") :
+                getMessage("quiz.failure"));
         out.println();
     }
 
@@ -70,15 +70,15 @@ public class QuizServiceImpl implements QuizService {
 
     private int readAnswer() {
         for (int i = 0; i < 3; i++) {
-            out.println(getMessage("interview.enter-integer"));
+            out.println(getMessage("quiz.enter-integer"));
             if (in.hasNextInt()) {
                 return in.nextInt();
             }
 
             in.next();
-            out.println(getMessage("interview.incorrect-format"));
+            out.println(getMessage("quiz.incorrect-format"));
         }
 
-        throw new AppException(getMessage("interview.error"));
+        throw new AppException(getMessage("quiz.error"));
     }
 }

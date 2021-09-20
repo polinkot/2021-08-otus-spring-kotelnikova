@@ -11,7 +11,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Класс QuestionDaoCsv")
 class QuestionDaoCsvTest {
 
-    private final QuestionDao dao = new QuestionDaoCsv("/csv/questions.csv");
+//    private final QuestionDao dao = new QuestionDaoCsv("/csv/questions.csv", null);
+    private final QuestionDao dao = new QuestionDaoCsv(null);
 
     @DisplayName("правильное количество вопросов")
     @Test

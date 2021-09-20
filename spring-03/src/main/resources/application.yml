@@ -1,5 +1,4 @@
 questions:
-  source: /csv/questions.csv
   correct:
     min: 4
 
