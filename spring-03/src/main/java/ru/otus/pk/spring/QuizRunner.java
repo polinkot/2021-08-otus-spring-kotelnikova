@@ -7,13 +7,13 @@ import ru.otus.pk.spring.service.InOutService;
 import ru.otus.pk.spring.service.QuizService;
 
 @Component
-public class MyRunner implements CommandLineRunner {
+public class QuizRunner implements CommandLineRunner {
 
     private final QuizService service;
 
     private final InOutService inOutService;
 
-    public MyRunner(QuizService service, InOutService inOutService) {
+    public QuizRunner(QuizService service, InOutService inOutService) {
         this.service = service;
         this.inOutService = inOutService;
     }

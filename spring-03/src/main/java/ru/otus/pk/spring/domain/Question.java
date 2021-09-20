@@ -28,7 +28,7 @@ public class Question {
 
     public String asString() {
         StringBuilder result = new StringBuilder(format("\n%s", value));
-        answers.forEach(answer -> result.append(format("\n\t%d %s", answer.getNumber(), answer.getValue())));
+        answers.forEach(answer -> result.append(format("\n\t%d. %s", answer.getNumber(), answer.getValue())));
 
         return result.toString();
     }

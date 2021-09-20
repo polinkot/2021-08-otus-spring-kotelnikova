@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class QuestionDaoCsv implements QuestionDao {
         String csv = messageSourceAccessor.getMessage("quiz.csv");
 
         try (InputStream in = getClass().getResourceAsStream(csv);
-             Reader reader = new BufferedReader(new InputStreamReader(in))
+             Reader reader = new BufferedReader(new InputStreamReader(in, UTF_8))
         ) {
             List<CsvQuestion> csvQuestions = new CsvToBeanBuilder<CsvQuestion>(reader)
                     .withType(CsvQuestion.class)
