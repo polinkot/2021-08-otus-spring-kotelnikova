@@ -47,9 +47,10 @@ class QuestionTest {
     @Test
     void shouldFindCorrectAnswer() {
         question.setAnswers(answers);
-        Answer correctAnswer = question.getCorrectAnswer();
+        Answer correctAnswer = question.getCorrectAnswer().orElse(null);
 
         assertThat(correctAnswer)
+                .isNotNull()
                 .hasFieldOrPropertyWithValue("value", "answer1")
                 .hasFieldOrPropertyWithValue("correct", true);
     }

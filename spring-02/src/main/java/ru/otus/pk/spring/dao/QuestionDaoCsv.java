@@ -7,9 +7,9 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import ru.otus.pk.spring.dao.exception.QuestionsReadingException;
 import ru.otus.pk.spring.domain.Answer;
 import ru.otus.pk.spring.domain.Question;
-import ru.otus.pk.spring.exception.AppException;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -39,7 +39,7 @@ public class QuestionDaoCsv implements QuestionDao {
 
             return csvQuestions.stream().map(CsvQuestion::toQuestion).collect(toList());
         } catch (Exception e) {
-            throw new AppException("Failed to fetch questions. ", e);
+            throw new QuestionsReadingException("Failed to fetch questions. ", e);
         }
     }
 

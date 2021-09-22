@@ -3,70 +3,38 @@ package ru.otus.pk.spring.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.otus.pk.spring.domain.Question;
-import ru.otus.pk.spring.domain.Result;
+import ru.otus.pk.spring.dto.Quiz;
 import ru.otus.pk.spring.exception.AppException;
 
-import java.io.PrintStream;
 import java.util.List;
-import java.util.Scanner;
 
 @Service
 public class QuizServiceImpl implements QuizService {
 
-    @Value("${questions.correct.min}")
-    private int correctMin;
-
     private final QuestionService questionService;
-    private final Scanner in;
-    private final PrintStream out;
+    private final InOutService ioService;
+    private final int correctMin;
 
-    public QuizServiceImpl(QuestionService questionService, InOutService inOutService) {
+    public QuizServiceImpl(QuestionService questionService, InOutService ioService,
+                           @Value("${questions.correct.min}") int correctMin) {
         this.questionService = questionService;
-        this.in = new Scanner(inOutService.getIn());
-        this.out = inOutService.getOut();
+        this.ioService = ioService;
+        this.correctMin = correctMin;
     }
 
-    public void interview() {
-        Result result = new Result();
-        out.println("Please, input your first name: ");
-        result.setFirstName(in.nextLine());
-        out.println("Please, input your last name: ");
-        result.setLastName(in.nextLine());
+    public void startQuiz() {
+        try {
+            List<Question> questions = questionService.findAll();
 
-        out.println("Please, answer the questions: ");
-        List<Question> questions = questionService.findAll();
-        questions.forEach(question -> {
-            out.println(question.asString());
+            Quiz quiz = new Quiz(ioService, questions, correctMin);
+            quiz.requestFirstName();
+            quiz.requestLastName();
 
-            int correctAnswer = question.getCorrectAnswer().getNumber();
-            int answer = readAnswer();
-            if (answer == correctAnswer) {
-                result.increaseCorrectAnswers();
-            }
-        });
+            quiz.askQuestions();
 
-        out.printf("\nYou have answered correctly %d questions of %d.%n", result.getCorrectAnswers(), questions.size());
-        out.println(result.getCorrectAnswers() >= correctMin ?
-                "Congratulations! You have passed the test!" :
-                "You haven't passed the test. Try again!");
-    }
-
-    public void printQuestions() {
-        List<Question> questions = questionService.findAll();
-        questions.forEach(question -> out.println(question.asString()));
-    }
-
-    private int readAnswer() {
-        for (int i = 0; i < 3; i++) {
-            out.println("Please enter an integer number: ");
-            if (in.hasNextInt()) {
-                return in.nextInt();
-            }
-
-            in.next();
-            out.println("Incorrect format.");
+            quiz.printResult();
+        } catch (AppException ae) {
+            ioService.println("\n" + ae.getMessage());
         }
-
-        throw new AppException("Error!!! Incorrect answer format!!!");
     }
 }

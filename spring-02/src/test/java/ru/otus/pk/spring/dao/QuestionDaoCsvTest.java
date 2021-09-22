@@ -11,13 +11,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Класс QuestionDaoCsv")
 class QuestionDaoCsvTest {
 
+    public static final int EXPECTED_SIZE = 3;
+
     private final QuestionDao dao = new QuestionDaoCsv("/csv/questions.csv");
 
     @DisplayName("правильное количество вопросов")
     @Test
     void shouldReturnCorrectNumberOfQuestions() {
         List<Question> all = dao.findAll();
-        assertThat(all).hasSize(3)
+        assertThat(all).hasSize(EXPECTED_SIZE)
                 .hasOnlyElementsOfType(Question.class);
     }
 }

@@ -1,5 +1,5 @@
 package ru.otus.pk.spring.service;
 
 public interface QuizService {
-    void interview();
+    void startQuiz();
 }
