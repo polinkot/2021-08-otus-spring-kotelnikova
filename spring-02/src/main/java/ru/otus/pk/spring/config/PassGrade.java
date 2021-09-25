@@ -1,4 +1,4 @@
-package ru.otus.pk.spring.domain;
+package ru.otus.pk.spring.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

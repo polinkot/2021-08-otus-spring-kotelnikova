@@ -3,7 +3,7 @@ package ru.otus.pk.spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.pk.spring.domain.CorrectAnswers;
-import ru.otus.pk.spring.domain.PassGrade;
+import ru.otus.pk.spring.config.PassGrade;
 import ru.otus.pk.spring.domain.UserInfo;
 
 import static java.lang.String.format;

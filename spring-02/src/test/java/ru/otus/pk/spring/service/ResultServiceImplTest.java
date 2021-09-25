@@ -3,7 +3,7 @@ package ru.otus.pk.spring.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.pk.spring.domain.CorrectAnswers;
-import ru.otus.pk.spring.domain.PassGrade;
+import ru.otus.pk.spring.config.PassGrade;
 import ru.otus.pk.spring.domain.UserInfo;
 
 import java.io.ByteArrayOutputStream;
