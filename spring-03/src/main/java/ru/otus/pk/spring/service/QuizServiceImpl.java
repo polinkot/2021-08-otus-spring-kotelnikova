@@ -1,84 +1,59 @@
 package ru.otus.pk.spring.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
-import ru.otus.pk.spring.config.QuizConfig;
+import ru.otus.pk.spring.domain.CorrectAnswers;
 import ru.otus.pk.spring.domain.Question;
-import ru.otus.pk.spring.domain.Result;
+import ru.otus.pk.spring.domain.UserInfo;
 import ru.otus.pk.spring.exception.AppException;
 
-import java.io.PrintStream;
 import java.util.List;
-import java.util.Scanner;
 
+@RequiredArgsConstructor
 @Service
 public class QuizServiceImpl implements QuizService {
 
     private final QuestionService questionService;
-    private final Scanner in;
-    private final PrintStream out;
+    private final InOutService ioService;
+    private final UserService userService;
+    private final QuestionViewService questionViewService;
+    private final ResultService resultService;
     private final MessageSourceAccessor messageSourceAccessor;
 
-    private final int correctMin;
-
-    public QuizServiceImpl(QuestionService questionService, InOutService inOutService,
-                           MessageSourceAccessor messageSourceAccessor,
-                           QuizConfig quizConfig) {
-        this.questionService = questionService;
-        this.in = new Scanner(inOutService.getIn());
-        this.out = inOutService.getOut();
-        this.messageSourceAccessor = messageSourceAccessor;
-        this.correctMin = quizConfig.getCorrect().getMin();
-    }
-
     public void startQuiz() {
-        Result result = new Result();
-        out.println(getMessage("quiz.firstname"));
-        result.setFirstName(in.nextLine());
-        out.println(getMessage("quiz.lastname"));
-        result.setLastName(in.nextLine());
+        try {
+            List<Question> questions = questionService.findAll();
 
-        out.println(getMessage("quiz.questions"));
-        List<Question> questions = questionService.findAll();
-        questions.forEach(question -> {
-            out.println(question.asString());
+            UserInfo userInfo = userService.requestUserInfo();
 
-            int correctAnswer = question.getCorrectAnswer().getNumber();
-            int answer = readAnswer();
-            if (answer == correctAnswer) {
-                result.increaseCorrectAnswers();
-            }
-        });
-
-        out.println();
-        out.printf(getMessage("quiz.result"), result.getFirstName(), result.getLastName(),
-                result.getCorrectAnswers(), questions.size());
-        out.println(result.getCorrectAnswers() >= correctMin ?
-                getMessage("quiz.success") :
-                getMessage("quiz.failure"));
-        out.println();
-    }
-
-    public void printQuestions() {
-        List<Question> questions = questionService.findAll();
-        questions.forEach(question -> out.println(question.asString()));
+            CorrectAnswers correctAnswers = askQuestions(questions);
+            resultService.print(userInfo, correctAnswers, questions.size());
+        } catch (AppException ae) {
+            ioService.println("\n" + ae.getMessage());
+        }
     }
 
     private String getMessage(String key) {
         return messageSourceAccessor.getMessage(key);
     }
 
-    private int readAnswer() {
-        for (int i = 0; i < 3; i++) {
-            out.println(getMessage("quiz.enter-integer"));
-            if (in.hasNextInt()) {
-                return in.nextInt();
+    private CorrectAnswers askQuestions(List<Question> questions) {
+        CorrectAnswers correctAnswers = new CorrectAnswers();
+
+        ioService.println(getMessage("quiz.questions"));
+        questions.forEach(question -> {
+            ioService.println(questionViewService.asString(question));
+
+            int correctAnswer = question.getCorrectAnswer()
+                    .orElseThrow(() -> new AppException(getMessage("quiz.error.no-correct-answer") + this))
+                    .getNumber();
+            int answer = ioService.readInt();
+            if (answer == correctAnswer) {
+                correctAnswers.increaseCount();
             }
+        });
 
-            in.next();
-            out.println(getMessage("quiz.incorrect-format"));
-        }
-
-        throw new AppException(getMessage("quiz.error"));
+        return correctAnswers;
     }
 }

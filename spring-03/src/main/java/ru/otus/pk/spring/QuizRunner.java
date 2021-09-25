@@ -23,7 +23,7 @@ public class QuizRunner implements CommandLineRunner {
         try {
             service.startQuiz();
         } catch (AppException ae) {
-            inOutService.getOut().println("\n" + ae.getMessage());
+            inOutService.println("\n" + ae.getMessage());
         }
     }
 }

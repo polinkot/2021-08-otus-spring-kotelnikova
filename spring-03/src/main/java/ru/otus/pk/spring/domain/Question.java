@@ -1,11 +1,9 @@
 package ru.otus.pk.spring.domain;
 
 import lombok.Data;
-import ru.otus.pk.spring.exception.AppException;
 
 import java.util.Collection;
-
-import static java.lang.String.format;
+import java.util.Optional;
 
 @Data
 public class Question {
@@ -26,15 +24,7 @@ public class Question {
         }
     }
 
-    public String asString() {
-        StringBuilder result = new StringBuilder(format("\n%s", value));
-        answers.forEach(answer -> result.append(format("\n\t%d. %s", answer.getNumber(), answer.getValue())));
-
-        return result.toString();
-    }
-
-    public Answer getCorrectAnswer() {
-        return answers.stream().filter(Answer::isCorrect).findFirst()
-                .orElseThrow(() -> new AppException("No correct answer for question: " + this));
+    public Optional<Answer> getCorrectAnswer() {
+        return answers.stream().filter(Answer::isCorrect).findFirst();
     }
 }

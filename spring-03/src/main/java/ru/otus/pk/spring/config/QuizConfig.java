@@ -11,11 +11,5 @@ import org.springframework.stereotype.Component;
 @Component
 public class QuizConfig {
 
-    private Correct correct;
-
-    @Getter
-    @Setter
-    public static class Correct {
-        private int min;
-    }
+    private int passGrade;
 }

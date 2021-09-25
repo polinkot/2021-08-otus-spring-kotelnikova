@@ -23,8 +23,10 @@ class QuestionDaoCsvTest {
     void shouldReturnCorrectNumberOfQuestions() {
         given(messageSourceAccessor.getMessage("quiz.csv")).willReturn("/csv/questions.csv");
 
+        int expected = 3;
+
         List<Question> all = dao.findAll();
-        assertThat(all).hasSize(3)
+        assertThat(all).hasSize(expected)
                 .hasOnlyElementsOfType(Question.class);
     }
 }

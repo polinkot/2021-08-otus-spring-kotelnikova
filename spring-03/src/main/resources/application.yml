@@ -1,6 +1,5 @@
 quiz:
-  correct:
-    min: 4
+  passGrade: 4
 
 spring:
   messages:
