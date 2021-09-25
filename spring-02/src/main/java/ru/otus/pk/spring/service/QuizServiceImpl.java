@@ -1,40 +1,53 @@
 package ru.otus.pk.spring.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.otus.pk.spring.domain.CorrectAnswers;
 import ru.otus.pk.spring.domain.Question;
-import ru.otus.pk.spring.dto.Quiz;
+import ru.otus.pk.spring.domain.UserInfo;
 import ru.otus.pk.spring.exception.AppException;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class QuizServiceImpl implements QuizService {
 
     private final QuestionService questionService;
     private final InOutService ioService;
-    private final int correctMin;
-
-    public QuizServiceImpl(QuestionService questionService, InOutService ioService,
-                           @Value("${questions.correct.min}") int correctMin) {
-        this.questionService = questionService;
-        this.ioService = ioService;
-        this.correctMin = correctMin;
-    }
+    private final UserService userService;
+    private final QuestionViewService questionViewService;
+    private final ResultService resultService;
 
     public void startQuiz() {
         try {
             List<Question> questions = questionService.findAll();
 
-            Quiz quiz = new Quiz(ioService, questions, correctMin);
-            quiz.requestFirstName();
-            quiz.requestLastName();
+            UserInfo userInfo = userService.requestUserInfo();
 
-            quiz.askQuestions();
-
-            quiz.printResult();
+            CorrectAnswers correctAnswers = askQuestions(questions);
+            resultService.print(userInfo, correctAnswers, questions.size());
         } catch (AppException ae) {
             ioService.println("\n" + ae.getMessage());
         }
+    }
+
+    private CorrectAnswers askQuestions(List<Question> questions) {
+        CorrectAnswers correctAnswers = new CorrectAnswers();
+
+        ioService.println("Please, answer the questions: ");
+        questions.forEach(question -> {
+            ioService.println(questionViewService.asString(question));
+
+            int correctAnswer = question.getCorrectAnswer()
+                    .orElseThrow(() -> new AppException("No correct answer for question: " + this))
+                    .getNumber();
+            int answer = ioService.readInt();
+            if (answer == correctAnswer) {
+                correctAnswers.increaseCount();
+            }
+        });
+
+        return correctAnswers;
     }
 }

@@ -4,9 +4,7 @@ public interface InOutService {
 
     void println(String line);
 
-    String nextLine();
+    String nextLine();   // а это же мне нужно - этот метод считывает строку через сканер
 
-    boolean hasNextInt();
-
-    int nextInt();
+    int readInt();
 }

@@ -28,8 +28,10 @@ class QuestionServiceImplTest {
 
         given(dao.findAll()).willReturn(questions);
 
+        int expectedSize = 2;
+
         assertThat(service.findAll())
-                .hasSize(2)
+                .hasSize(expectedSize)
                 .containsExactly(questions1, questions2);
     }
 }
