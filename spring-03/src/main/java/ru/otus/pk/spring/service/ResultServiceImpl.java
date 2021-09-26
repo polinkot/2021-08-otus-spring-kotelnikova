@@ -7,6 +7,8 @@ import ru.otus.pk.spring.config.QuizConfig;
 import ru.otus.pk.spring.domain.CorrectAnswers;
 import ru.otus.pk.spring.domain.UserInfo;
 
+import static ru.otus.pk.spring.config.MessageSourceConfig.*;
+
 @RequiredArgsConstructor
 @Service
 public class ResultServiceImpl implements ResultService {
@@ -16,11 +18,11 @@ public class ResultServiceImpl implements ResultService {
     private final MessageSourceAccessor messageSourceAccessor;
 
     public void print(UserInfo userInfo, CorrectAnswers correctAnswers, int totalCount) {
-        ioService.println("\n" + messageSourceAccessor.getMessage("quiz.result",
+        ioService.println("\n" + messageSourceAccessor.getMessage(QUIZ_RESULT,
                 new Object[]{userInfo.getFirstName(), userInfo.getLastName(), correctAnswers.getCount(), totalCount}));
         ioService.println(correctAnswers.getCount() >= quizConfig.getPassGrade()
-                ? getMessage("quiz.success")
-                : getMessage("quiz.failure"));
+                ? getMessage(QUIZ_SUCCESS)
+                : getMessage(QUIZ_FAILURE));
     }
 
     private String getMessage(String key) {

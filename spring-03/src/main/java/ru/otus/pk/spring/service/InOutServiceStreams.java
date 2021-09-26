@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+import static ru.otus.pk.spring.config.MessageSourceConfig.*;
+
 @Getter
 @Service
 public class InOutServiceStreams implements InOutService {
@@ -35,16 +37,16 @@ public class InOutServiceStreams implements InOutService {
 
     public int readInt() {
         for (int i = 0; i < 3; i++) {
-            println(getMessage("quiz.enter-integer"));
+            println(getMessage(QUIZ_ENTER_INTEGER));
             if (in.hasNextInt()) {
                 return in.nextInt();
             }
 
             nextLine();
-            println(getMessage("quiz.incorrect-format"));
+            println(getMessage(QUIZ_INCORRECT_FORMAT));
         }
 
-        throw new AppException(getMessage("quiz.error.incorrect-format"));
+        throw new AppException(getMessage(QUIZ_ERROR_INCORRECT_FORMAT));
     }
 
     private String getMessage(String key) {

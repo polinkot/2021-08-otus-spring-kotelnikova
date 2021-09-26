@@ -12,6 +12,17 @@ import java.util.Locale;
 @Configuration
 public class MessageSourceConfig {
 
+    public static final String QUIZ_FIRSTNAME = "quiz.firstname";
+    public static final String QUIZ_LASTNAME = "quiz.lastname";
+    public static final String QUIZ_QUESTIONS = "quiz.questions";
+    public static final String QUIZ_RESULT = "quiz.result";
+    public static final String QUIZ_SUCCESS = "quiz.success";
+    public static final String QUIZ_FAILURE = "quiz.failure";
+    public static final String QUIZ_ENTER_INTEGER = "quiz.enter-integer";
+    public static final String QUIZ_INCORRECT_FORMAT = "quiz.incorrect-format";
+    public static final String QUIZ_ERROR_INCORRECT_FORMAT = "quiz.error.incorrect-format";
+    public static final String QUIZ_ERROR_NO_CORRECT_ANSWER = "quiz.error.no-correct-answer";
+
     @Bean("userLocale")
     @ConditionalOnProperty(value = "lang", havingValue = "ru")
     public UserLocale getUserLocaleRu() {

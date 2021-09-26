@@ -10,6 +10,9 @@ import ru.otus.pk.spring.exception.AppException;
 
 import java.util.List;
 
+import static ru.otus.pk.spring.config.MessageSourceConfig.QUIZ_ERROR_NO_CORRECT_ANSWER;
+import static ru.otus.pk.spring.config.MessageSourceConfig.QUIZ_QUESTIONS;
+
 @RequiredArgsConstructor
 @Service
 public class QuizServiceImpl implements QuizService {
@@ -41,12 +44,12 @@ public class QuizServiceImpl implements QuizService {
     private CorrectAnswers askQuestions(List<Question> questions) {
         CorrectAnswers correctAnswers = new CorrectAnswers();
 
-        ioService.println(getMessage("quiz.questions"));
+        ioService.println(getMessage(QUIZ_QUESTIONS));
         questions.forEach(question -> {
             ioService.println(questionViewService.asString(question));
 
             int correctAnswer = question.getCorrectAnswer()
-                    .orElseThrow(() -> new AppException(getMessage("quiz.error.no-correct-answer") + this))
+                    .orElseThrow(() -> new AppException(getMessage(QUIZ_ERROR_NO_CORRECT_ANSWER) + this))
                     .getNumber();
             int answer = ioService.readInt();
             if (answer == correctAnswer) {

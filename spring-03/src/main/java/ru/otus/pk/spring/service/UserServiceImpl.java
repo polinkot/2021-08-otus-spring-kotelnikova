@@ -5,6 +5,9 @@ import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
 import ru.otus.pk.spring.domain.UserInfo;
 
+import static ru.otus.pk.spring.config.MessageSourceConfig.QUIZ_FIRSTNAME;
+import static ru.otus.pk.spring.config.MessageSourceConfig.QUIZ_LASTNAME;
+
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,12 +19,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private String requestFirstName() {
-        ioService.println(getMessage("quiz.firstname"));
+        ioService.println(getMessage(QUIZ_FIRSTNAME));
         return ioService.nextLine();
     }
 
     private String requestLastName() {
-        ioService.println(getMessage("quiz.lastname"));
+        ioService.println(getMessage(QUIZ_LASTNAME));
         return ioService.nextLine();
     }
 
