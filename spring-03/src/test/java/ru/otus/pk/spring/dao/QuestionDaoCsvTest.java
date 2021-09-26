@@ -2,8 +2,8 @@ package ru.otus.pk.spring.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.support.MessageSourceAccessor;
 import ru.otus.pk.spring.domain.Question;
+import ru.otus.pk.spring.service.CsvSourceProvider;
 
 import java.util.List;
 
@@ -14,19 +14,19 @@ import static org.mockito.Mockito.mock;
 @DisplayName("Класс QuestionDaoCsv")
 class QuestionDaoCsvTest {
 
-    private final MessageSourceAccessor messageSourceAccessor = mock(MessageSourceAccessor.class);
+    private final CsvSourceProvider csvSourceProvider = mock(CsvSourceProvider.class);
 
-    private final QuestionDao dao = new QuestionDaoCsv(messageSourceAccessor);
+    private final QuestionDao dao = new QuestionDaoCsv(csvSourceProvider);
 
     @DisplayName("правильное количество вопросов")
     @Test
     void shouldReturnCorrectNumberOfQuestions() {
-        given(messageSourceAccessor.getMessage("quiz.csv")).willReturn("/csv/questions.csv");
+        String csv = "/csv/questions.csv";
+        given(csvSourceProvider.getCsvSource()).willReturn(csv);
 
-        int expected = 3;
-
+        int expectedSize = 3;
         List<Question> all = dao.findAll();
-        assertThat(all).hasSize(expected)
+        assertThat(all).hasSize(expectedSize)
                 .hasOnlyElementsOfType(Question.class);
     }
 }

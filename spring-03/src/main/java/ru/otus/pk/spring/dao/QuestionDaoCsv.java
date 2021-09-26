@@ -6,11 +6,11 @@ import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Repository;
 import ru.otus.pk.spring.dao.exception.QuestionsReadingException;
 import ru.otus.pk.spring.domain.Answer;
 import ru.otus.pk.spring.domain.Question;
+import ru.otus.pk.spring.service.CsvSourceProvider;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -25,12 +25,10 @@ import static java.util.stream.Collectors.toList;
 @Repository
 public class QuestionDaoCsv implements QuestionDao {
 
-    private final MessageSourceAccessor messageSourceAccessor;
+    private final CsvSourceProvider csvSourceProvider;
 
     public List<Question> findAll() {
-        String csv = messageSourceAccessor.getMessage("quiz.csv");
-
-        try (InputStream in = getClass().getResourceAsStream(csv);
+        try (InputStream in = getClass().getResourceAsStream(csvSourceProvider.getCsvSource());
              Reader reader = new BufferedReader(new InputStreamReader(in, UTF_8))
         ) {
             List<CsvQuestion> csvQuestions = new CsvToBeanBuilder<CsvQuestion>(reader)
@@ -40,7 +38,7 @@ public class QuestionDaoCsv implements QuestionDao {
 
             return csvQuestions.stream().map(CsvQuestion::toQuestion).collect(toList());
         } catch (Exception e) {
-            throw new QuestionsReadingException(messageSourceAccessor.getMessage("quiz.error.reading-questions"), e);
+            throw new QuestionsReadingException(e);
         }
     }
 
