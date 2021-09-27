@@ -15,11 +15,11 @@ public class UserServiceImpl implements UserService {
 
     private String requestFirstName() {
         ioService.println("Please, input your first name: ");
-        return ioService.nextLine();
+        return ioService.readLine();
     }
 
     private String requestLastName() {
         ioService.println("Please, input your last name: ");
-        return ioService.nextLine();
+        return ioService.readLine();
     }
 }

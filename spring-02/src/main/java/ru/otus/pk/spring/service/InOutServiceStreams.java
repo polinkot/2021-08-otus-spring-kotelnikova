@@ -1,7 +1,7 @@
 package ru.otus.pk.spring.service;
 
 import lombok.Getter;
-import ru.otus.pk.spring.exception.AppException;
+import ru.otus.pk.spring.exception.WrongFormatException;
 
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -21,21 +21,25 @@ public class InOutServiceStreams implements InOutService {
         out.println(line);
     }
 
-    public String nextLine() {
+    public void printf(String line, Object ... args) {
+        out.printf(line, args);
+    }
+
+    public String readLine() {
         return in.nextLine();
     }
 
-    public int readInt() {
-        for (int i = 0; i < 3; i++) {
-            println("Please enter an integer number: ");
+    public int readInt(String prompt, String errMsg, int attemptsCount) {
+        for (int i = 0; i < attemptsCount; i++) {
+            println(prompt);
             if (in.hasNextInt()) {
                 return in.nextInt();
             }
 
-            nextLine();
-            println("Incorrect format.");
+            readLine();
+            println(errMsg);
         }
 
-        throw new AppException("Error!!! Incorrect format!!! Not an integer number.");
+        throw new WrongFormatException("Error!!! Incorrect format!!! Not an integer number.");
     }
 }

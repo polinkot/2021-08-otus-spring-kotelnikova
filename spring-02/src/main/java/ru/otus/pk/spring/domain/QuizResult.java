@@ -1,14 +1,13 @@
 package ru.otus.pk.spring.domain;
 
-
 import lombok.Data;
 
 @Data
-public
-class CorrectAnswers {
+public class QuizResult {
     private int count;
+    private boolean passed;
 
     public void increaseCount() {
-        count++;
+        this.count++;
     }
 }

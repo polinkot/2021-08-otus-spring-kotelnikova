@@ -22,7 +22,7 @@ class UserServiceImplTest {
         String ivan = "Ivan";
         String petrov = "Petrov";
 
-        given(ioService.nextLine()).willReturn(ivan, petrov);
+        given(ioService.readLine()).willReturn(ivan, petrov);
 
         UserInfo userInfo = service.requestUserInfo();
 
