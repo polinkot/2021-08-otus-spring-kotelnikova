@@ -3,6 +3,7 @@ package ru.otus.pk.spring;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import ru.otus.pk.spring.exception.AppException;
+import ru.otus.pk.spring.exception.WrongFormatException;
 import ru.otus.pk.spring.service.InOutService;
 import ru.otus.pk.spring.service.QuizService;
 
@@ -22,8 +23,8 @@ public class QuizRunner implements CommandLineRunner {
     public void run(String... args) {
         try {
             service.startQuiz();
-        } catch (AppException ae) {
-            inOutService.println("\n" + ae.getMessage());
+        } catch (AppException | WrongFormatException e) {
+            inOutService.println("\n" + e.getMessage());
         }
     }
 }

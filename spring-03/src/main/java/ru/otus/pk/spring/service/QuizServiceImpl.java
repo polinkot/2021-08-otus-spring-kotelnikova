@@ -27,13 +27,16 @@ public class QuizServiceImpl implements QuizService {
 
     public void startQuiz() {
         try {
-            List<Question> questions = questionService.findAll();
-
             UserInfo userInfo = userService.requestUserInfo();
 
-            QuizResult quizResult = askQuestions(questions);
-            quizResult.setPassed(quizResult.getCount() >= quizConfig.getPassGrade());
-            resultService.print(userInfo, quizResult, questions.size());
+            List<Question> questions = questionService.findAll();
+
+            int correctCount = askQuestions(questions);
+
+            boolean isPassed = correctCount >= quizConfig.getPassGrade();
+            QuizResult quizResult = new QuizResult(userInfo, correctCount, questions.size(), isPassed);
+
+            resultService.print(quizResult);
         } catch (AppException ae) {
             ioService.println("\n" + ae.getMessage());
         }
@@ -43,11 +46,11 @@ public class QuizServiceImpl implements QuizService {
         return messageSourceAccessor.getMessage(key);
     }
 
-    private QuizResult askQuestions(List<Question> questions) {
-        QuizResult quizResult = new QuizResult();
+    private int askQuestions(List<Question> questions) {
+        int result = 0;
 
         ioService.println(getMessage(QUIZ_QUESTIONS));
-        questions.forEach(question -> {
+        for (Question question : questions) {
             ioService.println(questionViewService.asString(question));
 
             int correctAnswer = question.getCorrectAnswer()
@@ -56,10 +59,10 @@ public class QuizServiceImpl implements QuizService {
             int answer = ioService.readInt(getMessage(QUIZ_ENTER_INTEGER), getMessage(QUIZ_INCORRECT_FORMAT),
                     quizConfig.getAttemptsCount());
             if (answer == correctAnswer) {
-                quizResult.increaseCount();
+                result++;
             }
-        });
+        }
 
-        return quizResult;
+        return result;
     }
 }

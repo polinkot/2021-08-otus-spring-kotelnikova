@@ -20,13 +20,13 @@ class ResultServiceImplTest {
     @DisplayName("корректно печатает сообщение о пройденном тесте")
     @Test
     void shouldPrintSuccessCorrectly() {
+        UserInfo userInfo = new UserInfo();
+        int correctCount = 4;
         int totalCount = 5;
-        int correctAnswersCount = 4;
+        boolean passed = true;
         String message = "Congratulations! You have passed the test!";
 
-        QuizResult quizResult = new QuizResult();
-        quizResult.setCount(correctAnswersCount);
-        quizResult.setPassed(true);
+        QuizResult quizResult = new QuizResult(userInfo, correctCount, totalCount, passed);
 
         given(messageSourceAccessor.getMessage("quiz.success")).willReturn(message);
 
@@ -34,7 +34,7 @@ class ResultServiceImplTest {
         ResultServiceImpl service = new ResultServiceImpl(new InOutServiceStreams(System.in, new PrintStream(out), messageSourceAccessor),
                 messageSourceAccessor);
 
-        service.print(new UserInfo(), quizResult, totalCount);
+        service.print(quizResult);
 
         assertThat(out.toString()).contains(message);
     }
@@ -42,13 +42,13 @@ class ResultServiceImplTest {
     @DisplayName("корректно печатает сообщение о непройденном тесте")
     @Test
     void shouldPrintFailureCorrectly() {
+        UserInfo userInfo = new UserInfo();
+        int correctCount = 2;
         int totalCount = 5;
-        int correctAnswersCount = 2;
+        boolean passed = false;
         String message = "You haven't passed the test. Try again!";
 
-        QuizResult quizResult = new QuizResult();
-        quizResult.setCount(correctAnswersCount);
-        quizResult.setPassed(false);
+        QuizResult quizResult = new QuizResult(userInfo, correctCount, totalCount, passed);
 
         given(messageSourceAccessor.getMessage("quiz.failure")).willReturn(message);
 
@@ -56,7 +56,7 @@ class ResultServiceImplTest {
         ResultServiceImpl service = new ResultServiceImpl(new InOutServiceStreams(System.in, new PrintStream(out), messageSourceAccessor),
                 messageSourceAccessor);
 
-        service.print(new UserInfo(), quizResult, totalCount);
+        service.print(quizResult);
 
         assertThat(out.toString()).contains(message);
     }

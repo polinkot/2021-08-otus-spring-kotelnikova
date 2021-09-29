@@ -11,17 +11,15 @@ class QuizResultTest {
     @DisplayName("корректно создаётся конструктором")
     @Test
     void shouldHaveCorrectConstructor() {
-        QuizResult quizResult = new QuizResult();
+        UserInfo userInfo = new UserInfo();
+        int correctCount = 3;
+        int totalCount = 5;
+        boolean passed = false;
+        QuizResult quizResult = new QuizResult(userInfo, correctCount, totalCount, passed);
 
-        assertThat(quizResult).hasFieldOrPropertyWithValue("count", 0);
-    }
-
-    @DisplayName("корректно увеличивает количество")
-    @Test
-    void shouldSetCountCorrectly() {
-        QuizResult quizResult = new QuizResult();
-        quizResult.increaseCount();
-
-        assertThat(quizResult.getCount()).isEqualTo(1);
+        assertThat(quizResult).hasFieldOrPropertyWithValue("userInfo", userInfo);
+        assertThat(quizResult).hasFieldOrPropertyWithValue("correctCount", correctCount);
+        assertThat(quizResult).hasFieldOrPropertyWithValue("totalCount", totalCount);
+        assertThat(quizResult).hasFieldOrPropertyWithValue("passed", passed);
     }
 }

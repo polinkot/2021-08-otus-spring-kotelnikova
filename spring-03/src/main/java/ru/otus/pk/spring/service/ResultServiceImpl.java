@@ -15,9 +15,12 @@ public class ResultServiceImpl implements ResultService {
     private final InOutService ioService;
     private final MessageSourceAccessor messageSourceAccessor;
 
-    public void print(UserInfo userInfo, QuizResult quizResult, int totalCount) {
+    @Override
+    public void print(QuizResult quizResult) {
+        UserInfo userInfo = quizResult.getUserInfo();
         ioService.println("\n" + messageSourceAccessor.getMessage(QUIZ_RESULT,
-                new Object[]{userInfo.getFirstName(), userInfo.getLastName(), quizResult.getCount(), totalCount}));
+                new Object[]{userInfo.getFirstName(), userInfo.getLastName(),
+                        quizResult.getCorrectCount(), quizResult.getTotalCount()}));
         ioService.println(quizResult.isPassed()
                 ? getMessage(QUIZ_SUCCESS)
                 : getMessage(QUIZ_FAILURE));
