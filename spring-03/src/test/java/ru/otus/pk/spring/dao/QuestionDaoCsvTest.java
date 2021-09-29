@@ -21,7 +21,7 @@ class QuestionDaoCsvTest {
     @DisplayName("правильное количество вопросов")
     @Test
     void shouldReturnCorrectNumberOfQuestions() {
-        String csv = "/csv/questions.csv";
+        String csv = "/csv/questions-test.csv";
         given(csvSourceProvider.getCsvSource()).willReturn(csv);
 
         int expectedSize = 3;

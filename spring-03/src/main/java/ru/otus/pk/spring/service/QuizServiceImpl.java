@@ -3,15 +3,15 @@ package ru.otus.pk.spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
-import ru.otus.pk.spring.domain.CorrectAnswers;
+import ru.otus.pk.spring.config.QuizConfig;
 import ru.otus.pk.spring.domain.Question;
+import ru.otus.pk.spring.domain.QuizResult;
 import ru.otus.pk.spring.domain.UserInfo;
 import ru.otus.pk.spring.exception.AppException;
 
 import java.util.List;
 
-import static ru.otus.pk.spring.config.MessageSourceConfig.QUIZ_ERROR_NO_CORRECT_ANSWER;
-import static ru.otus.pk.spring.config.MessageSourceConfig.QUIZ_QUESTIONS;
+import static ru.otus.pk.spring.config.MessageSourceConfig.*;
 
 @RequiredArgsConstructor
 @Service
@@ -23,6 +23,7 @@ public class QuizServiceImpl implements QuizService {
     private final QuestionViewService questionViewService;
     private final ResultService resultService;
     private final MessageSourceAccessor messageSourceAccessor;
+    private final QuizConfig quizConfig;
 
     public void startQuiz() {
         try {
@@ -30,8 +31,9 @@ public class QuizServiceImpl implements QuizService {
 
             UserInfo userInfo = userService.requestUserInfo();
 
-            CorrectAnswers correctAnswers = askQuestions(questions);
-            resultService.print(userInfo, correctAnswers, questions.size());
+            QuizResult quizResult = askQuestions(questions);
+            quizResult.setPassed(quizResult.getCount() >= quizConfig.getPassGrade());
+            resultService.print(userInfo, quizResult, questions.size());
         } catch (AppException ae) {
             ioService.println("\n" + ae.getMessage());
         }
@@ -41,22 +43,23 @@ public class QuizServiceImpl implements QuizService {
         return messageSourceAccessor.getMessage(key);
     }
 
-    private CorrectAnswers askQuestions(List<Question> questions) {
-        CorrectAnswers correctAnswers = new CorrectAnswers();
+    private QuizResult askQuestions(List<Question> questions) {
+        QuizResult quizResult = new QuizResult();
 
         ioService.println(getMessage(QUIZ_QUESTIONS));
         questions.forEach(question -> {
             ioService.println(questionViewService.asString(question));
 
             int correctAnswer = question.getCorrectAnswer()
-                    .orElseThrow(() -> new AppException(getMessage(QUIZ_ERROR_NO_CORRECT_ANSWER) + this))
+                    .orElseThrow(() -> new AppException(getMessage(QUIZ_ERROR_NO_CORRECT_ANSWER) + question.getValue()))
                     .getNumber();
-            int answer = ioService.readInt();
+            int answer = ioService.readInt(getMessage(QUIZ_ENTER_INTEGER), getMessage(QUIZ_INCORRECT_FORMAT),
+                    quizConfig.getAttemptsCount());
             if (answer == correctAnswer) {
-                correctAnswers.increaseCount();
+                quizResult.increaseCount();
             }
         });
 
-        return correctAnswers;
+        return quizResult;
     }
 }

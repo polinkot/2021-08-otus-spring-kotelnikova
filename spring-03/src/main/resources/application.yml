@@ -3,6 +3,7 @@ quiz:
     en: /csv/questions_en.csv
     ru: /csv/questions_ru.csv
   passGrade: 4
+  attemptsCount: 2
 
 spring:
   messages:

@@ -20,12 +20,12 @@ public class UserServiceImpl implements UserService {
 
     private String requestFirstName() {
         ioService.println(getMessage(QUIZ_FIRSTNAME));
-        return ioService.nextLine();
+        return ioService.readLine();
     }
 
     private String requestLastName() {
         ioService.println(getMessage(QUIZ_LASTNAME));
-        return ioService.nextLine();
+        return ioService.readLine();
     }
 
     private String getMessage(String key) {

@@ -6,22 +6,22 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Класс CorrectAnswers")
-class CorrectAnswersTest {
+class QuizResultTest {
 
     @DisplayName("корректно создаётся конструктором")
     @Test
     void shouldHaveCorrectConstructor() {
-        CorrectAnswers correctAnswers = new CorrectAnswers();
+        QuizResult quizResult = new QuizResult();
 
-        assertThat(correctAnswers).hasFieldOrPropertyWithValue("count", 0);
+        assertThat(quizResult).hasFieldOrPropertyWithValue("count", 0);
     }
 
     @DisplayName("корректно увеличивает количество")
     @Test
     void shouldSetCountCorrectly() {
-        CorrectAnswers correctAnswers = new CorrectAnswers();
-        correctAnswers.increaseCount();
+        QuizResult quizResult = new QuizResult();
+        quizResult.increaseCount();
 
-        assertThat(correctAnswers.getCount()).isEqualTo(1);
+        assertThat(quizResult.getCount()).isEqualTo(1);
     }
 }

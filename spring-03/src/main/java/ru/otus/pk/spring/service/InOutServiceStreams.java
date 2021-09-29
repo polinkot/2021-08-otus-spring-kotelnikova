@@ -4,13 +4,13 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
-import ru.otus.pk.spring.exception.AppException;
+import ru.otus.pk.spring.exception.WrongFormatException;
 
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-import static ru.otus.pk.spring.config.MessageSourceConfig.*;
+import static ru.otus.pk.spring.config.MessageSourceConfig.QUIZ_ERROR_INCORRECT_FORMAT;
 
 @Getter
 @Service
@@ -31,25 +31,21 @@ public class InOutServiceStreams implements InOutService {
         out.println(line);
     }
 
-    public String nextLine() {
+    public String readLine() {
         return in.nextLine();
     }
 
-    public int readInt() {
-        for (int i = 0; i < 3; i++) {
-            println(getMessage(QUIZ_ENTER_INTEGER));
+    public int readInt(String prompt, String errMsg, int attemptsCount) {
+        for (int i = 0; i < attemptsCount; i++) {
+            println(prompt);
             if (in.hasNextInt()) {
                 return in.nextInt();
             }
 
-            nextLine();
-            println(getMessage(QUIZ_INCORRECT_FORMAT));
+            readLine();
+            println(errMsg);
         }
 
-        throw new AppException(getMessage(QUIZ_ERROR_INCORRECT_FORMAT));
-    }
-
-    private String getMessage(String key) {
-        return messageSourceAccessor.getMessage(key);
+        throw new WrongFormatException(messageSourceAccessor.getMessage(QUIZ_ERROR_INCORRECT_FORMAT));
     }
 }

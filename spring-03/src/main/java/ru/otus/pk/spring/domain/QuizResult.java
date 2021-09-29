@@ -4,10 +4,11 @@ import lombok.Data;
 
 @Data
 public
-class CorrectAnswers {
+class QuizResult {
     private int count;
+    private boolean passed;
 
     public void increaseCount() {
-        count++;
+        this.count++;
     }
 }

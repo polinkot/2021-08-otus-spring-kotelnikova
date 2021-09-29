@@ -15,4 +15,5 @@ public class QuizConfig {
 
     private Map<String, String> csvSources;
     private int passGrade;
+    private int attemptsCount;
 }

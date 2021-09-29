@@ -4,7 +4,7 @@ public interface InOutService {
 
     void println(String line);
 
-    String nextLine();
+    String readLine();
 
-    int readInt();
+    int readInt(String prompt, String errMsg, int attemptsCount);
 }

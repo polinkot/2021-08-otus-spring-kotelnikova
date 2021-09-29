@@ -3,8 +3,7 @@ package ru.otus.pk.spring.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
-import ru.otus.pk.spring.config.QuizConfig;
-import ru.otus.pk.spring.domain.CorrectAnswers;
+import ru.otus.pk.spring.domain.QuizResult;
 import ru.otus.pk.spring.domain.UserInfo;
 
 import static ru.otus.pk.spring.config.MessageSourceConfig.*;
@@ -14,13 +13,12 @@ import static ru.otus.pk.spring.config.MessageSourceConfig.*;
 public class ResultServiceImpl implements ResultService {
 
     private final InOutService ioService;
-    private final QuizConfig quizConfig;
     private final MessageSourceAccessor messageSourceAccessor;
 
-    public void print(UserInfo userInfo, CorrectAnswers correctAnswers, int totalCount) {
+    public void print(UserInfo userInfo, QuizResult quizResult, int totalCount) {
         ioService.println("\n" + messageSourceAccessor.getMessage(QUIZ_RESULT,
-                new Object[]{userInfo.getFirstName(), userInfo.getLastName(), correctAnswers.getCount(), totalCount}));
-        ioService.println(correctAnswers.getCount() >= quizConfig.getPassGrade()
+                new Object[]{userInfo.getFirstName(), userInfo.getLastName(), quizResult.getCount(), totalCount}));
+        ioService.println(quizResult.isPassed()
                 ? getMessage(QUIZ_SUCCESS)
                 : getMessage(QUIZ_FAILURE));
     }
