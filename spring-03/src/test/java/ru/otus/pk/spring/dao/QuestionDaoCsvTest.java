@@ -2,6 +2,9 @@ package ru.otus.pk.spring.dao;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.pk.spring.domain.Question;
 import ru.otus.pk.spring.service.CsvSourceProvider;
 
@@ -9,14 +12,16 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @DisplayName("Класс QuestionDaoCsv")
+@SpringBootTest(classes = QuestionDaoCsv.class)
 class QuestionDaoCsvTest {
 
-    private final CsvSourceProvider csvSourceProvider = mock(CsvSourceProvider.class);
+    @MockBean
+    private CsvSourceProvider csvSourceProvider;
 
-    private final QuestionDao dao = new QuestionDaoCsv(csvSourceProvider);
+    @Autowired
+    private QuestionDao dao;
 
     @DisplayName("правильное количество вопросов")
     @Test

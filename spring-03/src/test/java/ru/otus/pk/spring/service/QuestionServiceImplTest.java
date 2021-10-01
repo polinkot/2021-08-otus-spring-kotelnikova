@@ -2,6 +2,9 @@ package ru.otus.pk.spring.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.pk.spring.dao.QuestionDao;
 import ru.otus.pk.spring.domain.Question;
 
@@ -10,14 +13,16 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 @DisplayName("Класс QuestionServiceImpl")
+@SpringBootTest(classes = QuestionServiceImpl.class)
 class QuestionServiceImplTest {
 
-    private final QuestionDao dao = mock(QuestionDao.class);
+    @MockBean
+    private QuestionDao dao;
 
-    private final QuestionServiceImpl service = new QuestionServiceImpl(dao);
+    @Autowired
+    private QuestionServiceImpl service;
 
     @DisplayName("правильное количество вопросов")
     @Test
