@@ -31,13 +31,12 @@ class ResultServiceImplTest {
     @DisplayName("корректно печатает сообщение о пройденном тесте")
     @Test
     void shouldPrintSuccessCorrectly() {
-        UserInfo userInfo = new UserInfo();
         int correctCount = 4;
         int totalCount = 5;
         boolean passed = true;
         String message = "Congratulations! You have passed the test!";
 
-        QuizResult quizResult = new QuizResult(userInfo, correctCount, totalCount, passed);
+        QuizResult quizResult = new QuizResult(new UserInfo(), correctCount, totalCount, passed);
 
         given(messageSourceAccessor.getMessage("quiz.success")).willReturn(message);
 
@@ -49,13 +48,12 @@ class ResultServiceImplTest {
     @DisplayName("корректно печатает сообщение о непройденном тесте")
     @Test
     void shouldPrintFailureCorrectly() {
-        UserInfo userInfo = new UserInfo();
         int correctCount = 2;
         int totalCount = 5;
         boolean passed = false;
         String message = "You haven't passed the test. Try again!";
 
-        QuizResult quizResult = new QuizResult(userInfo, correctCount, totalCount, passed);
+        QuizResult quizResult = new QuizResult(new UserInfo(), correctCount, totalCount, passed);
 
         given(messageSourceAccessor.getMessage("quiz.failure")).willReturn(message);
 
