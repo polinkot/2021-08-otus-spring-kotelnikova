@@ -1,7 +1,6 @@
 package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
 import ru.otus.pk.spring.domain.QuizResult;
 import ru.otus.pk.spring.domain.UserInfo;
@@ -13,12 +12,12 @@ import static ru.otus.pk.spring.config.MessageSourceConfig.*;
 public class ResultServiceImpl implements ResultService {
 
     private final InOutService ioService;
-    private final MessageSourceAccessor messageSourceAccessor;
+    private final MessageService messageService;
 
     @Override
     public void print(QuizResult quizResult) {
         UserInfo userInfo = quizResult.getUserInfo();
-        ioService.println("\n" + messageSourceAccessor.getMessage(QUIZ_RESULT,
+        ioService.println("\n" + messageService.getMessage(QUIZ_RESULT,
                 new Object[]{userInfo.getFirstName(), userInfo.getLastName(),
                         quizResult.getCorrectCount(), quizResult.getTotalCount()}));
         ioService.println(quizResult.isPassed()
@@ -27,6 +26,6 @@ public class ResultServiceImpl implements ResultService {
     }
 
     private String getMessage(String key) {
-        return messageSourceAccessor.getMessage(key);
+        return messageService.getMessage(key);
     }
 }

@@ -1,7 +1,6 @@
 package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
 import ru.otus.pk.spring.config.QuizConfig;
 import ru.otus.pk.spring.domain.Question;
@@ -23,7 +22,7 @@ public class QuizServiceImpl implements QuizService {
     private final UserService userService;
     private final QuestionViewService questionViewService;
     private final ResultService resultService;
-    private final MessageSourceAccessor messageSourceAccessor;
+    private final MessageService messageService;
     private final QuizConfig quizConfig;
 
     public void startQuiz() {
@@ -44,7 +43,7 @@ public class QuizServiceImpl implements QuizService {
     }
 
     private String getMessage(String key) {
-        return messageSourceAccessor.getMessage(key);
+        return messageService.getMessage(key);
     }
 
     private int askQuestions(List<Question> questions) {

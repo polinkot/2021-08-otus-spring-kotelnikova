@@ -3,7 +3,6 @@ package ru.otus.pk.spring.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.context.support.MessageSourceAccessor;
 import ru.otus.pk.spring.domain.QuizResult;
 import ru.otus.pk.spring.domain.UserInfo;
 
@@ -16,7 +15,7 @@ import static org.mockito.Mockito.mock;
 
 @DisplayName("Класс ResultServiceImpl")
 class ResultServiceImplTest {
-    private final MessageSourceAccessor messageSourceAccessor = mock(MessageSourceAccessor.class);
+    private final MessageService messageService = mock(MessageService.class);
 
     private ByteArrayOutputStream out;
     private ResultServiceImpl service;
@@ -24,8 +23,7 @@ class ResultServiceImplTest {
     @BeforeEach
     void setUp() {
         this.out = new ByteArrayOutputStream(1024);
-        this.service = new ResultServiceImpl(new InOutServiceStreams(System.in, new PrintStream(out)),
-                messageSourceAccessor);
+        this.service = new ResultServiceImpl(new InOutServiceStreams(System.in, new PrintStream(out)), messageService);
     }
 
     @DisplayName("корректно печатает сообщение о пройденном тесте")
@@ -38,7 +36,7 @@ class ResultServiceImplTest {
 
         QuizResult quizResult = new QuizResult(new UserInfo(), correctCount, totalCount, passed);
 
-        given(messageSourceAccessor.getMessage("quiz.success")).willReturn(message);
+        given(messageService.getMessage("quiz.success")).willReturn(message);
 
         service.print(quizResult);
 
@@ -55,7 +53,7 @@ class ResultServiceImplTest {
 
         QuizResult quizResult = new QuizResult(new UserInfo(), correctCount, totalCount, passed);
 
-        given(messageSourceAccessor.getMessage("quiz.failure")).willReturn(message);
+        given(messageService.getMessage("quiz.failure")).willReturn(message);
 
         service.print(quizResult);
 

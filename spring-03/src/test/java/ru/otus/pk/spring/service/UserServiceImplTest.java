@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.support.MessageSourceAccessor;
 import ru.otus.pk.spring.domain.UserInfo;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -20,7 +19,7 @@ class UserServiceImplTest {
     private InOutService ioService;
 
     @MockBean
-    private MessageSourceAccessor messageSourceAccessor;
+    private MessageService messageService;
 
     @Autowired
     private UserServiceImpl service;

@@ -1,7 +1,6 @@
 package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.stereotype.Service;
 import ru.otus.pk.spring.domain.UserInfo;
 
@@ -12,7 +11,7 @@ import static ru.otus.pk.spring.config.MessageSourceConfig.QUIZ_LASTNAME;
 @Service
 public class UserServiceImpl implements UserService {
     private final InOutService ioService;
-    private final MessageSourceAccessor messageSourceAccessor;
+    private final MessageService messageService;
 
     public UserInfo requestUserInfo() {
         return new UserInfo(requestFirstName(), requestLastName());
@@ -29,6 +28,6 @@ public class UserServiceImpl implements UserService {
     }
 
     private String getMessage(String key) {
-        return messageSourceAccessor.getMessage(key);
+        return messageService.getMessage(key);
     }
 }
