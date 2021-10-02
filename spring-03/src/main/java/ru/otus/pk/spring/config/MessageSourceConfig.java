@@ -5,7 +5,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.MessageSourceAccessor;
-import ru.otus.pk.spring.domain.UserLocale;
 
 import java.util.Locale;
 
@@ -20,8 +19,6 @@ public class MessageSourceConfig {
     public static final String QUIZ_FAILURE = "quiz.failure";
     public static final String QUIZ_ENTER_INTEGER = "quiz.enter-integer";
     public static final String QUIZ_INCORRECT_FORMAT = "quiz.incorrect-format";
-    public static final String QUIZ_ERROR_INCORRECT_FORMAT = "quiz.error.incorrect-format";
-    public static final String QUIZ_ERROR_NO_CORRECT_ANSWER = "quiz.error.no-correct-answer";
 
     @Bean("userLocale")
     @ConditionalOnProperty(value = "lang", havingValue = "ru")

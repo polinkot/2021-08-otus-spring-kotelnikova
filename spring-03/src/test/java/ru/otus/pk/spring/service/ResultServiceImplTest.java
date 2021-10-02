@@ -24,7 +24,7 @@ class ResultServiceImplTest {
     @BeforeEach
     void setUp() {
         this.out = new ByteArrayOutputStream(1024);
-        this.service = new ResultServiceImpl(new InOutServiceStreams(System.in, new PrintStream(out), messageSourceAccessor),
+        this.service = new ResultServiceImpl(new InOutServiceStreams(System.in, new PrintStream(out)),
                 messageSourceAccessor);
     }
 

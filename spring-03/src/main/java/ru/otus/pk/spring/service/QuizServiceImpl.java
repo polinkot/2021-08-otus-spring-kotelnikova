@@ -11,6 +11,7 @@ import ru.otus.pk.spring.exception.AppException;
 
 import java.util.List;
 
+import static java.lang.String.format;
 import static ru.otus.pk.spring.config.MessageSourceConfig.*;
 
 @RequiredArgsConstructor
@@ -54,7 +55,7 @@ public class QuizServiceImpl implements QuizService {
             ioService.println(questionViewService.asString(question));
 
             int correctAnswer = question.getCorrectAnswer()
-                    .orElseThrow(() -> new AppException(getMessage(QUIZ_ERROR_NO_CORRECT_ANSWER) + question.getValue()))
+                    .orElseThrow(() -> new AppException(format("Error!!! No correct answer for question: %s", question.getValue())))
                     .getNumber();
             int answer = ioService.readInt(getMessage(QUIZ_ENTER_INTEGER), getMessage(QUIZ_INCORRECT_FORMAT),
                     quizConfig.getAttemptsCount());
