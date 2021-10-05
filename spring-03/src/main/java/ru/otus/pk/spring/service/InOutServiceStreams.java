@@ -7,6 +7,7 @@ import ru.otus.pk.spring.exception.WrongFormatException;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 @Getter
@@ -32,12 +33,13 @@ public class InOutServiceStreams implements InOutService {
     public int readInt(String prompt, String errMsg, int attemptsCount) {
         for (int i = 0; i < attemptsCount; i++) {
             println(prompt);
-            if (in.hasNextInt()) {
-                return in.nextInt();
-            }
 
-            readLine();
-            println(errMsg);
+            try {
+                return in.nextInt();
+            } catch (InputMismatchException e) {
+                readLine();
+                println(errMsg);
+            }
         }
 
         throw new WrongFormatException("Error!!! Incorrect format. Not an integer.");

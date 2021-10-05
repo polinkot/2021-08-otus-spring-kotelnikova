@@ -11,21 +11,16 @@ import static ru.otus.pk.spring.config.MessageSourceConfig.*;
 @Service
 public class ResultServiceImpl implements ResultService {
 
-    private final InOutService ioService;
-    private final MessageService messageService;
+    private final MessageFacade messageFacade;
 
     @Override
     public void print(QuizResult quizResult) {
         UserInfo userInfo = quizResult.getUserInfo();
-        ioService.println("\n" + messageService.getMessage(QUIZ_RESULT,
-                new Object[]{userInfo.getFirstName(), userInfo.getLastName(),
-                        quizResult.getCorrectCount(), quizResult.getTotalCount()}));
-        ioService.println(quizResult.isPassed()
-                ? getMessage(QUIZ_SUCCESS)
-                : getMessage(QUIZ_FAILURE));
-    }
 
-    private String getMessage(String key) {
-        return messageService.getMessage(key);
+        messageFacade.printlnLocalized(QUIZ_RESULT,
+                new Object[]{userInfo.getFirstName(), userInfo.getLastName(),
+                        quizResult.getCorrectCount(), quizResult.getTotalCount()});
+
+        messageFacade.printlnLocalized(quizResult.isPassed() ? QUIZ_SUCCESS : QUIZ_FAILURE);
     }
 }

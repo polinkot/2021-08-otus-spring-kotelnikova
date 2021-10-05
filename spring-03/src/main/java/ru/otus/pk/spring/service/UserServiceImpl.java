@@ -10,24 +10,19 @@ import static ru.otus.pk.spring.config.MessageSourceConfig.QUIZ_LASTNAME;
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
-    private final InOutService ioService;
-    private final MessageService messageService;
+    private final MessageFacade messageFacade;
 
     public UserInfo requestUserInfo() {
         return new UserInfo(requestFirstName(), requestLastName());
     }
 
     private String requestFirstName() {
-        ioService.println(getMessage(QUIZ_FIRSTNAME));
-        return ioService.readLine();
+        messageFacade.printlnLocalized(QUIZ_FIRSTNAME);
+        return messageFacade.readLine();
     }
 
     private String requestLastName() {
-        ioService.println(getMessage(QUIZ_LASTNAME));
-        return ioService.readLine();
-    }
-
-    private String getMessage(String key) {
-        return messageService.getMessage(key);
+        messageFacade.printlnLocalized(QUIZ_LASTNAME);
+        return messageFacade.readLine();
     }
 }

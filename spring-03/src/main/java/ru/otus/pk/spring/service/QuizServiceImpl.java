@@ -18,11 +18,10 @@ import static ru.otus.pk.spring.config.MessageSourceConfig.*;
 public class QuizServiceImpl implements QuizService {
 
     private final QuestionService questionService;
-    private final InOutService ioService;
     private final UserService userService;
     private final QuestionViewService questionViewService;
     private final ResultService resultService;
-    private final MessageService messageService;
+    private final MessageFacade messageFacade;
     private final QuizConfig quizConfig;
 
     public void startQuiz() {
@@ -38,26 +37,21 @@ public class QuizServiceImpl implements QuizService {
 
             resultService.print(quizResult);
         } catch (AppException ae) {
-            ioService.println("\n" + ae.getMessage());
+            messageFacade.println("\n" + ae.getMessage());
         }
-    }
-
-    private String getMessage(String key) {
-        return messageService.getMessage(key);
     }
 
     private int askQuestions(List<Question> questions) {
         int result = 0;
 
-        ioService.println(getMessage(QUIZ_QUESTIONS));
+        messageFacade.printlnLocalized(QUIZ_QUESTIONS);
         for (Question question : questions) {
-            ioService.println(questionViewService.asString(question));
+            messageFacade.println(questionViewService.asString(question));
 
             int correctAnswer = question.getCorrectAnswer()
                     .orElseThrow(() -> new AppException(format("Error!!! No correct answer for question: %s", question.getValue())))
                     .getNumber();
-            int answer = ioService.readInt(getMessage(QUIZ_ENTER_INTEGER), getMessage(QUIZ_INCORRECT_FORMAT),
-                    quizConfig.getAttemptsCount());
+            int answer = messageFacade.readIntLocalized(QUIZ_ENTER_INTEGER, QUIZ_INCORRECT_FORMAT, quizConfig.getAttemptsCount());
             if (answer == correctAnswer) {
                 result++;
             }
