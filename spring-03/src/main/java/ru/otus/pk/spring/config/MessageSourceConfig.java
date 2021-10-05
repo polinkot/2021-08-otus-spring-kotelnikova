@@ -1,6 +1,6 @@
 package ru.otus.pk.spring.config;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,15 +18,10 @@ public class MessageSourceConfig {
     public static final String QUIZ_ENTER_INTEGER = "quiz.enter-integer";
     public static final String QUIZ_INCORRECT_FORMAT = "quiz.incorrect-format";
 
-    @Bean("userLocale")
-    @ConditionalOnProperty(value = "lang", havingValue = "ru")
-    public UserLocale getUserLocaleRu() {
-        return new UserLocale(Locale.forLanguageTag("ru-RU"));
-    }
+    public static final String DEFAULT_LANG = "en-US";
 
-    @Bean("userLocale")
-    @ConditionalOnProperty(value = "lang", havingValue = "en", matchIfMissing = true)
-    public UserLocale getUserLocaleEn() {
-        return new UserLocale(Locale.US);
+    @Bean
+    public UserLocale getUserLocale(@Value("${user.lang:" + DEFAULT_LANG + "}") String languageTag) {
+        return new UserLocale(Locale.forLanguageTag(languageTag));
     }
 }
