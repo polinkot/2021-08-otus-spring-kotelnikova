@@ -24,8 +24,8 @@ class ResultServiceImplTest {
     void setUp() {
         this.out = new ByteArrayOutputStream(1024);
         InOutServiceStreams inOutService = new InOutServiceStreams(System.in, new PrintStream(out));
-        MessageFacade messageFacade = new MessageFacadeImpl(inOutService, messageService);
-        this.service = new ResultServiceImpl(messageFacade);
+        LocalizedIOService localizedIOService = new LocalizedIOServiceImpl(inOutService, messageService);
+        this.service = new ResultServiceImpl(localizedIOService);
     }
 
     @DisplayName("корректно печатает сообщение о пройденном тесте")

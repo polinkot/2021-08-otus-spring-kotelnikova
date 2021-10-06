@@ -15,7 +15,7 @@ public class MessageServiceImpl implements MessageService {
         return messageSource.getMessage(key, new Object[]{}, userLocale.getLocale());
     }
 
-    public String getMessage(String key, Object[] objects) {
+    public String getMessage(String key, Object... objects) {
         return messageSource.getMessage(key, objects, userLocale.getLocale());
     }
 }

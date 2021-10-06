@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class MessageFacadeImpl implements MessageFacade {
+public class LocalizedIOServiceImpl implements LocalizedIOService {
     private final InOutService inOutService;
     private final MessageService messageService;
 
@@ -30,7 +30,7 @@ public class MessageFacadeImpl implements MessageFacade {
     }
 
     @Override
-    public String getMessage(String key, Object[] objects) {
+    public String getMessage(String key, Object... objects) {
         return messageService.getMessage(key, objects);
     }
 
@@ -40,7 +40,7 @@ public class MessageFacadeImpl implements MessageFacade {
     }
 
     @Override
-    public void printlnLocalized(String key, Object[] objects) {
+    public void printlnLocalized(String key, Object... objects) {
         inOutService.println(messageService.getMessage(key, objects));
     }
 

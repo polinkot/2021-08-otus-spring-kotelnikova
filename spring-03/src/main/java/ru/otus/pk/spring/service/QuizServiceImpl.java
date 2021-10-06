@@ -21,7 +21,7 @@ public class QuizServiceImpl implements QuizService {
     private final UserService userService;
     private final QuestionViewService questionViewService;
     private final ResultService resultService;
-    private final MessageFacade messageFacade;
+    private final LocalizedIOService localizedIOService;
     private final QuizConfig quizConfig;
 
     public void startQuiz() {
@@ -37,21 +37,21 @@ public class QuizServiceImpl implements QuizService {
 
             resultService.print(quizResult);
         } catch (AppException ae) {
-            messageFacade.println("\n" + ae.getMessage());
+            localizedIOService.println("\n" + ae.getMessage());
         }
     }
 
     private int askQuestions(List<Question> questions) {
         int result = 0;
 
-        messageFacade.printlnLocalized(QUIZ_QUESTIONS);
+        localizedIOService.printlnLocalized(QUIZ_QUESTIONS);
         for (Question question : questions) {
-            messageFacade.println(questionViewService.asString(question));
+            localizedIOService.println(questionViewService.asString(question));
 
             int correctAnswer = question.getCorrectAnswer()
                     .orElseThrow(() -> new AppException(format("Error!!! No correct answer for question: %s", question.getValue())))
                     .getNumber();
-            int answer = messageFacade.readIntLocalized(QUIZ_ENTER_INTEGER, QUIZ_INCORRECT_FORMAT, quizConfig.getAttemptsCount());
+            int answer = localizedIOService.readIntLocalized(QUIZ_ENTER_INTEGER, QUIZ_INCORRECT_FORMAT, quizConfig.getAttemptsCount());
             if (answer == correctAnswer) {
                 result++;
             }

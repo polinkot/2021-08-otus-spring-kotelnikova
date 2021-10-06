@@ -16,7 +16,7 @@ import static org.mockito.BDDMockito.given;
 class UserServiceImplTest {
 
     @MockBean
-    private MessageFacade messageFacade;
+    private LocalizedIOService localizedIOService;
 
     @Autowired
     private UserServiceImpl service;
@@ -27,7 +27,7 @@ class UserServiceImplTest {
         String ivan = "Ivan";
         String petrov = "Petrov";
 
-        given(messageFacade.readLine()).willReturn(ivan, petrov);
+        given(localizedIOService.readLine()).willReturn(ivan, petrov);
 
         UserInfo userInfo = service.requestUserInfo();
 

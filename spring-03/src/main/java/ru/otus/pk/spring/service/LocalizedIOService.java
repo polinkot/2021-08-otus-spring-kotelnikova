@@ -1,6 +1,6 @@
 package ru.otus.pk.spring.service;
 
-public interface MessageFacade {
+public interface LocalizedIOService {
 
     void println(String line);
 
@@ -10,11 +10,11 @@ public interface MessageFacade {
 
     String getMessage(String key);
 
-    String getMessage(String key, Object[] objects);
+    String getMessage(String key, Object... objects);
 
     void printlnLocalized(String key);
 
-    void printlnLocalized(String key,Object[] objects);
+    void printlnLocalized(String key, Object... objects);
 
     int readIntLocalized(String prompt, String errMsg, int attemptsCount);
 }
