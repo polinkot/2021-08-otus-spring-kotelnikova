@@ -6,6 +6,7 @@
  * Введение в Spring Framework - spring-01
  * Конфигурирование Spring-приложений - spring-02
  * "Чёрная магия" Spring Boot - spring-03
+ * Продвинутая конфигурация Spring-приложений - spring-04
 
 
 📚Домашние задания разработаны для курса ["Разработчик на Spring Framework"](https://otus.ru/lessons/javaspring/?int_source=courses_catalog&int_term=programming)
