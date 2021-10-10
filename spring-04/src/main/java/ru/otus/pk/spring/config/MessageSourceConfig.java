@@ -17,6 +17,10 @@ public class MessageSourceConfig {
     public static final String QUIZ_FAILURE = "quiz.failure";
     public static final String QUIZ_ENTER_INTEGER = "quiz.enter-integer";
     public static final String QUIZ_INCORRECT_FORMAT = "quiz.incorrect-format";
+    public static final String SHELL_FIRST_LOGIN = "shell.first-login";
+    public static final String SHELL_WELCOME = "shell.welcome";
+    public static final String SHELL_LOCALE_CHANGED = "shell.locale-changed";
+    public static final String SHELL_QUIZ_COMPLETE = "shell.quiz-complete";
 
     public static final String DEFAULT_LANG = "en-US";
 
