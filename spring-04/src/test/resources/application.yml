@@ -1,0 +1,13 @@
+quiz:
+  csvSources:
+    en: /csv/questions-test.csv
+  passGrade: 3
+  attemptsCount: 3
+
+spring:
+  messages:
+    basename: i18n/messages
+    fallback-to-system-locale: false
+  shell:
+    interactive:
+      enabled: false
