@@ -2,8 +2,13 @@ package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.otus.pk.spring.dao.AuthorDao;
 import ru.otus.pk.spring.dao.BookDao;
+import ru.otus.pk.spring.dao.GenreDao;
+import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
+import ru.otus.pk.spring.domain.Genre;
+import ru.otus.pk.spring.dto.BookDto;
 import ru.otus.pk.spring.exception.LibraryException;
 
 import java.util.List;
@@ -16,6 +21,8 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 public class BookServiceImpl implements BookService {
 
     private final BookDao dao;
+    private final AuthorDao authorDao;
+    private final GenreDao genreDao;
 
     @Override
     public List<Book> getAll() {
@@ -30,6 +37,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book getById(Long id) {
         return dao.getById(id);
+    }
+
+    @Override
+    public Book getByIdComplete(Long id) {
+        Book book = dao.getById(id);
+        Author author = authorDao.getById(book.getAuthorId());
+        Genre genre = genreDao.getById(book.getGenreId());
+
+        return new BookDto(book, author, genre);
     }
 
     @Override

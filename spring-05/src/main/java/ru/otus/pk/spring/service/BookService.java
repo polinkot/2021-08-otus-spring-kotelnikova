@@ -12,6 +12,8 @@ public interface BookService {
 
     Book getById(Long id);
 
+    Book getByIdComplete(Long id);
+
     Number insert(String name, Long authorId, Long genreId);
 
     int update(Long id, String name, Long authorId, Long genreId);

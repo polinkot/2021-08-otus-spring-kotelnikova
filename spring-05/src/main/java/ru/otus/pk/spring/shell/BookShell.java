@@ -9,6 +9,8 @@ import ru.otus.pk.spring.service.BookService;
 
 import java.util.List;
 
+import static java.lang.Boolean.parseBoolean;
+
 //import ru.otus.pk.spring.config.UserLocale;
 //import ru.otus.pk.spring.service.LocalizedIOService;
 //
@@ -35,8 +37,8 @@ public class BookShell {
     }
 
     @ShellMethod(value = "Get Book by id", key = {"bid", "book-id"})
-    public Book getById(@ShellOption Long id) {
-        return service.getById(id);
+    public Book getById(@ShellOption Long id, @ShellOption(defaultValue = "false") String complete) {
+        return parseBoolean(complete) ? service.getByIdComplete(id) : service.getById(id);
     }
 
     @ShellMethod(value = "Insert Book", key = {"bins", "book-insert"})
