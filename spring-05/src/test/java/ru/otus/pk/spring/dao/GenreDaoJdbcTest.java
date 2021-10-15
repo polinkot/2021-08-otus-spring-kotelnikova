@@ -15,6 +15,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Import(GenreDaoJdbc.class)
 class GenreDaoJdbcTest {
 
+    public static final Long EXISTING_GENRE_ID = 1L;
+    public static final String EXISTING_GENRE_NAME = "Fantasy";
+
     @Autowired
     private GenreDaoJdbc dao;
 
@@ -40,8 +43,12 @@ class GenreDaoJdbcTest {
     void getAll() {
     }
 
+    @DisplayName("возвращать ожидаемый жанр по его id")
     @Test
-    void getById() {
+    void shouldReturnExpectedGenreById() {
+        Genre expectedGenre = new Genre(EXISTING_GENRE_ID, EXISTING_GENRE_NAME);
+        Genre actualGenre = dao.getById(expectedGenre.getId());
+        assertThat(actualGenre).usingRecursiveComparison().isEqualTo(expectedGenre);
     }
 
     @Test
