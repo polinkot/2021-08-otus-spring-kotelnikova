@@ -6,8 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.EmptyResultDataAccessException;
 import ru.otus.pk.spring.domain.Genre;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("Dao для работы с жанрами должно")
@@ -35,12 +40,19 @@ class GenreDaoJdbcTest {
     void shouldInsertGenre() {
         Genre expectedGenre = new Genre(2L, "Sci-fi");
         dao.insert(expectedGenre);
-        Genre actualPerson = dao.getById(expectedGenre.getId());
-        Assertions.assertThat(actualPerson).usingRecursiveComparison().isEqualTo(expectedGenre);
+        Genre actualGenre = dao.getById(expectedGenre.getId());
+        Assertions.assertThat(actualGenre).usingRecursiveComparison().isEqualTo(expectedGenre);
     }
 
+
+    @DisplayName("возвращать ожидаемый список жанров")
     @Test
-    void getAll() {
+    void shouldReturnExpectedGenresList() {
+        Genre expectedGenre = new Genre(EXISTING_GENRE_ID, EXISTING_GENRE_NAME);
+        List<Genre> actualGenreList = dao.getAll();
+        Assertions.assertThat(actualGenreList)
+                .usingFieldByFieldElementComparator()
+                .containsExactlyInAnyOrder(expectedGenre);
     }
 
     @DisplayName("возвращать ожидаемый жанр по его id")
@@ -52,14 +64,17 @@ class GenreDaoJdbcTest {
     }
 
     @Test
-    void insert() {
-    }
-
-    @Test
     void update() {
     }
 
+
+    @DisplayName("удалять заданный жанр по его id")
     @Test
-    void deleteById() {
+    void shouldCorrectyDeleteGenreById() {
+        assertThatCode(() -> dao.getById(EXISTING_GENRE_ID)).doesNotThrowAnyException();
+
+        dao.deleteById(EXISTING_GENRE_ID);
+
+        assertThatThrownBy(() -> dao.getById(EXISTING_GENRE_ID)).isInstanceOf(EmptyResultDataAccessException.class);
     }
 }
