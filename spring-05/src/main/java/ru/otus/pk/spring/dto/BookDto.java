@@ -9,7 +9,8 @@ import ru.otus.pk.spring.domain.Genre;
 @RequiredArgsConstructor
 @Data
 public class BookDto extends Book {
-    private final Book book;
+    private final Long id;
+    private final String name;
     private final Author author;
     private final Genre genre;
 }

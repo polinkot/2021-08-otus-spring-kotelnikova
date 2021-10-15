@@ -11,6 +11,7 @@ import ru.otus.pk.spring.domain.Genre;
 import ru.otus.pk.spring.dto.BookDto;
 import ru.otus.pk.spring.exception.LibraryException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Optional.ofNullable;
@@ -39,13 +40,26 @@ public class BookServiceImpl implements BookService {
         return dao.getById(id);
     }
 
+//    Вопрос - думала как получить собранную модель книги (с авторами и жанрами) с помощью jdbc.
+//    В таком варианте как-то не очень. Много запросов к бд. Хотя можно поторяющихся авторов складывать в Map
+//    и в следующий раз не вытаскивать. Но всё равно по одному их вытаскиваем.
+//    Или собрать сначала айдишки авторов и одним запросом вытащить всех, а потом по моделям распределить?
+//    Но это тоже как-то очень громоздко.
+//    Второй вариант был - сделать отдельные запросы с джойнами. Но это совсем плохо - получится
+//   на каждую  выборку нужен отдельный запрос.
+//    Как лучше делать? Ведь такая задача очень частая. JPA сам вытаскивает ассоциации. А как делать в JDBC?
     @Override
-    public Book getByIdComplete(Long id) {
-        Book book = dao.getById(id);
-        Author author = authorDao.getById(book.getAuthorId());
-        Genre genre = genreDao.getById(book.getGenreId());
+    public List<Book> getWholeBooks(List<Book> books) {
+        List<Book> result = new ArrayList<>();
 
-        return new BookDto(book, author, genre);
+        books.forEach(book -> {
+            Author author = authorDao.getById(book.getAuthorId());
+            Genre genre = genreDao.getById(book.getGenreId());
+
+            result.add(new BookDto(book.getId(), book.getName(), author, genre));
+        });
+
+        return result;
     }
 
     @Override

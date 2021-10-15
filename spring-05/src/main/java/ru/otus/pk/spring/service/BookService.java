@@ -12,7 +12,7 @@ public interface BookService {
 
     Book getById(Long id);
 
-    Book getByIdComplete(Long id);
+    List<Book> getWholeBooks(List<Book> books);
 
     Number insert(String name, Long authorId, Long genreId);
 

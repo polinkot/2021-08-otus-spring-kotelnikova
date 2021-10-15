@@ -9,8 +9,6 @@ import ru.otus.pk.spring.service.BookService;
 
 import java.util.List;
 
-import static java.lang.Boolean.parseBoolean;
-
 //import ru.otus.pk.spring.config.UserLocale;
 //import ru.otus.pk.spring.service.LocalizedIOService;
 //
@@ -19,6 +17,8 @@ import static java.lang.Boolean.parseBoolean;
 @ShellComponent
 @RequiredArgsConstructor
 public class BookShell {
+
+    public static final String WHOLE = "whole";
 
     //    private final UserLocale userLocale;
 //    private final LocalizedIOService localizedIOService;
@@ -32,13 +32,23 @@ public class BookShell {
     }
 
     @ShellMethod(value = "Get all Books", key = {"ball", "book-all"})
-    public List<Book> getAll() {
-        return service.getAll();
+    public List<Book> getAll(@ShellOption(defaultValue = "") String whole) {
+        List<Book> books = service.getAll();
+        if (!whole.equalsIgnoreCase(WHOLE)) {
+            return books;
+        }
+
+        return service.getWholeBooks(books);
     }
 
     @ShellMethod(value = "Get Book by id", key = {"bid", "book-id"})
-    public Book getById(@ShellOption Long id, @ShellOption(defaultValue = "false") String complete) {
-        return parseBoolean(complete) ? service.getByIdComplete(id) : service.getById(id);
+    public Book getById(@ShellOption Long id, @ShellOption(defaultValue = "") String whole) {
+        Book book = service.getById(id);
+        if (!whole.equalsIgnoreCase(WHOLE)) {
+            return book;
+        }
+
+        return service.getWholeBooks(List.of(book)).get(0);
     }
 
     @ShellMethod(value = "Insert Book", key = {"bins", "book-insert"})
