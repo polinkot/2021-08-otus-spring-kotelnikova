@@ -12,7 +12,7 @@ public interface AuthorService {
 
     Author getById(Long id);
 
-    Number insert(String firstName, String lastName);
+    Long insert(String firstName, String lastName);
 
     int update(Long id, String firstName, String lastName);
 

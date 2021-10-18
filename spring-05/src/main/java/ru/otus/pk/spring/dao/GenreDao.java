@@ -12,7 +12,7 @@ public interface GenreDao {
 
     Genre getById(Long id);
 
-    Number insert(Genre genre);
+    Long insert(Genre genre);
 
     int update(Genre genre);
 

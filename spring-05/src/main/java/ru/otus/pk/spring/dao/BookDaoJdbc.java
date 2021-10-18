@@ -41,14 +41,14 @@ public class BookDaoJdbc implements BookDao {
     }
 
     @Override
-    public Number insert(Book book) {
+    public Long insert(Book book) {
         SqlParameterSource params = new MapSqlParameterSource(Map.of(
                 "name", book.getName(), "authorId", book.getAuthorId(), "genreId", book.getGenreId()));
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update("insert into book (`name`, author_id, genre_id) values (:name, :authorId, :genreId)",
                 params, keyHolder);
 
-        return keyHolder.getKey();
+        return keyHolder.getKey().longValue();
     }
 
     @Override

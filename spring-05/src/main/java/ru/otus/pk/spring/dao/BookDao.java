@@ -12,7 +12,7 @@ public interface BookDao {
 
     Book getById(Long id);
 
-    Number insert(Book book);
+    Long insert(Book book);
 
     int update(Book book);
 

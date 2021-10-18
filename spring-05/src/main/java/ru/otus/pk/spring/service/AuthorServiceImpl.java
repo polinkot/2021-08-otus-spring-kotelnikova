@@ -33,7 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public Number insert(String firstName, String lastName) {
+    public Long insert(String firstName, String lastName) {
         Author author = new Author(null, firstName, lastName);
         validate(author);
         return dao.insert(author);

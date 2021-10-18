@@ -41,12 +41,12 @@ public class GenreDaoJdbc implements GenreDao {
     }
 
     @Override
-    public Number insert(Genre genre) {
+    public Long insert(Genre genre) {
         SqlParameterSource params = new MapSqlParameterSource(Map.of("name", genre.getName()));
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update("insert into genre (name) values (:name)", params, keyHolder);
 
-        return keyHolder.getKey();
+        return keyHolder.getKey().longValue();
     }
 
     @Override

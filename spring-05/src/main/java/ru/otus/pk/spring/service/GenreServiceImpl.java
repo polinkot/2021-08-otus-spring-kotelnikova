@@ -33,7 +33,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public Number insert(String name) {
+    public Long insert(String name) {
         Genre genre = new Genre(null, name);
         validate(genre);
         return dao.insert(genre);

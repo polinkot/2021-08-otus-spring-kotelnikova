@@ -22,6 +22,8 @@ class GenreDaoJdbcTest {
 
     public static final Long EXISTING_GENRE_ID = 1L;
     public static final String EXISTING_GENRE_NAME = "Fantasy";
+    public static final Long DELETABLE_GENRE_ID = 2L;
+    public static final String DELETABLE_GENRE_NAME = "Deletable";
 
     @Autowired
     private GenreDaoJdbc dao;
@@ -29,7 +31,7 @@ class GenreDaoJdbcTest {
     @DisplayName("возвращать ожидаемое количество жанров в БД")
     @Test
     void shouldReturnExpectedGenreCount() {
-        int expectedCount = 1;
+        int expectedCount = 2;
 
         int actualCount = dao.count();
         assertThat(actualCount).isEqualTo(expectedCount);
@@ -38,21 +40,22 @@ class GenreDaoJdbcTest {
     @DisplayName("добавлять жанр в БД")
     @Test
     void shouldInsertGenre() {
-        Genre expectedGenre = new Genre(2L, "Sci-fi");
-        dao.insert(expectedGenre);
-        Genre actualGenre = dao.getById(expectedGenre.getId());
-        Assertions.assertThat(actualGenre).usingRecursiveComparison().isEqualTo(expectedGenre);
-    }
+        Genre genre = new Genre(null, "Sci-fi");
+        Long id = dao.insert(genre);
 
+        Genre actualGenre = dao.getById(id);
+        assertThat(actualGenre.getName()).isEqualTo(genre.getName());
+    }
 
     @DisplayName("возвращать ожидаемый список жанров")
     @Test
     void shouldReturnExpectedGenresList() {
-        Genre expectedGenre = new Genre(EXISTING_GENRE_ID, EXISTING_GENRE_NAME);
+        Genre expectedGenre1 = new Genre(EXISTING_GENRE_ID, EXISTING_GENRE_NAME);
+        Genre expectedGenre2 = new Genre(DELETABLE_GENRE_ID, DELETABLE_GENRE_NAME);
         List<Genre> actualGenreList = dao.getAll();
         Assertions.assertThat(actualGenreList)
                 .usingFieldByFieldElementComparator()
-                .containsExactlyInAnyOrder(expectedGenre);
+                .containsExactlyInAnyOrder(expectedGenre1, expectedGenre2);
     }
 
     @DisplayName("возвращать ожидаемый жанр по его id")
@@ -63,18 +66,22 @@ class GenreDaoJdbcTest {
         assertThat(actualGenre).usingRecursiveComparison().isEqualTo(expectedGenre);
     }
 
+    @DisplayName("редактировать жанр в БД")
     @Test
-    void update() {
+    void shouldUpdateGenre() {
+        Genre expectedGenre = new Genre(EXISTING_GENRE_ID, "Novel");
+        dao.update(expectedGenre);
+        Genre actualGenre = dao.getById(expectedGenre.getId());
+        assertThat(actualGenre).usingRecursiveComparison().isEqualTo(expectedGenre);
     }
-
 
     @DisplayName("удалять заданный жанр по его id")
     @Test
     void shouldCorrectyDeleteGenreById() {
-        assertThatCode(() -> dao.getById(EXISTING_GENRE_ID)).doesNotThrowAnyException();
+        assertThatCode(() -> dao.getById(DELETABLE_GENRE_ID)).doesNotThrowAnyException();
 
-        dao.deleteById(EXISTING_GENRE_ID);
+        dao.deleteById(DELETABLE_GENRE_ID);
 
-        assertThatThrownBy(() -> dao.getById(EXISTING_GENRE_ID)).isInstanceOf(EmptyResultDataAccessException.class);
+        assertThatThrownBy(() -> dao.getById(DELETABLE_GENRE_ID)).isInstanceOf(EmptyResultDataAccessException.class);
     }
 }

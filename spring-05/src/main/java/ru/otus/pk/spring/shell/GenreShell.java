@@ -9,20 +9,11 @@ import ru.otus.pk.spring.service.GenreService;
 
 import java.util.List;
 
-//import ru.otus.pk.spring.config.UserLocale;
-//import ru.otus.pk.spring.service.LocalizedIOService;
-//
-//import static ru.otus.pk.spring.config.MessageSourceConfig.*;
-
 @ShellComponent
 @RequiredArgsConstructor
 public class GenreShell {
 
-    //    private final UserLocale userLocale;
-//    private final LocalizedIOService localizedIOService;
     private final GenreService service;
-
-    private String userName;
 
     @ShellMethod(value = "Get Genres count", key = {"gcnt", "genre-count"})
     public int count() {
@@ -41,9 +32,9 @@ public class GenreShell {
 
     @ShellMethod(value = "Insert Genre", key = {"gins", "genre-insert"})
     public String insert(@ShellOption String name) {
-        Number result = service.insert(name);
+        Long id = service.insert(name);
 
-        return result.intValue() > 0 ? "Запись успешно добавлена" : "Не удалось добавить запись";
+        return id > 0 ? "Запись успешно добавлена" : "Не удалось добавить запись";
     }
 
     @ShellMethod(value = "Update Genre", key = {"gupd", "genre-update"})
@@ -59,28 +50,4 @@ public class GenreShell {
 
         return result == 1 ? "Запись успешно удалена" : "Не удалось удалить запись";
     }
-//    @ShellMethod(value = "Login command", key = {"l", "login"})
-//    public String login(@ShellOption(defaultValue = "AnyUser") String userName) {
-//        this.userName = userName;
-//        return localizedIOService.getMessage(SHELL_WELCOME, userName);
-//    }
-//
-//    @ShellMethod(value = "Start quiz", key = {"s", "start"})
-//    @ShellMethodAvailability(value = "isQuizAvailable")
-//    public String startQuiz() {
-//        quizService.startQuiz();
-//        return localizedIOService.getMessage(SHELL_QUIZ_COMPLETE);
-//    }
-//
-//    @ShellMethod(value = "Set Locale", key = {"sl", "set-locale"})
-//    @ShellMethodAvailability(value = "isQuizAvailable")
-//    public String setLocale(@ShellOption(defaultValue = DEFAULT_LANG) String languageTag) {
-//        Locale locale = Locale.forLanguageTag(languageTag);
-//        userLocale.setLocale(locale);
-//        return localizedIOService.getMessage(SHELL_LOCALE_CHANGED, locale.getDisplayLanguage());
-//    }
-//
-//    private Availability isQuizAvailable() {
-//        return userName == null ? unavailable(localizedIOService.getMessage(SHELL_FIRST_LOGIN)) : available();
-//    }
 }

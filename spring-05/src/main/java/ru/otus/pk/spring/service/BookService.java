@@ -14,7 +14,7 @@ public interface BookService {
 
     List<Book> getWholeBooks(List<Book> books);
 
-    Number insert(String name, Long authorId, Long genreId);
+    Long insert(String name, Long authorId, Long genreId);
 
     int update(Long id, String name, Long authorId, Long genreId);
 

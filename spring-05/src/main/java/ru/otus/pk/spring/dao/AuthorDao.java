@@ -12,7 +12,7 @@ public interface AuthorDao {
 
     Author getById(Long id);
 
-    Number insert(Author author);
+    Long insert(Author author);
 
     int update(Author author);
 

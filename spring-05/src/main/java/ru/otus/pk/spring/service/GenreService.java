@@ -11,7 +11,7 @@ public interface GenreService {
 
     Genre getById(Long id);
 
-    Number insert(String name);
+    Long insert(String name);
 
     int update(Long id, String name);
 
