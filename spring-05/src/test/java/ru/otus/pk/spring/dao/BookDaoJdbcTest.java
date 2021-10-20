@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
+import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
+import ru.otus.pk.spring.domain.Genre;
 
 import java.util.List;
 
@@ -20,12 +22,18 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Import(BookDaoJdbc.class)
 class BookDaoJdbcTest {
 
+    public static final Long EXISTING_AUTHOR_ID = 1L;
+    public static final String EXISTING_AUTHOR_FIRST_NAME = "Petr";
+    public static final String EXISTING_AUTHOR_LAST_NAME = "Petrov";
+    public static final Author EXISTING_AUTHOR = new Author(EXISTING_AUTHOR_ID, EXISTING_AUTHOR_FIRST_NAME, EXISTING_AUTHOR_LAST_NAME);
+
+    public static final Long EXISTING_GENRE_ID = 1L;
+    public static final String EXISTING_GENRE_NAME = "Fantasy";
+    public static final Genre EXISTING_GENRE = new Genre(EXISTING_GENRE_ID, EXISTING_GENRE_NAME);
+
     public static final Long EXISTING_BOOK_ID = 1L;
     public static final String EXISTING_BOOK_NAME = "Hobbit";
-    public static final Long EXISTING_BOOK_AUTHOR_ID = 1L;
-    public static final Long EXISTING_BOOK_GENRE_ID = 1L;
-    public static final Book EXPECTED_BOOK = new Book(EXISTING_BOOK_ID, EXISTING_BOOK_NAME,
-            EXISTING_BOOK_AUTHOR_ID, EXISTING_BOOK_GENRE_ID);
+    public static final Book EXISTING_BOOK = new Book(EXISTING_BOOK_ID, EXISTING_BOOK_NAME, EXISTING_AUTHOR, EXISTING_GENRE);
 
     @Autowired
     private BookDaoJdbc dao;
@@ -42,11 +50,11 @@ class BookDaoJdbcTest {
     @DisplayName("добавлять книгу в БД")
     @Test
     void shouldInsertBook() {
-        Book book = new Book(null, "new book", 1L, 1L);
+        Book book = new Book(null, "new book", EXISTING_AUTHOR, EXISTING_GENRE);
         Long id = dao.insert(book);
 
         Book actualBook = dao.getById(id);
-        assertThat(actualBook).extracting("name", "authorId", "genreId")
+        assertThat(actualBook).extracting("name", "author.id", "genre.id")
                 .doesNotContainNull()
                 .containsExactly("new book", 1L, 1L);
     }
@@ -57,20 +65,20 @@ class BookDaoJdbcTest {
         List<Book> actualBookList = dao.getAll();
         Assertions.assertThat(actualBookList)
                 .usingFieldByFieldElementComparator()
-                .containsExactlyInAnyOrder(EXPECTED_BOOK);
+                .containsExactlyInAnyOrder(EXISTING_BOOK);
     }
 
     @DisplayName("возвращать ожидаемую книгу по её id")
     @Test
     void shouldReturnExpectedBookById() {
-        Book actualBook = dao.getById(EXPECTED_BOOK.getId());
-        assertThat(actualBook).usingRecursiveComparison().isEqualTo(EXPECTED_BOOK);
+        Book actualBook = dao.getById(EXISTING_BOOK.getId());
+        assertThat(actualBook).usingRecursiveComparison().isEqualTo(EXISTING_BOOK);
     }
 
     @DisplayName("редактировать книгу в БД")
     @Test
     void shouldUpdateBook() {
-        Book expectedBook = new Book(EXISTING_BOOK_ID, "updated", 1L, 1L);
+        Book expectedBook = new Book(EXISTING_BOOK_ID, "updated", EXISTING_AUTHOR, EXISTING_GENRE);
         dao.update(expectedBook);
         Book actualBook = dao.getById(expectedBook.getId());
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(expectedBook);

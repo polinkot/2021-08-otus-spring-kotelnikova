@@ -21,7 +21,7 @@ import static java.util.Collections.emptyMap;
 @Repository
 public class GenreDaoJdbc implements GenreDao {
 
-    public static final RowMapper<Genre> ROW_MAPPER = new BeanPropertyRowMapper<>(Genre.class);
+    public static final RowMapper<Genre> GENRE_ROW_MAPPER = new BeanPropertyRowMapper<>(Genre.class);
 
     private final NamedParameterJdbcOperations jdbc;
 
@@ -32,12 +32,12 @@ public class GenreDaoJdbc implements GenreDao {
 
     @Override
     public List<Genre> getAll() {
-        return jdbc.query("select id, name from genre", ROW_MAPPER);
+        return jdbc.query("select id, name from genre", GENRE_ROW_MAPPER);
     }
 
     @Override
     public Genre getById(Long id) {
-        return jdbc.queryForObject("select * from genre where id = :id", Map.of("id", id), ROW_MAPPER);
+        return jdbc.queryForObject("select * from genre where id = :id", Map.of("id", id), GENRE_ROW_MAPPER);
     }
 
     @Override

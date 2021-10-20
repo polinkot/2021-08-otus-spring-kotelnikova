@@ -12,8 +12,6 @@ public interface BookService {
 
     Book getById(Long id);
 
-    List<Book> getWholeBooks(List<Book> books);
-
     Long insert(String name, Long authorId, Long genreId);
 
     int update(Long id, String name, Long authorId, Long genreId);

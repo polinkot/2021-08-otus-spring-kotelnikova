@@ -13,8 +13,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookShell {
 
-    public static final String WHOLE = "whole";
-
     private final BookService service;
 
     @ShellMethod(value = "Get Books count", key = {"bcnt", "book-count"})
@@ -23,23 +21,13 @@ public class BookShell {
     }
 
     @ShellMethod(value = "Get all Books", key = {"ball", "book-all"})
-    public List<Book> getAll(@ShellOption(defaultValue = "") String whole) {
-        List<Book> books = service.getAll();
-        if (!whole.equalsIgnoreCase(WHOLE)) {
-            return books;
-        }
-
-        return service.getWholeBooks(books);
+    public List<Book> getAll() {
+        return service.getAll();
     }
 
     @ShellMethod(value = "Get Book by id", key = {"bid", "book-id"})
-    public Book getById(@ShellOption Long id, @ShellOption(defaultValue = "") String whole) {
-        Book book = service.getById(id);
-        if (!whole.equalsIgnoreCase(WHOLE)) {
-            return book;
-        }
-
-        return service.getWholeBooks(List.of(book)).get(0);
+    public Book getById(@ShellOption Long id) {
+        return service.getById(id);
     }
 
     @ShellMethod(value = "Insert Book", key = {"bins", "book-insert"})

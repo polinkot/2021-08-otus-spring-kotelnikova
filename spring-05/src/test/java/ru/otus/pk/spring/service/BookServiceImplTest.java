@@ -9,7 +9,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.pk.spring.dao.AuthorDao;
 import ru.otus.pk.spring.dao.BookDao;
 import ru.otus.pk.spring.dao.GenreDao;
+import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
+import ru.otus.pk.spring.domain.Genre;
 
 import java.util.List;
 
@@ -36,7 +38,9 @@ class BookServiceImplTest {
     @DisplayName("возвращать ожидаемый список книг")
     @Test
     void shouldReturnExpectedBooksList() {
-        Book book = new Book(1L, "book", 2L, 2L);
+        Book book = new Book(1L, "book",
+                new Author(2L, null, null),
+                new Genre(2L, null));
 
         given(dao.getAll()).willReturn(List.of(book));
 
@@ -58,7 +62,9 @@ class BookServiceImplTest {
     @DisplayName("возвращать ожидаемую книгу по её id")
     @Test
     void shouldReturnExpectedBookById() {
-        Book expectedBook = new Book(1L, "book", 1L, 1L);
+        Book expectedBook = new Book(1L, "book",
+                new Author(2L, null, null),
+                new Genre(2L, null));
 
         given(dao.getById(expectedBook.getId())).willReturn(expectedBook);
 

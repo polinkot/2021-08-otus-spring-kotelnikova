@@ -21,7 +21,7 @@ import static java.util.Collections.emptyMap;
 @Repository
 public class AuthorDaoJdbc implements AuthorDao {
 
-    public static final RowMapper<Author> ROW_MAPPER = new BeanPropertyRowMapper<>(Author.class);
+    public static final RowMapper<Author> AUTHOR_ROW_MAPPER = new BeanPropertyRowMapper<>(Author.class);
 
     private final NamedParameterJdbcOperations jdbc;
 
@@ -32,12 +32,12 @@ public class AuthorDaoJdbc implements AuthorDao {
 
     @Override
     public List<Author> getAll() {
-        return jdbc.query("select id, first_name, last_name from author", ROW_MAPPER);
+        return jdbc.query("select id, first_name, last_name from author", AUTHOR_ROW_MAPPER);
     }
 
     @Override
     public Author getById(Long id) {
-        return jdbc.queryForObject("select * from author where id = :id", Map.of("id", id), ROW_MAPPER);
+        return jdbc.queryForObject("select * from author where id = :id", Map.of("id", id), AUTHOR_ROW_MAPPER);
     }
 
     @Override
