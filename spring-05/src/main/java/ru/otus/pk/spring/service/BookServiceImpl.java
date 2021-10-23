@@ -41,13 +41,10 @@ public class BookServiceImpl implements BookService {
         return dao.insert(book);
     }
 
-    //Вопрос
-    //Сюда лучше передать собранный Book вместо отдельных параметров?
-    //А собрать Book в шелле?
     @Override
     public int update(Long id, String name, Long authorId, Long genreId) {
-        Book book = new Book(id, name, new Author(authorId, null, null), new Genre(genreId, null));
         ofNullable(id).orElseThrow(() -> new LibraryException("Book id is null!!!"));
+        Book book = new Book(id, name, new Author(authorId, null, null), new Genre(genreId, null));
         validate(book);
         return dao.update(book);
     }
