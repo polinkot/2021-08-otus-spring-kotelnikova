@@ -11,4 +11,12 @@ create table book(id bigserial,
     genre_id bigint,
     foreign key (author_id) references author(id),
     foreign key (genre_id) references genre(id)
-)
+);
+
+drop table if exists comment;
+create table comment(id bigserial,
+    text varchar(255) not null,
+    time datetime default current_timestamp,
+    book_id bigint,
+    foreign key (book_id) references book(id)
+);
