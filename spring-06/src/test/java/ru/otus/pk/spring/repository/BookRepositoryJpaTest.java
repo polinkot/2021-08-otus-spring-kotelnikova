@@ -28,7 +28,7 @@ class BookRepositoryJpaTest {
     @Autowired
     private TestEntityManager em;
 
-    @DisplayName(" должен загружать информацию о нужной книге по её id")
+    @DisplayName(" должен загружать информацию о нужной книге по id")
     @Test
     void shouldFindExpectedBookById() {
         val actualBook = repositoryJpa.findById(ACTUAL_BOOK_ID);

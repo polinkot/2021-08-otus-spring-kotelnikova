@@ -1,5 +1,5 @@
 insert into genre (id, `name`)
-values (1, 'Genre1'), (2, 'Genre2');
+values (1, 'Genre1'), (2, 'Genre2'), (3, 'Genre3');
 
 insert into author (id, first_name, last_name)
 values (1, 'AuthorF1', 'AuthorL1'), (2, 'AuthorF2', 'AuthorL2');

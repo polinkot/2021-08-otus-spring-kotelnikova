@@ -30,7 +30,7 @@ class AuthorRepositoryJpaTest {
     @Autowired
     private TestEntityManager em;
 
-    @DisplayName(" должен загружать информацию о нужном авторе по его id")
+    @DisplayName(" должен загружать информацию о нужном авторе по id")
     @Test
     void shouldFindExpectedAuthorById() {
         val actualAuthor = repository.findById(EXISTING_AUTHOR_ID);
@@ -65,6 +65,7 @@ class AuthorRepositoryJpaTest {
         Author savedAuthor = repository.save(newAuthor);
 
         Author fetchedAuthor = em.find(Author.class, savedAuthor.getId());
+        assertThat(fetchedAuthor).isNotNull();
         assertThat(fetchedAuthor).extracting("firstName", "lastName")
                 .doesNotContainNull()
                 .containsExactly(firstName, lastName);
@@ -80,7 +81,7 @@ class AuthorRepositoryJpaTest {
         assertThat(fetchedAuthor).usingRecursiveComparison().isEqualTo(changedAuthor);
     }
 
-    @DisplayName("удалять заданного автора по его id")
+    @DisplayName("удалять заданного автора по id")
     @Test
     void shouldCorrectyDeleteAuthorById() {
         Author fetchedAuthor = em.find(Author.class, DELETABLE_AUTHOR_ID);
