@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Author;
 
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jpa для работы с авторами ")
@@ -17,13 +18,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(AuthorRepositoryJpa.class)
 class AuthorRepositoryJpaTest {
 
-    private static final long ACTUAL_AUTHOR_ID = 1L;
+    private static final long EXISTING_AUTHOR_ID = 1L;
+    public static final Long DELETABLE_AUTHOR_ID = 2L;
 
     private static final int EXPECTED_NUMBER_OF_AUTHORS = 2;
     private static final int EXPECTED_QUERIES_COUNT = 1;
 
     @Autowired
-    private AuthorRepositoryJpa repositoryJpa;
+    private AuthorRepositoryJpa repository;
 
     @Autowired
     private TestEntityManager em;
@@ -31,8 +33,8 @@ class AuthorRepositoryJpaTest {
     @DisplayName(" должен загружать информацию о нужном авторе по его id")
     @Test
     void shouldFindExpectedAuthorById() {
-        val actualAuthor = repositoryJpa.findById(ACTUAL_AUTHOR_ID);
-        val expectedAuthor = em.find(Author.class, ACTUAL_AUTHOR_ID);
+        val actualAuthor = repository.findById(EXISTING_AUTHOR_ID);
+        val expectedAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
         assertThat(actualAuthor).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(expectedAuthor);
     }
@@ -45,25 +47,49 @@ class AuthorRepositoryJpaTest {
         sessionFactory.getStatistics().setStatisticsEnabled(true);
 
         System.out.println("\n\n\n\n----------------------------------------------------------------------------------------------------------");
-        val authors = repositoryJpa.findAll();
+        val authors = repository.findAll();
         assertThat(authors).isNotNull().hasSize(EXPECTED_NUMBER_OF_AUTHORS)
                 .allMatch(a -> !a.getFirstName().equals(""))
                 .allMatch(a -> !a.getLastName().equals(""));
         System.out.println("----------------------------------------------------------------------------------------------------------\n\n\n\n");
         assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
-
-        //todo!!! remove
-//        for (Author author : authors) {
-//            System.out.println(author);
-//        }
     }
 
-//
-//    @Test
-//    void save() {
-//    }
-//
-//    @Test
-//    void deleteById() {
-//    }
+    @DisplayName("добавлять автора в БД")
+    @Test
+    void shouldInsertAuthor() {
+        String firstName = "Ivan";
+        String lastName = "Ivanov";
+
+        Author newAuthor = new Author(null, firstName, lastName, emptyList());
+        Author savedAuthor = repository.save(newAuthor);
+
+        Author fetchedAuthor = em.find(Author.class, savedAuthor.getId());
+        assertThat(fetchedAuthor).extracting("firstName", "lastName")
+                .doesNotContainNull()
+                .containsExactly(firstName, lastName);
+    }
+
+    @DisplayName("редактировать автора в БД")
+    @Test
+    void shouldUpdateAuthor() {
+        Author changedAuthor = new Author(EXISTING_AUTHOR_ID, "Igor", "Petrov", emptyList());
+        Author savedAuthor = repository.save(changedAuthor);
+
+        Author fetchedAuthor = em.find(Author.class, savedAuthor.getId());
+        assertThat(fetchedAuthor).usingRecursiveComparison().isEqualTo(changedAuthor);
+    }
+
+    @DisplayName("удалять заданного автора по его id")
+    @Test
+    void shouldCorrectyDeleteAuthorById() {
+        Author fetchedAuthor = em.find(Author.class, DELETABLE_AUTHOR_ID);
+        assertThat(fetchedAuthor).isNotNull();
+
+        repository.deleteById(DELETABLE_AUTHOR_ID);
+        em.detach(fetchedAuthor);
+
+        fetchedAuthor = em.find(Author.class, DELETABLE_AUTHOR_ID);
+        assertThat(fetchedAuthor).isNull();
+    }
 }
