@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Author;
+import ru.otus.pk.spring.model.Book;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,6 +19,8 @@ class AuthorRepositoryJpaTest {
 
     private static final Long EXISTING_AUTHOR_ID = 1L;
     public static final Long DELETABLE_AUTHOR_ID = 2L;
+
+    private static final Long EXISTING_BOOK_ID = 1L;
 
     private static final int EXPECTED_NUMBER_OF_AUTHORS = 2;
     private static final int EXPECTED_QUERIES_COUNT = 1;
@@ -66,15 +69,42 @@ class AuthorRepositoryJpaTest {
                 .containsExactly(firstName, lastName);
     }
 
-    @DisplayName("редактировать автора в БД")
+    @DisplayName("редактировать данные автора в БД")
     @Test
-    void shouldUpdateAuthor() {
+    void shouldUpdateAuthorName() {
         Author existingAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
         existingAuthor.setFirstName("updatedF");
+        existingAuthor.setLastName("updatedL");
         Author savedAuthor = repository.save(existingAuthor);
 
         Author actualAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
         assertThat(actualAuthor).usingRecursiveComparison().isEqualTo(savedAuthor);
+    }
+
+    @DisplayName("добавить книгу автора")
+    @Test
+    void shouldAddBookToAuthor() {
+        Author existingAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
+        Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
+        existingAuthor.addBook(existingBook);
+        repository.save(existingAuthor);
+
+        Author actualAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
+        assertThat(actualAuthor.getBooks()).contains(existingBook);
+        assertThat(actualAuthor).isEqualTo(existingBook.getAuthor());
+    }
+
+    @DisplayName("удалить книгу автора")
+    @Test
+    void shouldRemoveBookFromAuthor() {
+        Author existingAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
+        Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
+        existingAuthor.removeBook(existingBook);
+        repository.save(existingAuthor);
+
+        Author actualAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
+        assertThat(actualAuthor.getBooks()).doesNotContain(existingBook);
+        assertThat(actualAuthor).isNotEqualTo(existingBook.getAuthor());
     }
 
     @DisplayName("удалять заданного автора по id")

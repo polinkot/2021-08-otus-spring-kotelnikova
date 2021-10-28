@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,6 +19,8 @@ class GenreRepositoryJpaTest {
 
     private static final Long EXISTING_GENRE_ID = 1L;
     public static final Long DELETABLE_GENRE_ID = 3L;
+
+    private static final Long EXISTING_BOOK_ID = 1L;
 
     private static final int EXPECTED_NUMBER_OF_GENRES = 3;
     private static final int EXPECTED_QUERIES_COUNT = 1;
@@ -70,6 +73,32 @@ class GenreRepositoryJpaTest {
 
         Genre actualGenre = em.find(Genre.class, EXISTING_GENRE_ID);
         assertThat(actualGenre).usingRecursiveComparison().isEqualTo(savedGenre);
+    }
+
+    @DisplayName("добавить книгу в жанр")
+    @Test
+    void shouldAddBookToGenre() {
+        Genre existingGenre = em.find(Genre.class, EXISTING_GENRE_ID);
+        Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
+        existingGenre.addBook(existingBook);
+        repository.save(existingGenre);
+
+        Genre actualGenre = em.find(Genre.class, EXISTING_GENRE_ID);
+        assertThat(actualGenre.getBooks()).contains(existingBook);
+        assertThat(actualGenre).isEqualTo(existingBook.getGenre());
+    }
+
+    @DisplayName("удалить книгу из жанра")
+    @Test
+    void shouldRemoveBookFromGenre() {
+        Genre existingGenre = em.find(Genre.class, EXISTING_GENRE_ID);
+        Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
+        existingGenre.removeBook(existingBook);
+        repository.save(existingGenre);
+
+        Genre actualGenre = em.find(Genre.class, EXISTING_GENRE_ID);
+        assertThat(actualGenre.getBooks()).doesNotContain(existingBook);
+        assertThat(actualGenre).isNotEqualTo(existingBook.getGenre());
     }
 
     @DisplayName("удалять заданный жанр по id")

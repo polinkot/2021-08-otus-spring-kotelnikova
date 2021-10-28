@@ -2,6 +2,7 @@ package ru.otus.pk.spring.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.List;
@@ -22,9 +23,11 @@ public class Book {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
+    @ToString.Exclude
     @ManyToOne(fetch = LAZY)
     private Author author;
 
+    @ToString.Exclude
     @ManyToOne(fetch = LAZY)
     private Genre genre;
 
