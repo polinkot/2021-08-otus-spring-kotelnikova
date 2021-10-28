@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(BookRepositoryJpa.class)
 class BookRepositoryJpaTest {
 
-    private static final long ACTUAL_BOOK_ID = 1L;
+    private static final long EXISTING_BOOK_ID = 1L;
 
     private static final int EXPECTED_NUMBER_OF_BOOKS = 2;
     private static final int EXPECTED_QUERIES_COUNT = 1;
@@ -30,14 +30,25 @@ class BookRepositoryJpaTest {
     @DisplayName(" должен загружать информацию о нужной книге по id")
     @Test
     void shouldFindExpectedBookById() {
-        val actualBook = repository.findById(ACTUAL_BOOK_ID);
-        val expectedBook = em.find(Book.class, ACTUAL_BOOK_ID);
+        val actualBook = repository.findById(EXISTING_BOOK_ID);
+        val expectedBook = em.find(Book.class, EXISTING_BOOK_ID);
         assertThat(actualBook).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
     @Test
     void findAll() {
+        Statistics statistics = new Statistics(em);
+        statistics.setStatisticsEnabled(true);
+
+        System.out.println("\n\n\n\n----------------------------------------------------------------------------------------------------------");
+        val books = repository.findAll();
+        assertThat(books).isNotNull().hasSize(EXPECTED_NUMBER_OF_BOOKS)
+                .allMatch(b -> b.getAuthor() != null)
+                .allMatch(b -> b.getGenre() != null)
+                .allMatch(b -> !b.getName().equals(""));
+        System.out.println("----------------------------------------------------------------------------------------------------------\n\n\n\n");
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
     @Test

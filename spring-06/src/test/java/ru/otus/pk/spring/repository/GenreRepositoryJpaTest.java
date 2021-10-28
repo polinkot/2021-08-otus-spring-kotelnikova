@@ -42,15 +42,14 @@ class GenreRepositoryJpaTest {
     @DisplayName("должен загружать список всех жанров с полной информацией о них")
     @Test
     void shouldReturnCorrectGenresListWithAllInfo() {
-        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
-                .unwrap(SessionFactory.class);
-        sessionFactory.getStatistics().setStatisticsEnabled(true);
+        Statistics statistics = new Statistics(em);
+        statistics.setStatisticsEnabled(true);
 
         System.out.println("\n\n\n\n----------------------------------------------------------------------------------------------------------");
         val genres = repository.findAll();
-        assertThat(genres).isNotNull().hasSize(EXPECTED_NUMBER_OF_GENRES).allMatch(a -> !a.getName().equals(""));
+        assertThat(genres).isNotNull().hasSize(EXPECTED_NUMBER_OF_GENRES).allMatch(g -> !g.getName().equals(""));
         System.out.println("----------------------------------------------------------------------------------------------------------\n\n\n\n");
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
     @DisplayName("добавлять жанр в БД")

@@ -42,9 +42,8 @@ class AuthorRepositoryJpaTest {
     @DisplayName("должен загружать список всех авторов с полной информацией о них")
     @Test
     void shouldReturnCorrectAuthorsListWithAllInfo() {
-        SessionFactory sessionFactory = em.getEntityManager().getEntityManagerFactory()
-                .unwrap(SessionFactory.class);
-        sessionFactory.getStatistics().setStatisticsEnabled(true);
+        Statistics statistics = new Statistics(em);
+        statistics.setStatisticsEnabled(true);
 
         System.out.println("\n\n\n\n----------------------------------------------------------------------------------------------------------");
         val authors = repository.findAll();
@@ -52,7 +51,7 @@ class AuthorRepositoryJpaTest {
                 .allMatch(a -> !a.getFirstName().equals(""))
                 .allMatch(a -> !a.getLastName().equals(""));
         System.out.println("----------------------------------------------------------------------------------------------------------\n\n\n\n");
-        assertThat(sessionFactory.getStatistics().getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
     @DisplayName("добавлять автора в БД")
