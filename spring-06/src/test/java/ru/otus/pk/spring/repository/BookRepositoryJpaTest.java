@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Book;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Репозиторий на основе Jpa для работы с книгами ")
 @DataJpaTest
@@ -23,7 +22,7 @@ class BookRepositoryJpaTest {
     private static final int EXPECTED_QUERIES_COUNT = 1;
 
     @Autowired
-    private BookRepositoryJpa repositoryJpa;
+    private BookRepositoryJpa repository;
 
     @Autowired
     private TestEntityManager em;
@@ -31,10 +30,8 @@ class BookRepositoryJpaTest {
     @DisplayName(" должен загружать информацию о нужной книге по id")
     @Test
     void shouldFindExpectedBookById() {
-        val actualBook = repositoryJpa.findById(ACTUAL_BOOK_ID);
-        System.out.println(actualBook);
+        val actualBook = repository.findById(ACTUAL_BOOK_ID);
         val expectedBook = em.find(Book.class, ACTUAL_BOOK_ID);
-        System.out.println(expectedBook);
         assertThat(actualBook).isPresent().get()
                 .usingRecursiveComparison().isEqualTo(expectedBook);
     }
