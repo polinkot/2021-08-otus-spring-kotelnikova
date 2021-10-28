@@ -1,7 +1,6 @@
 package ru.otus.pk.spring.repository;
 
 import lombok.val;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Author;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jpa для работы с авторами ")
@@ -18,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(AuthorRepositoryJpa.class)
 class AuthorRepositoryJpaTest {
 
-    private static final long EXISTING_AUTHOR_ID = 1L;
+    private static final Long EXISTING_AUTHOR_ID = 1L;
     public static final Long DELETABLE_AUTHOR_ID = 2L;
 
     private static final int EXPECTED_NUMBER_OF_AUTHORS = 2;
@@ -57,15 +55,13 @@ class AuthorRepositoryJpaTest {
     @DisplayName("добавлять автора в БД")
     @Test
     void shouldInsertAuthor() {
-        String firstName = "Ivan";
-        String lastName = "Ivanov";
+        String firstName = "newF";
+        String lastName = "newL";
+        Author savedAuthor = repository.save(new Author(null, firstName, lastName));
 
-        Author newAuthor = new Author(null, firstName, lastName, emptyList());
-        Author savedAuthor = repository.save(newAuthor);
-
-        Author fetchedAuthor = em.find(Author.class, savedAuthor.getId());
-        assertThat(fetchedAuthor).isNotNull();
-        assertThat(fetchedAuthor).extracting("firstName", "lastName")
+        Author actualAuthor = em.find(Author.class, savedAuthor.getId());
+        assertThat(actualAuthor).isNotNull();
+        assertThat(actualAuthor).extracting("firstName", "lastName")
                 .doesNotContainNull()
                 .containsExactly(firstName, lastName);
     }
@@ -73,23 +69,24 @@ class AuthorRepositoryJpaTest {
     @DisplayName("редактировать автора в БД")
     @Test
     void shouldUpdateAuthor() {
-        Author changedAuthor = new Author(EXISTING_AUTHOR_ID, "Igor", "Petrov", emptyList());
-        Author savedAuthor = repository.save(changedAuthor);
+        Author existingAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
+        existingAuthor.setFirstName("updatedF");
+        Author savedAuthor = repository.save(existingAuthor);
 
-        Author fetchedAuthor = em.find(Author.class, savedAuthor.getId());
-        assertThat(fetchedAuthor).usingRecursiveComparison().isEqualTo(changedAuthor);
+        Author actualAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
+        assertThat(actualAuthor).usingRecursiveComparison().isEqualTo(savedAuthor);
     }
 
     @DisplayName("удалять заданного автора по id")
     @Test
     void shouldCorrectyDeleteAuthorById() {
-        Author fetchedAuthor = em.find(Author.class, DELETABLE_AUTHOR_ID);
-        assertThat(fetchedAuthor).isNotNull();
+        Author author = em.find(Author.class, DELETABLE_AUTHOR_ID);
+        assertThat(author).isNotNull();
 
         repository.deleteById(DELETABLE_AUTHOR_ID);
-        em.detach(fetchedAuthor);
+        em.detach(author);
 
-        fetchedAuthor = em.find(Author.class, DELETABLE_AUTHOR_ID);
-        assertThat(fetchedAuthor).isNull();
+        author = em.find(Author.class, DELETABLE_AUTHOR_ID);
+        assertThat(author).isNull();
     }
 }

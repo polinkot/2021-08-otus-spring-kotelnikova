@@ -1,7 +1,6 @@
 package ru.otus.pk.spring.repository;
 
 import lombok.val;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Genre;
 
-import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jpa для работы с жанрами ")
@@ -18,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(GenreRepositoryJpa.class)
 class GenreRepositoryJpaTest {
 
-    private static final long EXISTING_GENRE_ID = 1L;
+    private static final Long EXISTING_GENRE_ID = 1L;
     public static final Long DELETABLE_GENRE_ID = 3L;
 
     private static final int EXPECTED_NUMBER_OF_GENRES = 3;
@@ -55,36 +53,35 @@ class GenreRepositoryJpaTest {
     @DisplayName("добавлять жанр в БД")
     @Test
     void shouldInsertGenre() {
-        String name = "Ivan";
+        String name = "newName";
+        Genre savedGenre = repository.save(new Genre(null, name));
 
-        Genre newGenre = new Genre(null, name, emptyList());
-        Genre savedGenre = repository.save(newGenre);
-
-        Genre fetchedGenre = em.find(Genre.class, savedGenre.getId());
-        assertThat(fetchedGenre).isNotNull();
-        assertThat(fetchedGenre.getName()).isEqualTo(name);
+        Genre actualGenre = em.find(Genre.class, savedGenre.getId());
+        assertThat(actualGenre).isNotNull();
+        assertThat(actualGenre.getName()).isEqualTo(name);
     }
 
     @DisplayName("редактировать жанр в БД")
     @Test
     void shouldUpdateGenre() {
-        Genre changedGenre = new Genre(EXISTING_GENRE_ID, "changedGenre", emptyList());
-        Genre savedGenre = repository.save(changedGenre);
+        Genre existingGenre = em.find(Genre.class, EXISTING_GENRE_ID);
+        existingGenre.setName("changedName");
+        Genre savedGenre = repository.save(existingGenre);
 
-        Genre fetchedGenre = em.find(Genre.class, savedGenre.getId());
-        assertThat(fetchedGenre).usingRecursiveComparison().isEqualTo(changedGenre);
+        Genre actualGenre = em.find(Genre.class, EXISTING_GENRE_ID);
+        assertThat(actualGenre).usingRecursiveComparison().isEqualTo(savedGenre);
     }
 
     @DisplayName("удалять заданный жанр по id")
     @Test
     void shouldCorrectyDeleteGenreById() {
-        Genre fetchedGenre = em.find(Genre.class, DELETABLE_GENRE_ID);
-        assertThat(fetchedGenre).isNotNull();
+        Genre genre = em.find(Genre.class, DELETABLE_GENRE_ID);
+        assertThat(genre).isNotNull();
 
         repository.deleteById(DELETABLE_GENRE_ID);
-        em.detach(fetchedGenre);
+        em.detach(genre);
 
-        fetchedGenre = em.find(Genre.class, DELETABLE_GENRE_ID);
-        assertThat(fetchedGenre).isNull();
+        genre = em.find(Genre.class, DELETABLE_GENRE_ID);
+        assertThat(genre).isNull();
     }
 }

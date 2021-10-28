@@ -5,6 +5,7 @@ import ru.otus.pk.spring.model.Book;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
@@ -33,12 +34,19 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    public Book save(Book Book) {
-        return null;
+    public Book save(Book book) {
+        if (book.getId() == null) {
+            em.persist(book);
+            return book;
+        } else {
+            return em.merge(book);
+        }
     }
 
     @Override
-    public void deleteById(Long id) {
-
+    public int deleteById(Long id) {
+        Query query = em.createQuery("delete from Book b where b.id = :id");
+        query.setParameter("id", id);
+        return query.executeUpdate();
     }
 }

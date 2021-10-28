@@ -1,6 +1,5 @@
 package ru.otus.pk.spring.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
@@ -33,4 +31,11 @@ public class Book {
     @OneToMany(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "book_id")
     private List<Comment> comments;
+
+    public Book(Long id, String name, Author author, Genre genre) {
+        this.id = id;
+        this.name = name;
+        this.author = author;
+        this.genre = genre;
+    }
 }

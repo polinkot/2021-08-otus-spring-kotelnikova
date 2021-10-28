@@ -1,6 +1,5 @@
 package ru.otus.pk.spring.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +9,6 @@ import java.util.List;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
@@ -28,4 +26,10 @@ public class Author {
 
     @OneToMany(cascade = ALL, mappedBy = "author")
     private List<Book> books;
+
+    public Author(Long id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
 }

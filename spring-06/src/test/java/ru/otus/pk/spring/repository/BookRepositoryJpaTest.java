@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
+import ru.otus.pk.spring.model.Genre;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,7 +18,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Import(BookRepositoryJpa.class)
 class BookRepositoryJpaTest {
 
-    private static final long EXISTING_BOOK_ID = 1L;
+    private static final Long EXISTING_BOOK_ID = 1L;
+    public static final Long DELETABLE_BOOK_ID = 2L;
+
+    public static final Long EXISTING_AUTHOR_ID = 1L;
+    public static final Long EXISTING_GENRE_ID = 1L;
 
     private static final int EXPECTED_NUMBER_OF_BOOKS = 2;
     private static final int EXPECTED_QUERIES_COUNT = 1;
@@ -36,6 +42,7 @@ class BookRepositoryJpaTest {
                 .usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
+    @DisplayName("должен загружать список всех книг с полной информацией о них")
     @Test
     void findAll() {
         Statistics statistics = new Statistics(em);
@@ -51,11 +58,43 @@ class BookRepositoryJpaTest {
         assertThat(statistics.getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
+    @DisplayName("добавлять книгу в БД")
     @Test
-    void save() {
+    void shouldInsertBook() {
+        Author existingAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
+        Genre existingGenre = em.find(Genre.class, EXISTING_GENRE_ID);
+
+        String name = "newName";
+        Book savedBook = repository.save(new Book(null, name, existingAuthor, existingGenre));
+
+        Book actualBook = em.find(Book.class, savedBook.getId());
+        assertThat(actualBook).isNotNull();
+        assertThat(actualBook).extracting("name", "author", "genre")
+                .doesNotContainNull()
+                .containsExactly(name, existingAuthor, existingGenre);
     }
 
+    @DisplayName("редактировать книгу в БД")
     @Test
-    void deleteById() {
+    void shouldUpdateBook() {
+        Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
+        existingBook.setName("updatedName");
+        Book savedBook = repository.save(existingBook);
+
+        Book actualBook = em.find(Book.class, EXISTING_BOOK_ID);
+        assertThat(actualBook).usingRecursiveComparison().isEqualTo(savedBook);
+    }
+
+    @DisplayName("удалять заданную книгу по id")
+    @Test
+    void shouldCorrectyDeleteBookById() {
+        Book book = em.find(Book.class, DELETABLE_BOOK_ID);
+        assertThat(book).isNotNull();
+
+        repository.deleteById(DELETABLE_BOOK_ID);
+        em.detach(book);
+
+        book = em.find(Book.class, DELETABLE_BOOK_ID);
+        assertThat(book).isNull();
     }
 }
