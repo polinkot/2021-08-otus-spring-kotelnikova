@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jpa для работы с жанрами ")
@@ -30,6 +32,13 @@ class GenreRepositoryJpaTest {
 
     @Autowired
     private TestEntityManager em;
+
+    @DisplayName("возвращать ожидаемое количество авторов в БД")
+    @Test
+    void shouldReturnExpectedAuthorCount() {
+        long actualCount = repository.count();
+        assertThat(actualCount).isEqualTo(EXPECTED_NUMBER_OF_GENRES);
+    }
 
     @DisplayName(" должен загружать информацию о нужном жанре по id")
     @Test
@@ -80,7 +89,7 @@ class GenreRepositoryJpaTest {
     void shouldAddBookToGenre() {
         Genre existingGenre = em.find(Genre.class, EXISTING_GENRE_ID);
         Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
-        existingGenre.addBook(existingBook);
+        existingGenre.addBooks(Set.of(existingBook));
         repository.save(existingGenre);
 
         Genre actualGenre = em.find(Genre.class, EXISTING_GENRE_ID);
@@ -93,7 +102,7 @@ class GenreRepositoryJpaTest {
     void shouldRemoveBookFromGenre() {
         Genre existingGenre = em.find(Genre.class, EXISTING_GENRE_ID);
         Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
-        existingGenre.removeBook(existingBook);
+        existingGenre.removeBooks(Set.of(existingBook.getId()));
         repository.save(existingGenre);
 
         Genre actualGenre = em.find(Genre.class, EXISTING_GENRE_ID);

@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
 
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jpa для работы с авторами ")
@@ -30,6 +32,13 @@ class AuthorRepositoryJpaTest {
 
     @Autowired
     private TestEntityManager em;
+
+    @DisplayName("возвращать ожидаемое количество авторов в БД")
+    @Test
+    void shouldReturnExpectedAuthorCount() {
+        long actualCount = repository.count();
+        assertThat(actualCount).isEqualTo(EXPECTED_NUMBER_OF_AUTHORS);
+    }
 
     @DisplayName(" должен загружать информацию о нужном авторе по id")
     @Test
@@ -63,8 +72,8 @@ class AuthorRepositoryJpaTest {
         Author savedAuthor = repository.save(new Author(null, firstName, lastName));
 
         Author actualAuthor = em.find(Author.class, savedAuthor.getId());
-        assertThat(actualAuthor).isNotNull();
-        assertThat(actualAuthor).extracting("firstName", "lastName")
+        assertThat(actualAuthor).isNotNull()
+                .extracting("firstName", "lastName")
                 .doesNotContainNull()
                 .containsExactly(firstName, lastName);
     }
@@ -86,7 +95,7 @@ class AuthorRepositoryJpaTest {
     void shouldAddBookToAuthor() {
         Author existingAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
         Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
-        existingAuthor.addBook(existingBook);
+        existingAuthor.addBooks(Set.of(existingBook));
         repository.save(existingAuthor);
 
         Author actualAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
@@ -99,7 +108,7 @@ class AuthorRepositoryJpaTest {
     void shouldRemoveBookFromAuthor() {
         Author existingAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);
         Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
-        existingAuthor.removeBook(existingBook);
+        existingAuthor.removeBooks(Set.of(existingBook.getId()));
         repository.save(existingAuthor);
 
         Author actualAuthor = em.find(Author.class, EXISTING_AUTHOR_ID);

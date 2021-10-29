@@ -5,10 +5,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableSet;
+import static java.util.stream.Collectors.toList;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.NONE;
@@ -30,7 +32,7 @@ public class Author {
 
     @Setter(value = NONE)
     @OneToMany(cascade = ALL, mappedBy = "author")
-    private List<Book> books = new ArrayList<>();
+    private Set<Book> books = new HashSet<>();
 
     public Author(Long id, String firstName, String lastName) {
         this.id = id;
@@ -38,17 +40,24 @@ public class Author {
         this.lastName = lastName;
     }
 
-    public void addBook(Book book) {
-        this.books.add(book);
-        book.setAuthor(this);
+    public void addBooks(Set<Book> books) {
+        books.forEach(book -> {
+            boolean added = this.books.add(book);
+            if (added) {
+                book.setAuthor(this);
+            }
+        });
     }
 
-    public void removeBook(Book book) {
-        this.books.remove(book);
-        book.setAuthor(null);
+    public void removeBooks(Set<Long> ids) {
+        List<Book> books = this.books.stream()
+                .filter(book -> ids.contains(book.getId()))
+                .peek(book -> book.setAuthor(null))
+                .collect(toList());
+        this.books.removeAll(books);
     }
 
-    public List<Book> getBooks() {
-        return unmodifiableList(books);
+    public Set<Book> getBooks() {
+        return unmodifiableSet(books);
     }
 }

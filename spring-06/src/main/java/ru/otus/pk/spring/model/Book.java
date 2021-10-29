@@ -1,12 +1,14 @@
 package ru.otus.pk.spring.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
@@ -25,10 +27,12 @@ public class Book {
     private String name;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = LAZY)
     private Author author;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = LAZY)
     private Genre genre;
 
@@ -39,7 +43,27 @@ public class Book {
     public Book(Long id, String name, Author author, Genre genre) {
         this.id = id;
         this.name = name;
+        setAuthor(author);
+        setGenre(genre);
+    }
+
+    public void setAuthor(Author author) {
+        if (author == null) {
+            this.author = null;
+            return;
+        }
+
         this.author = author;
+        author.addBooks(Set.of(this));
+    }
+
+    public void setGenre(Genre genre) {
+        if (genre == null) {
+            this.genre = null;
+            return;
+        }
+
         this.genre = genre;
+        genre.addBooks(Set.of(this));
     }
 }

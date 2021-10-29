@@ -23,6 +23,12 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     @Override
+    public Long count() {
+        TypedQuery<Long> query = em.createQuery("select count(*) from Author", Long.class);
+        return query.getSingleResult();
+    }
+
+    @Override
     public Optional<Author> findById(Long id) {
         return ofNullable(em.find(Author.class, id));
     }

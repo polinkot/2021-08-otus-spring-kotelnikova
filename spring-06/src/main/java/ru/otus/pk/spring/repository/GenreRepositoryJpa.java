@@ -23,6 +23,12 @@ public class GenreRepositoryJpa implements GenreRepository {
     }
 
     @Override
+    public Long count() {
+        TypedQuery<Long> query = em.createQuery("select count(*) from Genre", Long.class);
+        return query.getSingleResult();
+    }
+
+    @Override
     public Optional<Genre> findById(Long id) {
         return ofNullable(em.find(Genre.class, id));
     }
