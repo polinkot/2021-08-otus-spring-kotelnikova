@@ -9,8 +9,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
+import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.model.Genre;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Репозиторий на основе Jpa для работы с книгами ")
@@ -23,6 +25,8 @@ class BookRepositoryJpaTest {
 
     public static final Long EXISTING_AUTHOR_ID = 1L;
     public static final Long EXISTING_GENRE_ID = 1L;
+    public static final Long EXISTING_AUTHOR_ID_2 = 2L;
+    public static final Long EXISTING_GENRE_ID_2 = 2L;
 
     private static final int EXPECTED_NUMBER_OF_BOOKS = 2;
     private static final int EXPECTED_QUERIES_COUNT = 1;
@@ -77,12 +81,41 @@ class BookRepositoryJpaTest {
     @DisplayName("редактировать книгу в БД")
     @Test
     void shouldUpdateBook() {
+        Author existingAuthor2 = em.find(Author.class, EXISTING_AUTHOR_ID_2);
+        Genre existingGenre2 = em.find(Genre.class, EXISTING_GENRE_ID_2);
         Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
         existingBook.setName("updatedName");
+        existingBook.setAuthor(existingAuthor2);
+        existingBook.setGenre(existingGenre2);
         Book savedBook = repository.save(existingBook);
 
         Book actualBook = em.find(Book.class, EXISTING_BOOK_ID);
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(savedBook);
+    }
+
+    @DisplayName("добавить комментарий к книге")
+    @Test
+    void shouldAddCommentToBook() {
+        String newComment = "newComment";
+        Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
+        existingBook.getComments().add(new Comment(null, newComment));
+        repository.save(existingBook);
+
+        Book actualBook = em.find(Book.class, EXISTING_BOOK_ID);
+        assertThat(actualBook.getComments().stream().map(Comment::getText).collect(toList())).contains(newComment);
+    }
+
+    @DisplayName("удалить комментарий к книге")
+    @Test
+    void shouldRemoveCommentFromBook() {
+        Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
+        Comment comment = existingBook.getComments().get(0);
+        existingBook.getComments().remove(comment);
+        repository.save(existingBook);
+        em.detach(comment);
+
+        Book actualBook = em.find(Book.class, EXISTING_BOOK_ID);
+        assertThat(actualBook.getComments()).doesNotContain(comment);
     }
 
     @DisplayName("удалять заданную книгу по id")

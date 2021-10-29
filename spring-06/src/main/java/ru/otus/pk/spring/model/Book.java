@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static javax.persistence.CascadeType.ALL;
@@ -33,7 +34,7 @@ public class Book {
 
     @OneToMany(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "book_id")
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     public Book(Long id, String name, Author author, Genre genre) {
         this.id = id;

@@ -1,16 +1,14 @@
 package ru.otus.pk.spring.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
 import java.time.LocalDateTime;
 
+import static java.time.LocalDateTime.now;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
@@ -24,5 +22,10 @@ public class Comment {
     private String text;
 
     @Column(name = "time", nullable = false)
-    private LocalDateTime time;
+    private LocalDateTime time = now();
+
+    public Comment(Long id, String text) {
+        this.id = id;
+        this.text = text;
+    }
 }
