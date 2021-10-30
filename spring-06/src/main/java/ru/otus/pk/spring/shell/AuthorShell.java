@@ -32,10 +32,16 @@ public class AuthorShell {
         return service.findById(id);
     }
 
-    @ShellMethod(value = "Save Author", key = {"asv", "author-save"})
-    public String save(@ShellOption Long id, @ShellOption String firstName, @ShellOption String lastName) {
+    @ShellMethod(value = "Add Author", key = {"aadd", "author-add"})
+    public String add(@ShellOption String firstName, @ShellOption String lastName) {
+        Author author = service.save(null, firstName, lastName);
+        return format("Author has been added successfully.\n%s", author);
+    }
+
+    @ShellMethod(value = "Edit Author", key = {"aedit", "author-edit"})
+    public String edit(@ShellOption Long id, @ShellOption String firstName, @ShellOption String lastName) {
         Author author = service.save(id, firstName, lastName);
-        return format("Author has been saved successfully.\n%s", author);
+        return format("Author has been updated successfully.\n%s", author);
     }
 
     @ShellMethod(value = "Delete Author by id", key = {"adel", "author-delete"})

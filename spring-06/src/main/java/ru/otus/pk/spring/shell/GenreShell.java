@@ -32,10 +32,16 @@ public class GenreShell {
         return service.findById(id);
     }
 
-    @ShellMethod(value = "Save Genre", key = {"gsv", "genre-save"})
-    public String save(@ShellOption Long id, @ShellOption String name) {
+    @ShellMethod(value = "Add Genre", key = {"gadd", "genre-add"})
+    public String add(@ShellOption Long id, @ShellOption String name) {
+        Genre genre = service.save(null, name);
+        return format("Genre has been added successfully.\n%s", genre);
+    }
+
+    @ShellMethod(value = "Edit Genre", key = {"gedit", "genre-edit"})
+    public String edit(@ShellOption Long id, @ShellOption String name) {
         Genre genre = service.save(id, name);
-        return format("Genre has been saved successfully.\n%s", genre);
+        return format("Genre has been updated successfully.\n%s", genre);
     }
 
     @ShellMethod(value = "Delete Genre by id", key = {"gdel", "genre-delete"})

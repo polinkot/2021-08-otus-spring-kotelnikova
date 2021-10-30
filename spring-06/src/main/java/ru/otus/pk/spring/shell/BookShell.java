@@ -32,11 +32,17 @@ public class BookShell {
         return service.findById(id);
     }
 
-    @ShellMethod(value = "Save Book", key = {"bsv", "book-save"})
-    public String save(@ShellOption Long id, @ShellOption String name,
+    @ShellMethod(value = "Add Book", key = {"badd", "book-add"})
+    public String add(@ShellOption String name, @ShellOption Long authorId, @ShellOption Long genreId) {
+        Book book = service.save(null, name, authorId, genreId);
+        return format("Book has been added successfully.\n%s", book);
+    }
+
+    @ShellMethod(value = "Edit Book", key = {"bedit", "book-edit"})
+    public String edit(@ShellOption Long id, @ShellOption String name,
                        @ShellOption Long authorId, @ShellOption Long genreId) {
         Book book = service.save(id, name, authorId, genreId);
-        return format("Book has been saved successfully.\n%s", book);
+        return format("Book has been updated successfully.\n%s", book);
     }
 
     @ShellMethod(value = "Add Comment", key = {"bac", "book-add-comment"})
