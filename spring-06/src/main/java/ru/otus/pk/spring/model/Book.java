@@ -18,6 +18,8 @@ import static org.hibernate.annotations.FetchMode.JOIN;
 
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(exclude = {"author", "genre"})
+@ToString(exclude = {"author", "genre"})
 @Entity
 @Table(name = "book")
 public class Book {
@@ -28,13 +30,9 @@ public class Book {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = LAZY)
     private Author author;
 
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = LAZY)
     private Genre genre;
 
