@@ -49,7 +49,7 @@ class AuthorServiceImplTest {
         assertThat(actualCount).isEqualTo(expectedCount);
     }
 
-    @DisplayName("возвращать ожидаемого автора по его id")
+    @DisplayName("возвращать ожидаемого автора по id")
     @Test
     void shouldReturnExpectedAuthorById() {
         given(repository.findById(EXPECTED_AUTHOR.getId())).willReturn(Optional.of(EXPECTED_AUTHOR));
@@ -79,7 +79,7 @@ class AuthorServiceImplTest {
         assertThat(actualAuthor).isEqualTo(expectedAuthor);
     }
 
-    @DisplayName("удалять заданного автора по его id")
+    @DisplayName("удалять заданного автора по id")
     @Test
     void shouldCorrectlyDeleteAuthorById() {
         Long id = 1L;

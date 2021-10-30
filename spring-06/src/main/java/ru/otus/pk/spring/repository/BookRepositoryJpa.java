@@ -23,6 +23,12 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
+    public Long count() {
+        TypedQuery<Long> query = em.createQuery("select count(*) from Book", Long.class);
+        return query.getSingleResult();
+    }
+
+    @Override
     public Optional<Book> findById(Long id) {
         return ofNullable(em.find(Book.class, id));
     }
