@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.model.Book;
+import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.repository.BookRepository;
 
 import java.util.List;
@@ -42,14 +43,34 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public Book save(Long id, String name, Long authorId, Long bookId) {
+    public Book save(Long id, String name, Long authorId, Long genreId) {
         Book book = id != null ?
                 repository.findById(id).orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, id))) :
                 new Book();
 
         book.setName(name);
-        book.setAuthor(authorService.findById(id));
-        book.setGenre(genreService.findById(id));
+        book.setAuthor(authorService.findById(authorId));
+        book.setGenre(genreService.findById(genreId));
+
+        validate(book);
+        return repository.save(book);
+    }
+
+    @Transactional
+    @Override
+    public Book addComment(Long id, String comment) {
+        Book book = repository.findById(id).orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, id)));
+        book.getComments().add(new Comment(null, comment));
+
+        validate(book);
+        return repository.save(book);
+    }
+
+    @Transactional
+    @Override
+    public Book removeComment(Long id, Long commentId) {
+        Book book = repository.findById(id).orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, id)));
+        book.getComments().removeIf(comment -> comment.getId().equals(commentId));
 
         validate(book);
         return repository.save(book);

@@ -8,12 +8,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
+import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.model.Genre;
 import ru.otus.pk.spring.repository.BookRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -87,6 +89,36 @@ class BookServiceImplTest {
 
         Book actualBook = service.save(1L, changedName, AUTHOR.getId(), GENRE.getId());
         assertThat(actualBook).isEqualTo(expectedBook);
+    }
+
+    @DisplayName("добавлять комментарий")
+    @Test
+    void shouldAddComment() {
+        Long bookId = 1L;
+        given(repository.findById(bookId)).willReturn(Optional.of(EXPECTED_BOOK));
+        given(repository.save(any(Book.class))).willReturn(EXPECTED_BOOK);
+
+        String newComment = "newComment";
+        Book actualBook = service.addComment(bookId, newComment);
+        Assertions.assertThat(actualBook.getComments().stream().map(Comment::getText).collect(toList()))
+                .containsExactly(newComment);
+    }
+
+    @DisplayName("удалять комментарий")
+    @Test
+    void shouldRemoveComment() {
+        Long bookId = 1L;
+        Long commentId = 1L;
+        String newComment = "newComment";
+
+        EXPECTED_BOOK.getComments().add(new Comment(commentId, newComment));
+
+        given(repository.findById(bookId)).willReturn(Optional.of(EXPECTED_BOOK));
+        given(repository.save(any(Book.class))).willReturn(EXPECTED_BOOK);
+
+        Book actualBook = service.removeComment(bookId, commentId);
+        Assertions.assertThat(actualBook.getComments().stream().map(Comment::getText).collect(toList()))
+                .doesNotContain(newComment);
     }
 
     @DisplayName("удалять заданную книгу по id")

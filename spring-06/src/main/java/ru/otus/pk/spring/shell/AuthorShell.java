@@ -35,12 +35,12 @@ public class AuthorShell {
     @ShellMethod(value = "Save Author", key = {"asv", "author-save"})
     public String save(@ShellOption Long id, @ShellOption String firstName, @ShellOption String lastName) {
         Author author = service.save(id, firstName, lastName);
-        return format("Запись успешно сохранена. %s", author);
+        return format("Author has been saved successfully.\n%s", author);
     }
 
     @ShellMethod(value = "Delete Author by id", key = {"adel", "author-delete"})
     public String deleteById(@ShellOption Long id) {
         int result = service.deleteById(id);
-        return result == 1 ? "Запись успешно удалена" : "Не удалось удалить запись";
+        return result == 1 ? "Author has been removed." : "Failed to remove author.";
     }
 }

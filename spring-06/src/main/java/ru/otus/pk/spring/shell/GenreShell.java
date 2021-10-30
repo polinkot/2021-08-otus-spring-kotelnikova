@@ -9,6 +9,8 @@ import ru.otus.pk.spring.service.GenreService;
 
 import java.util.List;
 
+import static java.lang.String.format;
+
 @ShellComponent
 @RequiredArgsConstructor
 public class GenreShell {
@@ -33,12 +35,12 @@ public class GenreShell {
     @ShellMethod(value = "Save Genre", key = {"gsv", "genre-save"})
     public String save(@ShellOption Long id, @ShellOption String name) {
         Genre genre = service.save(id, name);
-        return "Запись успешно сохранена" + genre;
+        return format("Genre has been saved successfully.\n%s", genre);
     }
 
     @ShellMethod(value = "Delete Genre by id", key = {"gdel", "genre-delete"})
     public String deleteById(@ShellOption Long id) {
         int result = service.deleteById(id);
-        return result == 1 ? "Запись успешно удалена" : "Не удалось удалить запись";
+        return result == 1 ? "Genre has been removed." : "Failed to remove Genre";
     }
 }
