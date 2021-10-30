@@ -18,7 +18,7 @@ import static org.hibernate.annotations.FetchMode.JOIN;
 
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(exclude = {"author", "genre"})
+@EqualsAndHashCode(exclude = {"author", "genre", "comments"})
 @ToString(exclude = {"author", "genre"})
 @Entity
 @Table(name = "book")

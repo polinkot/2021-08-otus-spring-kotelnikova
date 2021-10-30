@@ -12,12 +12,11 @@ import ru.otus.pk.spring.repository.AuthorRepository;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.emptySet;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-@DisplayName("Класс AuthorServiceImpl")
+@DisplayName("Сервис AuthorServiceImpl")
 @SpringBootTest(classes = AuthorServiceImpl.class)
 class AuthorServiceImplTest {
 

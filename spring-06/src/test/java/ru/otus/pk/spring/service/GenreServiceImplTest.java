@@ -17,7 +17,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-@DisplayName("Класс GenreServiceImpl")
+@DisplayName("Сервис GenreServiceImpl")
 @SpringBootTest(classes = GenreServiceImpl.class)
 class GenreServiceImplTest {
 

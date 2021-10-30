@@ -25,7 +25,7 @@ class AuthorRepositoryJpaTest {
     private static final Long EXISTING_BOOK_ID = 1L;
 
     private static final int EXPECTED_NUMBER_OF_AUTHORS = 2;
-    private static final int EXPECTED_QUERIES_COUNT = 2;
+    private static final int EXPECTED_QUERIES_COUNT = 1;
 
     @Autowired
     private AuthorRepositoryJpa repository;
