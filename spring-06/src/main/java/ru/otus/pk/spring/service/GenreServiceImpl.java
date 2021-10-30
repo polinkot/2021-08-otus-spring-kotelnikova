@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.exception.LibraryException;
-import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
 import ru.otus.pk.spring.repository.GenreRepository;
 
 import java.util.List;
-import java.util.Set;
 
 import static java.lang.String.format;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -42,13 +40,12 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional
     @Override
-    public Genre save(Long id, String name, Set<Book> books) {
+    public Genre save(Long id, String name) {
         Genre genre = id != null ?
                 repository.findById(id).orElseThrow(() -> new LibraryException(format(GENRE_NOT_FOUND, id))) :
                 new Genre();
 
         genre.setName(name);
-        genre.addBooks(books);
 
         validate(genre);
         return repository.save(genre);

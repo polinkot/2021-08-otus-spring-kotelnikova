@@ -63,7 +63,7 @@ class GenreServiceImplTest {
     void shouldInsertGenre() {
         given(repository.save(any(Genre.class))).willReturn(EXPECTED_GENRE);
 
-        Genre actualGenre = service.save(null, "newGenre", emptySet());
+        Genre actualGenre = service.save(null, "newGenre");
         assertThat(actualGenre).isEqualTo(EXPECTED_GENRE);
     }
 
@@ -76,7 +76,7 @@ class GenreServiceImplTest {
         given(repository.findById(expectedGenre.getId())).willReturn(Optional.of(expectedGenre));
         given(repository.save(any(Genre.class))).willReturn(expectedGenre);
 
-        Genre actualGenre = service.save(1L, changedName, emptySet());
+        Genre actualGenre = service.save(1L, changedName);
         assertThat(actualGenre).isEqualTo(expectedGenre);
     }
 

@@ -2,10 +2,8 @@ package ru.otus.pk.spring.service;
 
 
 import ru.otus.pk.spring.model.Author;
-import ru.otus.pk.spring.model.Book;
 
 import java.util.List;
-import java.util.Set;
 
 public interface AuthorService {
 
@@ -15,7 +13,7 @@ public interface AuthorService {
 
     Author findById(Long id);
 
-    Author save(Long id, String firstName, String lastName, Set<Book> books);
+    Author save(Long id, String firstName, String lastName);
 
     int deleteById(Long id);
 }

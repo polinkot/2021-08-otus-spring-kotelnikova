@@ -12,6 +12,8 @@ import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.model.Genre;
 
+import java.util.ArrayList;
+
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +31,7 @@ class BookRepositoryJpaTest {
     public static final Long EXISTING_GENRE_ID_2 = 2L;
 
     private static final int EXPECTED_NUMBER_OF_BOOKS = 2;
-    private static final int EXPECTED_QUERIES_COUNT = 1;
+    private static final int EXPECTED_QUERIES_COUNT = 2;
 
     @Autowired
     private BookRepositoryJpa repository;
@@ -73,9 +75,9 @@ class BookRepositoryJpaTest {
 
         Book actualBook = em.find(Book.class, savedBook.getId());
         assertThat(actualBook).isNotNull();
-        assertThat(actualBook).extracting("name", "author", "genre")
+        assertThat(actualBook).extracting("name", "author.id", "genre.id")
                 .doesNotContainNull()
-                .containsExactly(name, existingAuthor, existingGenre);
+                .containsExactly(name, existingAuthor.getId(), existingGenre.getId());
     }
 
     @DisplayName("редактировать книгу в БД")
@@ -109,7 +111,7 @@ class BookRepositoryJpaTest {
     @Test
     void shouldRemoveCommentFromBook() {
         Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
-        Comment comment = existingBook.getComments().get(0);
+        Comment comment = new ArrayList<>(existingBook.getComments()).get(0);
         existingBook.getComments().remove(comment);
         repository.save(existingBook);
         em.detach(comment);

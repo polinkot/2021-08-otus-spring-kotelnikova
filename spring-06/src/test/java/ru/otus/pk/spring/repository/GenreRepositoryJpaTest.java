@@ -25,7 +25,7 @@ class GenreRepositoryJpaTest {
     private static final Long EXISTING_BOOK_ID = 1L;
 
     private static final int EXPECTED_NUMBER_OF_GENRES = 3;
-    private static final int EXPECTED_QUERIES_COUNT = 1;
+    private static final int EXPECTED_QUERIES_COUNT = 2;
 
     @Autowired
     private GenreRepositoryJpa repository;

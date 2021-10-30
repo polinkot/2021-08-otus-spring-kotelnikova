@@ -3,6 +3,7 @@ package ru.otus.pk.spring.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -14,6 +15,7 @@ import static java.util.stream.Collectors.toList;
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.NONE;
+import static org.hibernate.annotations.FetchMode.JOIN;
 
 @NoArgsConstructor
 @Data
@@ -31,6 +33,7 @@ public class Author {
     private String lastName;
 
     @Setter(value = NONE)
+    @Fetch(JOIN)
     @OneToMany(cascade = ALL, mappedBy = "author")
     private Set<Book> books = new HashSet<>();
 

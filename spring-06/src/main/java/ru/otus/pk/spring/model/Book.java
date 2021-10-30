@@ -4,15 +4,17 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.ALL;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
+import static org.hibernate.annotations.FetchMode.JOIN;
 
 @NoArgsConstructor
 @Data
@@ -36,9 +38,11 @@ public class Book {
     @ManyToOne(fetch = LAZY)
     private Genre genre;
 
+    @Fetch(JOIN)
+    @BatchSize(size = 25)
     @OneToMany(cascade = ALL, orphanRemoval = true)
     @JoinColumn(name = "book_id")
-    private List<Comment> comments = new ArrayList<>();
+    private Set<Comment> comments = new HashSet<>();
 
     public Book(Long id, String name, Author author, Genre genre) {
         this.id = id;
