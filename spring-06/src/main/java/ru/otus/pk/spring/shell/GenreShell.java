@@ -33,7 +33,7 @@ public class GenreShell {
     }
 
     @ShellMethod(value = "Add Genre", key = {"gadd", "genre-add"})
-    public String add(@ShellOption Long id, @ShellOption String name) {
+    public String add(@ShellOption String name) {
         Genre genre = service.save(null, name);
         return format("Genre has been added successfully.\n%s", genre);
     }
