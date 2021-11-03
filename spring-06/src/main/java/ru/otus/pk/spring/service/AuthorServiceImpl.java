@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.model.Author;
+import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.repository.AuthorRepository;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional(readOnly = true)
     @Override
-    public long count() {
+    public Long count() {
         return repository.count();
     }
 
@@ -38,12 +39,18 @@ public class AuthorServiceImpl implements AuthorService {
         return repository.findById(id).orElseThrow(() -> new LibraryException(format(AUTHOR_NOT_FOUND, id)));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Author createNew(String firstName, String lastName) {
+        Author author = new Author(null, firstName, lastName);
+        validate(author);
+        return author;
+    }
+
     @Transactional
     @Override
     public Author save(Long id, String firstName, String lastName) {
-        Author author = id != null ?
-                repository.findById(id).orElseThrow(() -> new LibraryException(format(AUTHOR_NOT_FOUND, id))) :
-                new Author();
+        Author author = id != null ? findById(id) : new Author();
 
         author.setFirstName(firstName);
         author.setLastName(lastName);
@@ -56,6 +63,12 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public int deleteById(Long id) {
         return repository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Book> findBooks(Long id) {
+        return repository.findBooks(id);
     }
 
     private void validate(Author author) {

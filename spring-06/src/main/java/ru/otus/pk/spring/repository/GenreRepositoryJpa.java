@@ -1,10 +1,11 @@
 package ru.otus.pk.spring.repository;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -12,15 +13,11 @@ import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
+@RequiredArgsConstructor
 @Repository
 public class GenreRepositoryJpa implements GenreRepository {
 
-    @PersistenceContext
     private final EntityManager em;
-
-    public GenreRepositoryJpa(EntityManager em) {
-        this.em = em;
-    }
 
     @Override
     public Long count() {
@@ -35,10 +32,7 @@ public class GenreRepositoryJpa implements GenreRepository {
 
     @Override
     public List<Genre> findAll() {
-        TypedQuery<Genre> query = em.createQuery("select distinct g " +
-                "from Genre g " +
-                "left join fetch g.books as b " +
-                "left join fetch b.comments as c", Genre.class);
+        TypedQuery<Genre> query = em.createQuery("select g from Genre g ", Genre.class);
         return query.getResultList();
     }
 
@@ -57,5 +51,14 @@ public class GenreRepositoryJpa implements GenreRepository {
         Query query = em.createQuery("delete from Genre g where g.id = :id");
         query.setParameter("id", id);
         return query.executeUpdate();
+    }
+
+    @Override
+    public List<Book> findBooks(Long id) {
+        TypedQuery<Book> query = em.createQuery("select b from Book b where b.genre.id = :id", Book.class);
+        query.setParameter("id", id);
+        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Book.plain"));
+
+        return query.getResultList();
     }
 }

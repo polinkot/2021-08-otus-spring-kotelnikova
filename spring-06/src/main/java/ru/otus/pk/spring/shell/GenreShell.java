@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import ru.otus.pk.spring.exception.LibraryException;
+import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
 import ru.otus.pk.spring.service.GenreService;
 
@@ -18,7 +20,7 @@ public class GenreShell {
     private final GenreService service;
 
     @ShellMethod(value = "Get Genres count", key = {"gcnt", "genre-count"})
-    public long count() {
+    public Long count() {
         return service.count();
     }
 
@@ -40,6 +42,10 @@ public class GenreShell {
 
     @ShellMethod(value = "Edit Genre", key = {"gedit", "genre-edit"})
     public String edit(@ShellOption Long id, @ShellOption String name) {
+        if (id == null) {
+            throw new LibraryException("Genre id == null!!!");
+        }
+
         Genre genre = service.save(id, name);
         return format("Genre has been updated successfully.\n%s", genre);
     }
@@ -48,5 +54,10 @@ public class GenreShell {
     public String deleteById(@ShellOption Long id) {
         int result = service.deleteById(id);
         return result == 1 ? "Genre has been removed." : "Failed to remove Genre";
+    }
+
+    @ShellMethod(value = "Find Books", key = {"gbk", "genre-books"})
+    public List<Book> findBooks(@ShellOption Long id) {
+        return service.findBooks(id);
     }
 }

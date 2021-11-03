@@ -9,15 +9,12 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
-import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.model.Genre;
 
-import java.util.ArrayList;
-
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.util.ObjectUtils.isEmpty;
 
-@DisplayName("Репозиторий на основе Jpa для работы с книгами ")
+@DisplayName("Репозиторий для работы с книгами должен ")
 @DataJpaTest
 @Import(BookRepositoryJpa.class)
 class BookRepositoryJpaTest {
@@ -39,7 +36,7 @@ class BookRepositoryJpaTest {
     @Autowired
     private TestEntityManager em;
 
-    @DisplayName(" должен загружать информацию о нужной книге по id")
+    @DisplayName("загружать книгу по id")
     @Test
     void shouldFindExpectedBookById() {
         val actualBook = repository.findById(EXISTING_BOOK_ID);
@@ -48,19 +45,17 @@ class BookRepositoryJpaTest {
                 .usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
-    @DisplayName("должен загружать список всех книг с полной информацией о них")
+    @DisplayName("загружать список всех книг")
     @Test
     void findAll() {
         Statistics statistics = new Statistics(em);
         statistics.setStatisticsEnabled(true);
 
-        System.out.println("\n\n\n\n----------------------------------------------------------------------------------------------------------");
         val books = repository.findAll();
         assertThat(books).isNotNull().hasSize(EXPECTED_NUMBER_OF_BOOKS)
                 .allMatch(b -> b.getAuthor() != null)
                 .allMatch(b -> b.getGenre() != null)
-                .allMatch(b -> !b.getName().equals(""));
-        System.out.println("----------------------------------------------------------------------------------------------------------\n\n\n\n");
+                .allMatch(b -> !isEmpty(b.getName()));
         assertThat(statistics.getPrepareStatementCount()).isEqualTo(EXPECTED_QUERIES_COUNT);
     }
 
@@ -75,9 +70,9 @@ class BookRepositoryJpaTest {
 
         Book actualBook = em.find(Book.class, savedBook.getId());
         assertThat(actualBook).isNotNull();
-        assertThat(actualBook).extracting("name", "author.id", "genre.id")
+        assertThat(actualBook).extracting("name", "author", "genre")
                 .doesNotContainNull()
-                .containsExactly(name, existingAuthor.getId(), existingGenre.getId());
+                .containsExactly(name, existingAuthor, existingGenre);
     }
 
     @DisplayName("редактировать книгу в БД")
@@ -95,32 +90,7 @@ class BookRepositoryJpaTest {
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(savedBook);
     }
 
-    @DisplayName("добавить комментарий к книге")
-    @Test
-    void shouldAddCommentToBook() {
-        String newComment = "newComment";
-        Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
-        existingBook.getComments().add(new Comment(null, newComment));
-        repository.save(existingBook);
-
-        Book actualBook = em.find(Book.class, EXISTING_BOOK_ID);
-        assertThat(actualBook.getComments().stream().map(Comment::getText).collect(toList())).contains(newComment);
-    }
-
-    @DisplayName("удалить комментарий к книге")
-    @Test
-    void shouldRemoveCommentFromBook() {
-        Book existingBook = em.find(Book.class, EXISTING_BOOK_ID);
-        Comment comment = new ArrayList<>(existingBook.getComments()).get(0);
-        existingBook.getComments().remove(comment);
-        repository.save(existingBook);
-        em.detach(comment);
-
-        Book actualBook = em.find(Book.class, EXISTING_BOOK_ID);
-        assertThat(actualBook.getComments()).doesNotContain(comment);
-    }
-
-    @DisplayName("удалять заданную книгу по id")
+    @DisplayName("удалять книгу по id")
     @Test
     void shouldCorrectyDeleteBookById() {
         Book book = em.find(Book.class, DELETABLE_BOOK_ID);

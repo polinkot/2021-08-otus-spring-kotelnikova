@@ -16,7 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
-@DisplayName("Сервис AuthorServiceImpl")
+@DisplayName("Сервис для работы с авторами должен ")
 @SpringBootTest(classes = AuthorServiceImpl.class)
 class AuthorServiceImplTest {
 

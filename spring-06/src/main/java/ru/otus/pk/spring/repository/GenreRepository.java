@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.repository;
 
+import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
 
 import java.util.List;
@@ -16,4 +17,6 @@ public interface GenreRepository {
     Genre save(Genre Genre);
 
     int deleteById(Long id);
+
+    List<Book> findBooks(Long id);
 }

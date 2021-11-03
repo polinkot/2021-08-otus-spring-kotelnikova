@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.model.Author;
+import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.service.AuthorService;
 
 import java.util.List;
@@ -18,7 +20,7 @@ public class AuthorShell {
     private final AuthorService service;
 
     @ShellMethod(value = "Get Authors count", key = {"acnt", "author-count"})
-    public long count() {
+    public Long count() {
         return service.count();
     }
 
@@ -40,6 +42,10 @@ public class AuthorShell {
 
     @ShellMethod(value = "Edit Author", key = {"aedit", "author-edit"})
     public String edit(@ShellOption Long id, @ShellOption String firstName, @ShellOption String lastName) {
+        if (id == null) {
+            throw new LibraryException("Author id == null!!!");
+        }
+
         Author author = service.save(id, firstName, lastName);
         return format("Author has been updated successfully.\n%s", author);
     }
@@ -48,5 +54,10 @@ public class AuthorShell {
     public String deleteById(@ShellOption Long id) {
         int result = service.deleteById(id);
         return result == 1 ? "Author has been removed." : "Failed to remove author.";
+    }
+
+    @ShellMethod(value = "Find Books", key = {"abk", "author-books"})
+    public List<Book> findBooks(@ShellOption Long id) {
+        return service.findBooks(id);
     }
 }

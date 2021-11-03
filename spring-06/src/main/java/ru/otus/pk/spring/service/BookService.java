@@ -1,25 +1,27 @@
 package ru.otus.pk.spring.service;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.model.Book;
+import ru.otus.pk.spring.model.Comment;
 
 import java.util.List;
 
 public interface BookService {
 
-    long count();
+    Long count();
 
     List<Book> findAll();
 
     Book findById(Long id);
 
-    Book save(Long id, String name, Long authorId, Long genreId);
+    Book createNew(String bookName,
+                   Long authorId, String authorFirstName, String authorLastName,
+                   Long genreId, String genreName);
 
-    @Transactional
-    Book addComment(Long id, String comment);
-
-    @Transactional
-    Book removeComment(Long id, Long commentId);
+    Book save(Long id, String name,
+              Long authorId, String authorFirstName, String authorLastName,
+              Long genreId, String genreName);
 
     int deleteById(Long id);
+
+    List<Comment> findComments(Long id);
 }

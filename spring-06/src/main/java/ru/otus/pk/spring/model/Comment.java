@@ -1,16 +1,21 @@
 package ru.otus.pk.spring.model;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
+import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.GenerationType.IDENTITY;
 
+@NamedEntityGraph(name = "Comment.plain")
+@NamedEntityGraph(name = "Comment.Book", attributeNodes = {@NamedAttributeNode("book")})
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
 @Entity
 @Table(name = "comment")
 public class Comment {
@@ -24,8 +29,13 @@ public class Comment {
     @Column(name = "time", nullable = false)
     private LocalDateTime time = now();
 
-    public Comment(Long id, String text) {
+    @ToString.Exclude
+    @ManyToOne(cascade = PERSIST)
+    private Book book;
+
+    public Comment(Long id, String text, Book book) {
         this.id = id;
         this.text = text;
+        this.book = book;
     }
 }

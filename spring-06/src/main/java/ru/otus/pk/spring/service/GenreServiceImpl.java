@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.exception.LibraryException;
+import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
 import ru.otus.pk.spring.repository.GenreRepository;
 
@@ -22,7 +23,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional(readOnly = true)
     @Override
-    public long count() {
+    public Long count() {
         return repository.count();
     }
 
@@ -38,12 +39,18 @@ public class GenreServiceImpl implements GenreService {
         return repository.findById(id).orElseThrow(() -> new LibraryException(format(GENRE_NOT_FOUND, id)));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Genre createNew(String name) {
+        Genre genre = new Genre(null, name);
+        validate(genre);
+        return genre;
+    }
+
     @Transactional
     @Override
     public Genre save(Long id, String name) {
-        Genre genre = id != null ?
-                repository.findById(id).orElseThrow(() -> new LibraryException(format(GENRE_NOT_FOUND, id))) :
-                new Genre();
+        Genre genre = id != null ? findById(id) : new Genre();
 
         genre.setName(name);
 
@@ -55,6 +62,12 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public int deleteById(Long id) {
         return repository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Book> findBooks(Long id) {
+        return repository.findBooks(id);
     }
 
     private void validate(Genre genre) {

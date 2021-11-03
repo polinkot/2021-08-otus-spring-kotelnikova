@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.exception.LibraryException;
+import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Comment;
+import ru.otus.pk.spring.model.Genre;
 import ru.otus.pk.spring.repository.BookRepository;
 
 import java.util.List;
@@ -25,7 +27,7 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(readOnly = true)
     @Override
-    public long count() {
+    public Long count() {
         return repository.count();
     }
 
@@ -41,36 +43,30 @@ public class BookServiceImpl implements BookService {
         return repository.findById(id).orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, id)));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Book createNew(String bookName,
+                          Long authorId, String authorFirstName, String authorLastName,
+                          Long genreId, String genreName) {
+        Author author = authorId != null ?
+                authorService.findById(authorId) :
+                authorService.createNew(authorFirstName, authorLastName);
+        Genre genre = genreId != null ?
+                genreService.findById(genreId) :
+                genreService.createNew(genreName);
+
+        return new Book(null, bookName, author, genre);
+    }
+
     @Transactional
     @Override
-    public Book save(Long id, String name, Long authorId, Long genreId) {
+    public Book save(Long id, String name,
+                     Long authorId, String authorFirstName, String authorLastName,
+                     Long genreId, String genreName) {
         Book book = id != null ?
-                repository.findById(id).orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, id))) :
-                new Book();
-
+                findById(id) :
+                createNew(name, authorId, authorFirstName, authorLastName, genreId, genreName);
         book.setName(name);
-        book.setAuthor(authorService.findById(authorId));
-        book.setGenre(genreService.findById(genreId));
-
-        validate(book);
-        return repository.save(book);
-    }
-
-    @Transactional
-    @Override
-    public Book addComment(Long id, String comment) {
-        Book book = repository.findById(id).orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, id)));
-        book.getComments().add(new Comment(null, comment));
-
-        validate(book);
-        return repository.save(book);
-    }
-
-    @Transactional
-    @Override
-    public Book removeComment(Long id, Long commentId) {
-        Book book = repository.findById(id).orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, id)));
-        book.getComments().removeIf(comment -> comment.getId().equals(commentId));
 
         validate(book);
         return repository.save(book);
@@ -82,9 +78,23 @@ public class BookServiceImpl implements BookService {
         return repository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<Comment> findComments(Long id) {
+        return repository.findComments(id);
+    }
+
     private void validate(Book book) {
         if (isEmpty(book.getName())) {
             throw new LibraryException("Book name is null or empty!");
+        }
+
+        if (book.getAuthor() == null) {
+            throw new LibraryException("Book author is null or empty!");
+        }
+
+        if (book.getGenre() == null) {
+            throw new LibraryException("Book genre is null or empty!");
         }
     }
 }
