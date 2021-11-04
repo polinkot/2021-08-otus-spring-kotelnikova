@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import ru.otus.pk.spring.model.Author;
+import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
 import ru.otus.pk.spring.repository.GenreRepository;
 
@@ -40,11 +42,11 @@ class GenreServiceImplTest {
     @DisplayName("возвращать ожидаемое количество жанров")
     @Test
     void shouldReturnExpectedGenreCount() {
-        long expectedCount = 2;
+        Long expectedCount = 2L;
 
         given(repository.count()).willReturn(expectedCount);
 
-        long actualCount = service.count();
+        Long actualCount = service.count();
         assertThat(actualCount).isEqualTo(expectedCount);
     }
 
@@ -89,5 +91,16 @@ class GenreServiceImplTest {
 
         int actualDeletedCount = service.deleteById(id);
         assertThat(actualDeletedCount).isEqualTo(expectedDeletedCount);
+    }
+
+    @DisplayName("возвращать ожидаемый список книг для жанра ")
+    @Test
+    void shouldReturnExpectedGenreBooksCount() {
+        Book book2 = new Book(2L, "Book2", new Author(1L, "AuthorF", "AuthorL"), EXPECTED_GENRE);
+
+        given(repository.findBooks(EXPECTED_GENRE.getId())).willReturn(List.of(book2));
+
+        List<Book> actualBooks = service.findBooks(EXPECTED_GENRE.getId());
+        Assertions.assertThat(actualBooks).usingFieldByFieldElementComparator().containsExactly(book2);
     }
 }

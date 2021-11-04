@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
+import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -29,10 +32,10 @@ class GenreRepositoryJpaTest {
     @Autowired
     private TestEntityManager em;
 
-    @DisplayName("возвращать ожидаемое количество авторов в БД")
+    @DisplayName("возвращать ожидаемое количество жанров в БД")
     @Test
     void shouldReturnExpectedAuthorCount() {
-        long actualCount = repository.count();
+        Long actualCount = repository.count();
         assertThat(actualCount).isEqualTo(EXPECTED_NUMBER_OF_GENRES);
     }
 
@@ -49,7 +52,6 @@ class GenreRepositoryJpaTest {
     @Test
     void shouldReturnCorrectGenresListWithAllInfo() {
         Statistics statistics = new Statistics(em);
-        statistics.setStatisticsEnabled(true);
 
         val genres = repository.findAll();
         assertThat(genres).isNotNull().hasSize(EXPECTED_NUMBER_OF_GENRES).allMatch(g -> !isEmpty(g.getName()));
@@ -89,5 +91,22 @@ class GenreRepositoryJpaTest {
 
         genre = em.find(Genre.class, DELETABLE_GENRE_ID);
         assertThat(genre).isNull();
+    }
+
+    @DisplayName("возвращать ожидаемый список книг для жанра ")
+    @Test
+    void shouldReturnExpectedGenreBooksCount() {
+        Statistics statistics = new Statistics(em);
+
+        List<Book> books = repository.findBooks(EXISTING_GENRE_ID);
+
+        int expectedNumberOfBooks = 1;
+        int expectedQueriesCount = 1;
+        assertThat(books).isNotNull().hasSize(expectedNumberOfBooks)
+                .allMatch(b -> !isEmpty(b.getName()))
+                .anyMatch(b -> b.getName().equals("Book2"))
+                .allMatch(b -> !isEmpty(b.getGenre()))
+                .allMatch(b -> !isEmpty(b.getAuthor()));
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(expectedQueriesCount);
     }
 }

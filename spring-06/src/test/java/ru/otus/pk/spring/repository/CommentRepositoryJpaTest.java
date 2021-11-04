@@ -31,6 +31,13 @@ class CommentRepositoryJpaTest {
     @Autowired
     private TestEntityManager em;
 
+    @DisplayName("возвращать ожидаемое количество комментариев в БД ")
+    @Test
+    void shouldReturnExpectedCommentCount() {
+        Long actualCount = repository.count();
+        assertThat(actualCount).isEqualTo(EXPECTED_NUMBER_OF_COMMENTS);
+    }
+
     @DisplayName("загружать коментарий по id")
     @Test
     void shouldFindExpectedCommentById() {
@@ -43,7 +50,6 @@ class CommentRepositoryJpaTest {
     @Test
     void findAll() {
         Statistics statistics = new Statistics(em);
-        statistics.setStatisticsEnabled(true);
 
         val comments = repository.findAll();
         assertThat(comments).isNotNull().hasSize(EXPECTED_NUMBER_OF_COMMENTS)

@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.pk.spring.model.Author;
+import ru.otus.pk.spring.model.Book;
+import ru.otus.pk.spring.model.Genre;
 import ru.otus.pk.spring.repository.AuthorRepository;
 
 import java.util.List;
@@ -40,11 +42,11 @@ class AuthorServiceImplTest {
     @DisplayName("возвращать ожидаемое количество авторов")
     @Test
     void shouldReturnExpectedAuthorCount() {
-        long expectedCount = 2;
+        Long expectedCount = 2L;
 
         given(repository.count()).willReturn(expectedCount);
 
-        long actualCount = service.count();
+        Long actualCount = service.count();
         assertThat(actualCount).isEqualTo(expectedCount);
     }
 
@@ -88,5 +90,17 @@ class AuthorServiceImplTest {
 
         int actualDeletedCount = service.deleteById(id);
         assertThat(actualDeletedCount).isEqualTo(expectedDeletedCount);
+    }
+
+    @DisplayName("возвращать ожидаемый список книг для автора ")
+    @Test
+    void shouldReturnExpectedAuthorBooksCount() {
+        Book book1 = new Book(1L, "Book1", EXPECTED_AUTHOR, new Genre(1L, "Genre1"));
+        Book book2 = new Book(2L, "Book2", EXPECTED_AUTHOR, new Genre(2L, "Genre2"));
+
+        given(repository.findBooks(EXPECTED_AUTHOR.getId())).willReturn(List.of(book1, book2));
+
+        List<Book> actualBooks = service.findBooks(EXPECTED_AUTHOR.getId());
+        Assertions.assertThat(actualBooks).usingFieldByFieldElementComparator().containsExactly(book1, book2);
     }
 }

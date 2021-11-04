@@ -8,10 +8,8 @@ public class Statistics {
 
     public Statistics(TestEntityManager em) {
         this.sessionFactory = em.getEntityManager().getEntityManagerFactory().unwrap(SessionFactory.class);
-    }
-
-    public void setStatisticsEnabled(boolean value) {
-        this.sessionFactory.getStatistics().setStatisticsEnabled(value);
+        this.sessionFactory.getStatistics().clear();
+        this.sessionFactory.getStatistics().setStatisticsEnabled(true);
     }
 
     public long getPrepareStatementCount() {

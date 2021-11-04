@@ -8,6 +8,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Author;
+import ru.otus.pk.spring.model.Book;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -32,7 +35,7 @@ class AuthorRepositoryJpaTest {
     @DisplayName("возвращать ожидаемое количество авторов в БД ")
     @Test
     void shouldReturnExpectedAuthorCount() {
-        long actualCount = repository.count();
+        Long actualCount = repository.count();
         assertThat(actualCount).isEqualTo(EXPECTED_NUMBER_OF_AUTHORS);
     }
 
@@ -49,7 +52,6 @@ class AuthorRepositoryJpaTest {
     @Test
     void shouldReturnCorrectAuthorsListWithAllInfo() {
         Statistics statistics = new Statistics(em);
-        statistics.setStatisticsEnabled(true);
 
         val authors = repository.findAll();
         assertThat(authors).isNotNull().hasSize(EXPECTED_NUMBER_OF_AUTHORS)
@@ -95,5 +97,23 @@ class AuthorRepositoryJpaTest {
 
         author = em.find(Author.class, DELETABLE_AUTHOR_ID);
         assertThat(author).isNull();
+    }
+
+    @DisplayName("возвращать ожидаемый список книг для автора ")
+    @Test
+    void shouldReturnExpectedAuthorBooksCount() {
+        Statistics statistics = new Statistics(em);
+
+        List<Book> books = repository.findBooks(EXISTING_AUTHOR_ID);
+
+        int expectedNumberOfBooks = 2;
+        int expectedQueriesCount = 1;
+        assertThat(books).isNotNull().hasSize(expectedNumberOfBooks)
+                .allMatch(b -> !isEmpty(b.getName()))
+                .anyMatch(b -> b.getName().equals("Book1"))
+                .anyMatch(b -> b.getName().equals("Book2"))
+                .allMatch(b -> !isEmpty(b.getGenre()))
+                .allMatch(b -> !isEmpty(b.getAuthor()));
+        assertThat(statistics.getPrepareStatementCount()).isEqualTo(expectedQueriesCount);
     }
 }
