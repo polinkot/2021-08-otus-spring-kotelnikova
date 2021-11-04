@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("Сервис для работы с комментариями должен ")
@@ -48,11 +48,11 @@ class CommentServiceImplTest {
     @DisplayName("возвращать ожидаемое количество комментариев")
     @Test
     void shouldReturnExpectedCommentCount() {
-        long expectedCount = 2;
+        Long expectedCount = 2L;
 
         given(repository.count()).willReturn(expectedCount);
 
-        long actualCount = service.count();
+        Long actualCount = service.count();
         assertThat(actualCount).isEqualTo(expectedCount);
     }
 
@@ -65,43 +65,24 @@ class CommentServiceImplTest {
         assertThat(actualComment).usingRecursiveComparison().isEqualTo(COMMENT);
     }
 
-//    @DisplayName("добавлять комментарий")
-//    @Test
-//    void shouldInsertComment() {
-//        String commentText = "newComment";
-//        String bookName = "newBook";
-//        String authorFirstName = "newAuthorF";
-//        String authorLastName = "newAuthorL";
-//        String genreName = "newGenre";
-//
-//        Book newBook = new Book(null, bookName,
-//                new Author(null, authorFirstName, authorLastName),
-//                new Genre(null, genreName));
-//        Comment newComment = new Comment(100L, commentText, newBook);
-//
-//        given(repository.save(any(Comment.class))).willReturn(newComment);
-//        given(bookService.findByIdOrCreateNew(anyLong(), anyString(), anyLong(), anyString(), anyString(), anyLong(), anyString()))
-//                .willReturn(newBook);
-//
-//        Comment actualComment = service.save(null, commentText, null, bookName,
-//                null, authorFirstName, authorLastName, null, genreName);
-//        assertThat(actualComment).isEqualTo(newComment);
-//    }
-//
-//    @DisplayName("редактировать комментарий")
-//    @Test
-//    void shouldUpdateComment() {
-//        String changedText = "changedName";
-//        Comment changedComment = new Comment(COMMENT.getId(), changedText, COMMENT.getBook());
-//
-//        given(repository.findById(COMMENT.getId())).willReturn(Optional.of(COMMENT));
-//        given(repository.save(any(Comment.class))).willReturn(changedComment);
-//        given(bookService.findByIdOrCreateNew(anyLong(), anyString(), anyLong(), anyString(), anyString(), anyLong(), anyString()))
-//                .willReturn(BOOK);
-//
-//        Comment actualComment = service.save(1L, changedText);
-//        assertThat(actualComment).isEqualTo(changedComment);
-//    }
+    @DisplayName("добавлять комментарий")
+    @Test
+    void shouldInsertComment() {
+        given(repository.save(any(Comment.class))).willReturn(COMMENT);
+
+        Comment actualComment = service.save(null, COMMENT.getText(), COMMENT.getBook().getId());
+        assertThat(actualComment).isEqualTo(COMMENT);
+    }
+
+    @DisplayName("редактировать комментарий")
+    @Test
+    void shouldUpdateComment() {
+        given(repository.findById(COMMENT.getId())).willReturn(Optional.of(COMMENT));
+        given(repository.save(any(Comment.class))).willReturn(COMMENT);
+
+        Comment actualComment = service.save(COMMENT.getId(), COMMENT.getText(), COMMENT.getBook().getId());
+        assertThat(actualComment).isEqualTo(COMMENT);
+    }
 
     @DisplayName("удалять заданный комментарий по id")
     @Test

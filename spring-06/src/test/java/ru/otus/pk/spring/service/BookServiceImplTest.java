@@ -65,29 +65,30 @@ class BookServiceImplTest {
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(EXPECTED_BOOK);
     }
 
-//    @DisplayName("добавлять книгу")
-//    @Test
-//    void shouldInsertBook() {
-//        given(repository.save(any(Book.class))).willReturn(EXPECTED_BOOK);
-//        given(authorService.findById(AUTHOR.getId())).willReturn(AUTHOR);
-//        given(genreService.findById(GENRE.getId())).willReturn(GENRE);
-//
-//        Book actualBook = service.save(null, "newBook", AUTHOR.getId(), GENRE.getId());
-//        assertThat(actualBook).isEqualTo(EXPECTED_BOOK);
-//    }
+    @DisplayName("добавлять книгу")
+    @Test
+    void shouldInsertBook() {
+        given(repository.save(any(Book.class))).willReturn(EXPECTED_BOOK);
+        given(authorService.findById(AUTHOR.getId())).willReturn(AUTHOR);
+        given(genreService.findById(GENRE.getId())).willReturn(GENRE);
 
-//    @DisplayName("редактировать книгу")
-//    @Test
-//    void shouldUpdateBook() {
-//        String changedName = "changedName";
-//        Book expectedBook = new Book(1L, changedName, AUTHOR, GENRE);
-//
-//        given(repository.findById(expectedBook.getId())).willReturn(Optional.of(expectedBook));
-//        given(repository.save(any(Book.class))).willReturn(expectedBook);
-//
-//        Book actualBook = service.save(1L, changedName, AUTHOR.getId(), GENRE.getId());
-//        assertThat(actualBook).isEqualTo(expectedBook);
-//    }
+        Book actualBook = service.save(null, EXPECTED_BOOK.getName(),
+                AUTHOR.getId(), null, null,
+                GENRE.getId(), null);
+        assertThat(actualBook).isEqualTo(EXPECTED_BOOK);
+    }
+
+    @DisplayName("редактировать книгу")
+    @Test
+    void shouldUpdateBook() {
+        Book expectedBook = new Book(1L, "changedName", AUTHOR, GENRE);
+
+        given(repository.findById(expectedBook.getId())).willReturn(Optional.of(expectedBook));
+        given(repository.save(any(Book.class))).willReturn(expectedBook);
+
+        Book actualBook = service.save(1L, expectedBook.getName(), null, null, null, null, null);
+        assertThat(actualBook).isEqualTo(expectedBook);
+    }
 
     @DisplayName("удалять заданную книгу по id")
     @Test
