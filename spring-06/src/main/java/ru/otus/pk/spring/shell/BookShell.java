@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.service.BookService;
@@ -31,6 +30,8 @@ public class BookShell {
 
     @ShellMethod(value = "Find Book by id", key = {"bid", "book-id"})
     public Book findById(@ShellOption Long id) {
+        checkId(id);
+
         return service.findById(id);
     }
 
@@ -44,9 +45,7 @@ public class BookShell {
 
     @ShellMethod(value = "Edit Book", key = {"bedit", "book-edit"})
     public String edit(@ShellOption Long id, @ShellOption String name) {
-        if (id == null) {
-            throw new LibraryException("Book id == null!!!");
-        }
+        checkId(id);
 
         Book book = service.save(id, name, null, null, null, null, null);
         return format("Book has been updated successfully.\n%s", book);
@@ -54,12 +53,20 @@ public class BookShell {
 
     @ShellMethod(value = "Delete Book by id", key = {"bdel", "book-delete"})
     public String deleteById(@ShellOption Long id) {
+        checkId(id);
+
         int result = service.deleteById(id);
         return result == 1 ? "Book has been removed." : "Failed to remove book.";
     }
 
     @ShellMethod(value = "Find Comments", key = {"bcm", "book-comments"})
     public List<Comment> findComments(@ShellOption Long id) {
+        checkId(id);
+
         return service.findComments(id);
+    }
+
+    private void checkId(Long id) {
+        CheckUtils.checkId(id, "Book id is null!!!");
     }
 }

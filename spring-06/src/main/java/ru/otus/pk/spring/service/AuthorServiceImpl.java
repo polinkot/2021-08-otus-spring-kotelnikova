@@ -8,9 +8,11 @@ import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.repository.AuthorRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
+import static java.lang.String.join;
 import static org.springframework.util.ObjectUtils.isEmpty;
 
 @RequiredArgsConstructor
@@ -72,12 +74,18 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private void validate(Author author) {
+        List<String> errors = new ArrayList<>();
+
         if (isEmpty(author.getFirstName())) {
-            throw new LibraryException("Author first name is null or empty!");
+            errors.add("Author first name is null or empty!");
         }
 
         if (isEmpty(author.getLastName())) {
-            throw new LibraryException("Author last name is null or empty!");
+            errors.add("Author last name is null or empty!");
+        }
+
+        if (!isEmpty(errors)) {
+            throw new LibraryException(join("\n", errors));
         }
     }
 }

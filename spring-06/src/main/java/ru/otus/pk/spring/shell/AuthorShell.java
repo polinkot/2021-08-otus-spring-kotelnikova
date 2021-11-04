@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.service.AuthorService;
@@ -31,6 +30,8 @@ public class AuthorShell {
 
     @ShellMethod(value = "Find Author by id", key = {"aid", "author-id"})
     public Author findById(@ShellOption Long id) {
+        checkId(id);
+
         return service.findById(id);
     }
 
@@ -42,9 +43,7 @@ public class AuthorShell {
 
     @ShellMethod(value = "Edit Author", key = {"aedit", "author-edit"})
     public String edit(@ShellOption Long id, @ShellOption String firstName, @ShellOption String lastName) {
-        if (id == null) {
-            throw new LibraryException("Author id == null!!!");
-        }
+        checkId(id);
 
         Author author = service.save(id, firstName, lastName);
         return format("Author has been updated successfully.\n%s", author);
@@ -52,12 +51,20 @@ public class AuthorShell {
 
     @ShellMethod(value = "Delete Author by id", key = {"adel", "author-delete"})
     public String deleteById(@ShellOption Long id) {
+        checkId(id);
+
         int result = service.deleteById(id);
         return result == 1 ? "Author has been removed." : "Failed to remove author.";
     }
 
     @ShellMethod(value = "Find Books", key = {"abk", "author-books"})
     public List<Book> findBooks(@ShellOption Long id) {
+        checkId(id);
+
         return service.findBooks(id);
+    }
+
+    private void checkId(Long id) {
+        CheckUtils.checkId(id, "Author id is null!!!");
     }
 }

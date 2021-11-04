@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.model.Book;
 import ru.otus.pk.spring.model.Genre;
 import ru.otus.pk.spring.service.GenreService;
@@ -31,6 +30,8 @@ public class GenreShell {
 
     @ShellMethod(value = "Find Genre by id", key = {"gid", "genre-id"})
     public Genre findById(@ShellOption Long id) {
+        checkId(id);
+
         return service.findById(id);
     }
 
@@ -42,9 +43,7 @@ public class GenreShell {
 
     @ShellMethod(value = "Edit Genre", key = {"gedit", "genre-edit"})
     public String edit(@ShellOption Long id, @ShellOption String name) {
-        if (id == null) {
-            throw new LibraryException("Genre id == null!!!");
-        }
+        checkId(id);
 
         Genre genre = service.save(id, name);
         return format("Genre has been updated successfully.\n%s", genre);
@@ -52,12 +51,20 @@ public class GenreShell {
 
     @ShellMethod(value = "Delete Genre by id", key = {"gdel", "genre-delete"})
     public String deleteById(@ShellOption Long id) {
+        checkId(id);
+
         int result = service.deleteById(id);
         return result == 1 ? "Genre has been removed." : "Failed to remove Genre";
     }
 
     @ShellMethod(value = "Find Books", key = {"gbk", "genre-books"})
     public List<Book> findBooks(@ShellOption Long id) {
+        checkId(id);
+
         return service.findBooks(id);
+    }
+
+    private void checkId(Long id) {
+        CheckUtils.checkId(id, "Genre id is null!!!");
     }
 }

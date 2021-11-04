@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.service.CommentService;
 
@@ -30,6 +29,8 @@ public class CommentShell {
 
     @ShellMethod(value = "Find Comment by id", key = {"cid", "comment-id"})
     public Comment findById(@ShellOption Long id) {
+        checkId(id);
+
         return service.findById(id);
     }
 
@@ -41,9 +42,7 @@ public class CommentShell {
 
     @ShellMethod(value = "Edit Comment", key = {"cedit", "comment-edit"})
     public String edit(@ShellOption Long id, @ShellOption String text) {
-        if (id == null) {
-            throw new LibraryException("Comment id == null!!!");
-        }
+        checkId(id);
 
         Comment genre = service.save(id, text, null);
         return format("Comment has been updated successfully.\n%s", genre);
@@ -51,7 +50,13 @@ public class CommentShell {
 
     @ShellMethod(value = "Delete Comment by id", key = {"cdel", "comment-delete"})
     public String deleteById(@ShellOption Long id) {
+        checkId(id);
+
         int result = service.deleteById(id);
         return result == 1 ? "Comment has been removed." : "Failed to remove Comment";
+    }
+
+    private void checkId(Long id) {
+        CheckUtils.checkId(id, "Comment id is null!!!");
     }
 }
