@@ -6,10 +6,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
-import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@NamedEntityGraph(name = "Comment.plain")
 @NamedEntityGraph(name = "Comment.Book", attributeNodes = {@NamedAttributeNode("book")})
 @NoArgsConstructor
 @Getter
@@ -29,8 +28,7 @@ public class Comment {
     @Column(name = "time", nullable = false)
     private LocalDateTime time = now();
 
-    @ToString.Exclude
-    @ManyToOne(cascade = PERSIST)
+    @ManyToOne(fetch = LAZY)
     private Book book;
 
     public Comment(Long id, String text, Book book) {
