@@ -3,7 +3,6 @@ package ru.otus.pk.spring.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import ru.otus.pk.spring.model.Book;
-import ru.otus.pk.spring.model.Comment;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -53,14 +52,5 @@ public class BookRepositoryJpa implements BookRepository {
         Query query = em.createQuery("delete from Book b where b.id = :id");
         query.setParameter("id", id);
         return query.executeUpdate();
-    }
-
-    @Override
-    public List<Comment> findComments(Long id) {
-        TypedQuery<Comment> query = em.createQuery("select c from Comment c where c.book.id = :id", Comment.class);
-        query.setParameter("id", id);
-        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Comment.plain"));
-
-        return query.getResultList();
     }
 }

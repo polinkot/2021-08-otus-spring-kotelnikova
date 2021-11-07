@@ -9,10 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
-import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.model.Genre;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -110,23 +107,5 @@ class BookRepositoryJpaTest {
 
         book = em.find(Book.class, DELETABLE_BOOK_ID);
         assertThat(book).isNull();
-    }
-
-    @DisplayName("возвращать ожидаемый список комментариев для книги ")
-    @Test
-    void shouldReturnExpectedBookCommentsCount() {
-        Statistics statistics = new Statistics(em);
-
-        List<Comment> comments = repository.findComments(EXISTING_BOOK_ID);
-
-        int expectedNumberOfComments = 2;
-        int expectedQueriesCount = 1;
-        assertThat(comments).isNotNull().hasSize(expectedNumberOfComments)
-                .allMatch(c -> !isEmpty(c.getText()))
-                .allMatch(c -> !isEmpty(c.getTime()))
-                .anyMatch(c -> c.getText().equals("Comment1"))
-                .anyMatch(c -> c.getText().equals("Comment2"))
-                .allMatch(c -> !isEmpty(c.getBook()));
-        assertThat(statistics.getPrepareStatementCount()).isEqualTo(expectedQueriesCount);
     }
 }

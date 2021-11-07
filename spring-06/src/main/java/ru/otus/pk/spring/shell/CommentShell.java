@@ -56,6 +56,13 @@ public class CommentShell {
         return result == 1 ? "Comment has been removed." : "Failed to remove Comment";
     }
 
+    @ShellMethod(value = "Find Comments by bookId", key = {"cbk", "comment-by-book"})
+    public List<Comment> findByBookId(@ShellOption Long bookId) {
+        CheckUtils.checkId(bookId, "Book id is null!!!");
+
+        return service.findByBookId(bookId);
+    }
+
     private void checkId(Long id) {
         CheckUtils.checkId(id, "Comment id is null!!!");
     }

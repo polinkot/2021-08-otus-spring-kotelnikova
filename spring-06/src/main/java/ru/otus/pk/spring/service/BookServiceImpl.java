@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.model.Author;
 import ru.otus.pk.spring.model.Book;
-import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.model.Genre;
 import ru.otus.pk.spring.repository.BookRepository;
 
@@ -76,12 +75,6 @@ public class BookServiceImpl implements BookService {
     @Override
     public int deleteById(Long id) {
         return repository.deleteById(id);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Comment> findComments(Long id) {
-        return repository.findComments(id);
     }
 
     private void validate(Book book) {

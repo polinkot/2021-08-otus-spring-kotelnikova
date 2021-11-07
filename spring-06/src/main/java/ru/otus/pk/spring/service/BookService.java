@@ -1,7 +1,6 @@
 package ru.otus.pk.spring.service;
 
 import ru.otus.pk.spring.model.Book;
-import ru.otus.pk.spring.model.Comment;
 
 import java.util.List;
 
@@ -22,6 +21,4 @@ public interface BookService {
               Long genreId, String genreName);
 
     int deleteById(Long id);
-
-    List<Comment> findComments(Long id);
 }

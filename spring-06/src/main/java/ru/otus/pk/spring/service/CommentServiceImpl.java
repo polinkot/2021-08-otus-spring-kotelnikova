@@ -56,6 +56,12 @@ public class CommentServiceImpl implements CommentService {
         return repository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<Comment> findByBookId(Long bookId) {
+        return repository.findByBookId(bookId);
+    }
+
     private void validate(Comment comment) {
         if (isEmpty(comment.getText())) {
             throw new LibraryException("Comment text is null or empty!");

@@ -15,4 +15,6 @@ public interface CommentService {
     Comment save(Long id, String text, Long bookId);
 
     int deleteById(Long id);
+
+    List<Comment> findByBookId(Long bookId);
 }

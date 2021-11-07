@@ -5,7 +5,6 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.pk.spring.model.Book;
-import ru.otus.pk.spring.model.Comment;
 import ru.otus.pk.spring.service.BookService;
 
 import java.util.List;
@@ -57,13 +56,6 @@ public class BookShell {
 
         int result = service.deleteById(id);
         return result == 1 ? "Book has been removed." : "Failed to remove book.";
-    }
-
-    @ShellMethod(value = "Find Comments", key = {"bcm", "book-comments"})
-    public List<Comment> findComments(@ShellOption Long id) {
-        checkId(id);
-
-        return service.findComments(id);
     }
 
     private void checkId(Long id) {
