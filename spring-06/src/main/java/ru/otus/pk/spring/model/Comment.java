@@ -9,7 +9,22 @@ import static java.time.LocalDateTime.now;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@NamedEntityGraph(name = "Comment.Book", attributeNodes = {@NamedAttributeNode("book")})
+@NamedEntityGraph(
+        name = "Comment.Book.Author.Genre",
+        attributeNodes = {
+                @NamedAttributeNode(value = "book", subgraph = "book-subgraph"),
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = "book-subgraph",
+                        attributeNodes = {
+                                @NamedAttributeNode("author"),
+                                @NamedAttributeNode("genre")
+                        }
+                )
+        }
+)
+
 @NoArgsConstructor
 @Getter
 @Setter

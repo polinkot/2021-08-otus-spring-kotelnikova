@@ -4,15 +4,15 @@ import lombok.*;
 
 import javax.persistence.*;
 
-import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
-@NamedEntityGraph(name = "Book.plain")
+@NamedEntityGraph(name = "Book.Author.Genre", attributeNodes = {@NamedAttributeNode("author"), @NamedAttributeNode("genre")})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = {"author", "genre"})
+@ToString
 @Entity
 @Table(name = "book")
 public class Book {
@@ -24,9 +24,9 @@ public class Book {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToOne(cascade = PERSIST)
+    @ManyToOne(fetch = LAZY)
     private Author author;
 
-    @ManyToOne(cascade = PERSIST)
+    @ManyToOne(fetch = LAZY)
     private Genre genre;
 }

@@ -27,14 +27,14 @@ public class CommentRepositoryJpa implements CommentRepository {
 
     @Override
     public Optional<Comment> findById(Long id) {
-        Map<String, Object> properties = Map.of("javax.persistence.fetchgraph", em.getEntityGraph("Comment.Book"));
+        Map<String, Object> properties = Map.of("javax.persistence.fetchgraph", em.getEntityGraph("Comment.Book.Author.Genre"));
         return ofNullable(em.find(Comment.class, id, properties));
     }
 
     @Override
     public List<Comment> findAll() {
-        TypedQuery<Comment> query = em.createQuery("select c from Comment c", Comment.class);
-        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Comment.Book"));
+        TypedQuery<Comment> query = em.createQuery("select c from Comment c ", Comment.class);
+        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Comment.Book.Author.Genre"));
 
         return query.getResultList();
     }
@@ -60,7 +60,7 @@ public class CommentRepositoryJpa implements CommentRepository {
     public List<Comment> findByBookId(Long bookId) {
         TypedQuery<Comment> query = em.createQuery("select c from Comment c where c.book.id = :bookId", Comment.class);
         query.setParameter("bookId", bookId);
-        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Comment.Book"));
+        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Comment.Book.Author.Genre"));
 
         return query.getResultList();
     }

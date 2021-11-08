@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
@@ -26,14 +27,15 @@ public class BookRepositoryJpa implements BookRepository {
 
     @Override
     public Optional<Book> findById(Long id) {
-        return ofNullable(em.find(Book.class, id));
+        Map<String, Object> properties = Map.of("javax.persistence.fetchgraph", em.getEntityGraph("Book.Author.Genre"));
+        return ofNullable(em.find(Book.class, id, properties));
     }
 
     @Override
     public List<Book> findAll() {
         TypedQuery<Book> query = em.createQuery("select b from Book b " +
-                "left join fetch b.author " +
-                "left join fetch b.genre ", Book.class);
+                "join fetch b.author " +
+                "join fetch b.genre ", Book.class);
         return query.getResultList();
     }
 

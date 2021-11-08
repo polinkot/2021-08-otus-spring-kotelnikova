@@ -57,7 +57,7 @@ public class GenreRepositoryJpa implements GenreRepository {
     public List<Book> findBooks(Long id) {
         TypedQuery<Book> query = em.createQuery("select b from Book b where b.genre.id = :id", Book.class);
         query.setParameter("id", id);
-        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Book.plain"));
+        query.setHint("javax.persistence.fetchgraph", this.em.getEntityGraph("Book.Author.Genre"));
 
         return query.getResultList();
     }
