@@ -66,7 +66,7 @@ class BookRepositoryTest {
 
         List<Book> books = repository.findByAuthorId(EXISTING_AUTHOR_ID);
 
-        int expectedNumberOfBooks = 1;
+        int expectedNumberOfBooks = 2;
         int expectedQueriesCount = 1;
         assertThat(books).isNotNull().hasSize(expectedNumberOfBooks)
                 .allMatch(b -> !isEmpty(b.getName()))
