@@ -1,4 +1,4 @@
-package ru.otus.pk.spring.model;
+package ru.otus.pk.spring.domain;
 
 import lombok.*;
 
