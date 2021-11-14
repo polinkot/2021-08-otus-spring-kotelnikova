@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @EntityGraph(value = "Comment.Book.Author.Genre")
     @Override
     List<Comment> findAll();
 
@@ -17,6 +16,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Override
     Optional<Comment> findById(Long id);
 
-    @EntityGraph(value = "Comment.Book.Author.Genre")
     List<Comment> findByBookId(Long bookId);
 }

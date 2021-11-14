@@ -27,8 +27,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
-@EqualsAndHashCode
+@ToString(exclude = {"book"})
+@EqualsAndHashCode(exclude = {"book"})
 @Entity
 @Table(name = "comment")
 public class Comment {
