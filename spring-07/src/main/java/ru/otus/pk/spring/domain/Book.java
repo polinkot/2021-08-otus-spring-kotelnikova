@@ -1,4 +1,4 @@
-package ru.otus.pk.spring.model;
+package ru.otus.pk.spring.domain;
 
 import lombok.*;
 
@@ -13,7 +13,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"author", "genre"})
+@EqualsAndHashCode(exclude = {"author", "genre"})
 @Entity
 @Table(name = "book")
 public class Book {
