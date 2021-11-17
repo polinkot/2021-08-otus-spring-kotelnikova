@@ -10,6 +10,7 @@
  * DAO на Spring JDBC - spring-05  
  * JPQL, Spring ORM, DAO на основе Spring ORM + JPA - spring-06
  * "Белая магия" Spring Data: Spring Data JPA - spring-07    
+ * Spring Data для подключения к нереляционным БД - spring-08    
 
 
 📚Домашние задания разработаны для курса ["Разработчик на Spring Framework"](https://otus.ru/lessons/javaspring/?int_source=courses_catalog&int_term=programming)
