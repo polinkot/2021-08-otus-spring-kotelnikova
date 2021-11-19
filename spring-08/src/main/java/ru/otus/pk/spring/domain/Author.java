@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -20,11 +21,14 @@ public class Author {
 
     private String lastName;
 
-    private List<Book> books;
+    private Set<Book> books = new HashSet<>();
 
     public Author(String firstName, String lastName, Book... books) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.books = List.of(books);
+
+        if (books.length > 0) {
+            this.books = Set.of(books);
+        }
     }
 }

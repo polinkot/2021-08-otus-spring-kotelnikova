@@ -6,7 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,10 +19,12 @@ public class Genre {
 
     private String name;
 
-    private List<Book> books;
+    private Set<Book> books = new HashSet<>();
 
     public Genre(String name, Book... books) {
         this.name = name;
-        this.books = List.of(books);
+        if (books.length > 0) {
+            this.books = Set.of(books);
+        }
     }
 }

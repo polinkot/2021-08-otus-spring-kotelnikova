@@ -20,6 +20,7 @@ public class InitMongoDBDataChangeLog {
     private Comment comment3;
     private Book book1;
     private Book book2;
+    private Book book3;
 
     @ChangeSet(order = "000", id = "dropDB", author = "pk", runAlways = true)
     public void dropDB(MongoDatabase database) {
@@ -37,17 +38,20 @@ public class InitMongoDBDataChangeLog {
     public void initBooks(BookRepository repository) {
         book1 = repository.save(new Book("Book1", comment1, comment3));
         book2 = repository.save(new Book("Book2", comment2));
+        book3 = repository.save(new Book("Book3"));
     }
 
     @ChangeSet(order = "003", id = "initAuthors", author = "pk", runAlways = true)
     public void initAuthors(AuthorRepository repository) {
         repository.save(new Author("AuthorF1", "AuthorL1", book1));
-        repository.save(new Author("AuthorF2", "AuthorL2", book2));
+        repository.save(new Author("AuthorF2", "AuthorL2", book2, book3));
+        repository.save(new Author("AuthorF3", "AuthorL3"));
+        repository.save(new Author("AuthorF4", "AuthorL4"));
     }
 
     @ChangeSet(order = "004", id = "initGenres", author = "pk", runAlways = true)
     public void initGenres(GenreRepository repository) {
         repository.save(new Genre("Genre1", book1));
-        repository.save(new Genre("Genre2", book2));
+        repository.save(new Genre("Genre2", book2, book3));
     }
 }
