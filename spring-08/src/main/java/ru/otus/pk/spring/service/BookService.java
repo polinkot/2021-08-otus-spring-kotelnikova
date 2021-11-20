@@ -23,7 +23,7 @@ public interface BookService {
 
     void deleteById(String id);
 
-//    List<Book> findByAuthorId(Long authorId);
-//
-//    List<Book> findByGenreId(Long genreId);
+    List<BookDto> getByAuthorId(String authorId);
+
+    List<BookDto> getByGenreId(String genreId);
 }

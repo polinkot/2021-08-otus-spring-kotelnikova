@@ -13,6 +13,7 @@ import ru.otus.pk.spring.repository.BookRepository;
 import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.toSet;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @RequiredArgsConstructor
@@ -74,34 +75,6 @@ public class BookServiceImpl implements BookService {
         return getById(savedBook.getId());
     }
 
-//    @Transactional
-//    @Override
-//    public BookDto add(String name,
-//                       String authorId, String authorFirstName, String authorLastName,
-//                       String genreId, String genreName) {
-//        Book book = new Book(name);
-//        validate(book);
-//
-//        Author author = authorService.getOrCreate(authorId, authorFirstName, authorLastName);
-//        if (author == null) {
-//            throw new LibraryException("Book author is null or empty!");
-//        }
-//
-//        Genre genre = genreService.getOrCreate(genreId, genreName);
-//        if (genre == null) {
-//            throw new LibraryException("Book genre is null or empty!");
-//        }
-//
-//        Book savedBook = repository.save(book);
-//        author.getBooks().add(savedBook);
-//        authorService.save(author);
-//
-//        genre.getBooks().add(savedBook);
-//        genreService.save(genre);
-//
-//        return getById(savedBook.getId());
-//    }
-
     @Transactional
     @Override
     public BookDto edit(String id, String name) {
@@ -139,56 +112,23 @@ public class BookServiceImpl implements BookService {
         genreService.save(genre);
     }
 
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<Book> findByAuthorId(Long authorId) {
-//        return repository.findByAuthorId(authorId);
-//    }
-//
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<Book> findByGenreId(Long genreId) {
-//        return repository.findByGenreId(genreId);
-//    }
+    @Transactional(readOnly = true)
+    @Override
+    public List<BookDto> getByAuthorId(String authorId) {
+        Author author = authorService.findById(authorId);
+        return repository.getBooks(author.getBooks().stream().map(Book::getId).collect(toSet()));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<BookDto> getByGenreId(String genreId) {
+        Genre genre = genreService.findById(genreId);
+        return repository.getBooks(genre.getBooks().stream().map(Book::getId).collect(toSet()));
+    }
 
     private void validate(Book book) {
         if (isEmpty(book.getName())) {
             throw new LibraryException("Book name is null or empty!");
         }
-
-//        if (book.getAuthor() == null) {
-//            throw new LibraryException("Book author is null or empty!");
-//        }
-//
-//        if (book.getGenre() == null) {
-//            throw new LibraryException("Book genre is null or empty!");
-//        }
     }
-
-
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<BookDto> getAll() {
-//
-//        List<BookDto> all2 = repository.getAll2();
-//        List<BookDto> all3 = repository.getAll3();
-//
-//        List<Author> authors = authorService.findAll();
-//        List<Genre> genres = genreService.findAll();
-//
-//        Map<String, GenreDto> bookGenres = genres.stream().map(genre -> genre.getBooks().stream()
-//                .collect(toMap(Book::getId, book -> genre)))
-//                .flatMap(x -> x.entrySet().stream())
-//                .collect(toMap(Map.Entry::getKey, entry -> new GenreDto(entry.getValue().getId(), entry.getValue().getName())));
-//
-//        return authors.stream()
-//                .map(author -> author.getBooks().stream()
-//                        .map(book -> new BookDto(book.getId(), book.getName(),
-//                                new AuthorDto(author.getId(), author.getFirstName(), author.getLastName()),
-//                                bookGenres.get(book.getId())))
-//                        .collect(toList()))
-//                .flatMap(Collection::stream)
-//                .collect(toList());
-//    }
-
 }

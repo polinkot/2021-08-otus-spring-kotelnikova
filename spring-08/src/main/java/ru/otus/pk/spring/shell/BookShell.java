@@ -57,20 +57,18 @@ public class BookShell {
         return "Book has been removed.";
     }
 
-    //    @ShellMethod(value = "Find Books by Author Id", key = {"ba", "author-books"})
-//    public List<Book> findByAuthorId(@ShellOption Long authorId) {
-//        CheckUtils.checkId(authorId, "Author id is null!!!");
-//
-//        return service.findByAuthorId(authorId);
-//    }
-//
-//    @ShellMethod(value = "Find Books by Genre Id", key = {"bg", "genre-books"})
-//    public List<Book> findByGenreId(@ShellOption Long genreId) {
-//        CheckUtils.checkId(genreId, "Genre id is null!!!");
-//
-//        return service.findByGenreId(genreId);
-//    }
-//
+    @ShellMethod(value = "Get Books by Author Id", key = {"ba", "author-books"})
+    public List<BookDto> getByAuthorId(@ShellOption String authorId) {
+        CheckUtils.checkId(authorId, "Author id is null!!!");
+        return service.getByAuthorId(authorId);
+    }
+
+    @ShellMethod(value = "Get Books by Genre Id", key = {"bg", "genre-books"})
+    public List<BookDto> getByGenreId(@ShellOption String genreId) {
+        CheckUtils.checkId(genreId, "Genre id is null!!!");
+        return service.getByGenreId(genreId);
+    }
+
     private void checkId(String id) {
         CheckUtils.checkId(id, "Book id is null!!!");
     }
