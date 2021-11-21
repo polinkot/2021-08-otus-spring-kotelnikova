@@ -102,7 +102,7 @@ class BookServiceImplTest {
 
     @DisplayName("возвращать ожидаемый список книг для автора ")
     @Test
-    void shouldReturnExpectedAuthorBooksCount() {
+    void shouldReturnExpectedAuthorBooks() {
         BookDto book1 = new BookDto("507f191e810c19729de860ea", "Book1", AUTHOR_DTO, GENRE_DTO);
         BookDto book2 = new BookDto("607f191e810c19729de860ea", "Book2", AUTHOR_DTO, GENRE_DTO);
 
@@ -118,7 +118,7 @@ class BookServiceImplTest {
 
     @DisplayName("возвращать ожидаемый список книг для жанра ")
     @Test
-    void shouldReturnExpectedGenreBooksCount() {
+    void shouldReturnExpectedGenreBooks() {
         Genre genre = new Genre(GENRE_DTO.getId(), GENRE_DTO.getName(), Set.of(dtoToBook(BOOK_DTO)));
 
         given(repository.getBooks(Set.of(BOOK_DTO.getId()))).willReturn(List.of(BOOK_DTO));
