@@ -5,6 +5,7 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.pk.spring.domain.Author;
+import ru.otus.pk.spring.dto.AuthorDto;
 import ru.otus.pk.spring.service.AuthorService;
 
 import java.util.List;
@@ -22,15 +23,15 @@ public class AuthorShell {
         return service.count();
     }
 
-    @ShellMethod(value = "Find all Authors", key = {"aall", "author-all"})
-    public List<Author> findAll() {
-        return service.findAll();
+    @ShellMethod(value = "Get all Authors", key = {"aall", "author-all"})
+    public List<AuthorDto> getAll() {
+        return service.getAll();
     }
 
-    @ShellMethod(value = "Find Author by id", key = {"aid", "author-id"})
-    public Author findById(@ShellOption String id) {
+    @ShellMethod(value = "Get Author by id", key = {"aid", "author-id"})
+    public AuthorDto getById(@ShellOption String id) {
         checkId(id);
-        return service.findById(id);
+        return service.getById(id);
     }
 
     @ShellMethod(value = "Add Author", key = {"aadd", "author-add"})

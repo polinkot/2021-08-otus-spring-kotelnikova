@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.domain.Author;
+import ru.otus.pk.spring.dto.AuthorDto;
 import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.repository.AuthorRepository;
 
@@ -30,14 +31,20 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Author> findAll() {
-        return repository.findAll();
+    public List<AuthorDto> getAll() {
+        return repository.getAll();
     }
 
     @Transactional(readOnly = true)
     @Override
     public Author findById(String id) {
         return repository.findById(id).orElseThrow(() -> new LibraryException(format(AUTHOR_NOT_FOUND, id)));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public AuthorDto getById(String id) {
+        return repository.getById(id).orElseThrow(() -> new LibraryException(format(AUTHOR_NOT_FOUND, id)));
     }
 
     @Transactional
