@@ -4,9 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.domain.Author;
+import ru.otus.pk.spring.domain.Genre;
 import ru.otus.pk.spring.dto.AuthorDto;
 import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.repository.AuthorRepository;
+import ru.otus.pk.spring.repository.BookRepository;
+import ru.otus.pk.spring.repository.CommentRepository;
+import ru.otus.pk.spring.repository.GenreRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +26,9 @@ public class AuthorServiceImpl implements AuthorService {
     public static final String AUTHOR_NOT_FOUND = "Author not found!!! id = %s";
 
     private final AuthorRepository repository;
+    private final GenreRepository genreRepository;
+    private final BookRepository bookRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
     @Override
@@ -69,6 +76,18 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional
     @Override
     public void deleteById(String id) {
+        Author author = findById(id);
+
+        author.getBooks().forEach(book -> {
+            commentRepository.deleteAll(book.getComments());
+
+            Genre genre = genreRepository.findFirstByBooksId(book.getId());
+            genre.getBooks().removeIf(b -> b.getId().equals(book.getId()));
+            genreRepository.save(genre);
+        });
+
+        bookRepository.deleteAll(author.getBooks());
+
         repository.deleteById(id);
     }
 
