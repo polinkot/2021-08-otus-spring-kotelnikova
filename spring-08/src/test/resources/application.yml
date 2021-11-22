@@ -8,7 +8,7 @@ mongock:
   runner-type: "ApplicationRunner" # default
   #runner-type: "InitializingBean"
   change-logs-scan-package:
-    - ru.otus.example.mongodbdemo.changelogs
+    - ru.otus.pk.spring.changelogs
   mongo-db:
     write-concern:
       journal: false
