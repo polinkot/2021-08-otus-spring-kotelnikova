@@ -1,25 +1,18 @@
 package ru.otus.pk.spring.service;
 
 import ru.otus.pk.spring.domain.Genre;
-import ru.otus.pk.spring.dto.GenreDto;
 
-import java.util.List;
+import java.util.Set;
 
 public interface GenreService {
 
-    Long count();
+    Integer count();
 
-    List<GenreDto> getAll();
+    Set<Genre> findAll();
 
     Genre findById(String id);
 
-    GenreDto getById(String id);
-
-    Genre save(String id, String name);
-
-    Genre save(Genre genre);
+    void save(String id, String name);
 
     void deleteById(String id);
-
-    Genre findFirstByBooksId(String bookId);
 }

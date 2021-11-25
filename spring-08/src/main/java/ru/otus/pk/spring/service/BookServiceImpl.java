@@ -1,20 +1,25 @@
 package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Genre;
-import ru.otus.pk.spring.dto.BookDto;
 import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.repository.BookRepository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toSet;
+import static java.lang.String.join;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static ru.otus.pk.spring.service.AuthorServiceImpl.AUTHOR_NOT_FOUND;
+import static ru.otus.pk.spring.service.GenreServiceImpl.GENRE_NOT_FOUND;
 
 @RequiredArgsConstructor
 @Service
@@ -23,8 +28,6 @@ public class BookServiceImpl implements BookService {
     public static final String BOOK_NOT_FOUND = "Book not found!!! id = %s";
 
     private final BookRepository repository;
-    private final AuthorService authorService;
-    private final GenreService genreService;
     private final CommentService commentService;
 
     @Transactional(readOnly = true)
@@ -35,14 +38,8 @@ public class BookServiceImpl implements BookService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BookDto> getAll() {
-        return repository.getAll();
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public BookDto getById(String id) {
-        return repository.getById(id).orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, id)));
+    public List<Book> findAll() {
+        return repository.findAll();
     }
 
     @Transactional(readOnly = true)
@@ -53,82 +50,96 @@ public class BookServiceImpl implements BookService {
 
     @Transactional
     @Override
-    public BookDto add(String name,
-                       String authorId, String authorFirstName, String authorLastName,
-                       String genreId, String genreName) {
-        Book book = new Book(name);
-        validate(book);
-        Book savedBook = repository.save(book);
+    public Book add(String name,
+                    String authorId, String authorFirstName, String authorLastName,
+                    String genreId, String genreName) {
+        Book book = new Book();
+        book.setName(name);
 
         Author author = authorId != null ?
-                authorService.findById(authorId) :
-                new Author(authorFirstName, authorLastName);
-        author.getBooks().add(savedBook);
-        authorService.save(author);
+                repository.findFirstByAuthorId(authorId)
+                        .orElseThrow(() -> new LibraryException(format(AUTHOR_NOT_FOUND, authorId)))
+                        .getAuthor() :
+                new Author(generateId(repository::findFirstByAuthorId), authorFirstName, authorLastName);
+        book.setAuthor(author);
 
         Genre genre = genreId != null ?
-                genreService.findById(genreId) :
-                new Genre(genreName);
-        genre.getBooks().add(savedBook);
-        genreService.save(genre);
+                repository.findFirstByGenreId(genreId)
+                        .orElseThrow(() -> new LibraryException(format(GENRE_NOT_FOUND, genreId)))
+                        .getGenre() :
+                new Genre(generateId(repository::findFirstByGenreId), genreName);
+        book.setGenre(genre);
 
-        return getById(savedBook.getId());
+        validate(book);
+        return repository.save(book);
     }
 
     @Transactional
     @Override
-    public BookDto edit(String id, String name) {
+    public Book edit(String id, String name) {
         Book book = findById(id);
         book.setName(name);
         validate(book);
-
-        Author author = authorService.findFirstByBooksId(id);
-        author.getBooks().stream().filter(b -> b.getId().equals(id)).forEach(b -> b.setName(name));
-
-        Genre genre = genreService.findFirstByBooksId(id);
-        genre.getBooks().stream().filter(b -> b.getId().equals(id)).forEach(b -> b.setName(name));
-
-        repository.save(book);
-        authorService.save(author);
-        genreService.save(genre);
-
-        return getById(id);
+        return repository.save(book);
     }
 
     @Transactional
     @Override
     public void deleteById(String id) {
-        Book book = findById(id);
-        commentService.deleteAll(book.getComments());
-
+        commentService.deleteByBookId(id);
         repository.deleteById(id);
-
-        Author author = authorService.findFirstByBooksId(id);
-        author.getBooks().removeIf(b -> b.getId().equals(id));
-        authorService.save(author);
-
-        Genre genre = genreService.findFirstByBooksId(id);
-        genre.getBooks().removeIf(b -> b.getId().equals(id));
-        genreService.save(genre);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<BookDto> getByAuthorId(String authorId) {
-        Author author = authorService.findById(authorId);
-        return repository.getBooks(author.getBooks().stream().map(Book::getId).collect(toSet()));
+    public List<Book> findByAuthorId(String authorId) {
+        return repository.findByAuthorId(authorId);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<BookDto> getByGenreId(String genreId) {
-        Genre genre = genreService.findById(genreId);
-        return repository.getBooks(genre.getBooks().stream().map(Book::getId).collect(toSet()));
+    public List<Book> findByGenreId(String genreId) {
+        return repository.findByGenreId(genreId);
+    }
+
+    private String generateId(Function<String, Optional<Book>> checkIdInDb) {
+        while (true) {
+            String id = ObjectId.get().toString();
+            if (checkIdInDb.apply(id).isEmpty()) {
+                return id;
+            }
+        }
     }
 
     private void validate(Book book) {
+        List<String> errors = new ArrayList<>();
+
         if (isEmpty(book.getName())) {
-            throw new LibraryException("Book name is null or empty!");
+            errors.add("Book name is null or empty!");
+        }
+
+        if (isEmpty(book.getAuthor())) {
+            errors.add("Book author is null!");
+        }
+
+        if (isEmpty(book.getAuthor().getFirstName())) {
+            errors.add("Book author first name is null or empty!");
+        }
+
+        if (isEmpty(book.getAuthor().getLastName())) {
+            errors.add("Book author last name is null or empty!");
+        }
+
+        if (isEmpty(book.getGenre())) {
+            errors.add("Book genre is null!");
+        }
+
+        if (isEmpty(book.getGenre().getName())) {
+            errors.add("Book genre name is null or empty!");
+        }
+
+        if (!isEmpty(errors)) {
+            throw new LibraryException(join("\n", errors));
         }
     }
 }

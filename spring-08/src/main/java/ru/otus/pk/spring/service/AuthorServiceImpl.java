@@ -4,16 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.domain.Author;
-import ru.otus.pk.spring.domain.Genre;
-import ru.otus.pk.spring.dto.AuthorDto;
+import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.exception.LibraryException;
-import ru.otus.pk.spring.repository.AuthorRepository;
 import ru.otus.pk.spring.repository.BookRepository;
-import ru.otus.pk.spring.repository.CommentRepository;
-import ru.otus.pk.spring.repository.GenreRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
@@ -25,75 +22,49 @@ public class AuthorServiceImpl implements AuthorService {
 
     public static final String AUTHOR_NOT_FOUND = "Author not found!!! id = %s";
 
-    private final AuthorRepository repository;
-    private final GenreRepository genreRepository;
     private final BookRepository bookRepository;
-    private final CommentRepository commentRepository;
+    private final CommentService commentService;
 
     @Transactional(readOnly = true)
     @Override
-    public Long count() {
-        return repository.count();
+    public Integer count() {
+        return bookRepository.findAllAuthors().size();
+
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<AuthorDto> getAll() {
-        return repository.getAll();
+    public Set<Author> findAll() {
+        return bookRepository.findAllAuthors();
     }
 
     @Transactional(readOnly = true)
     @Override
     public Author findById(String id) {
-        return repository.findById(id).orElseThrow(() -> new LibraryException(format(AUTHOR_NOT_FOUND, id)));
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public AuthorDto getById(String id) {
-        return repository.getById(id).orElseThrow(() -> new LibraryException(format(AUTHOR_NOT_FOUND, id)));
+        Book book = bookRepository.findFirstByAuthorId(id)
+                .orElseThrow(() -> new LibraryException(format(AUTHOR_NOT_FOUND, id)));
+        return book.getAuthor();
     }
 
     @Transactional
     @Override
-    public Author save(String id, String firstName, String lastName) {
-        Author author = id != null ? findById(id) : new Author();
-
-        author.setFirstName(firstName);
-        author.setLastName(lastName);
-
-        validate(author);
-        return repository.save(author);
-    }
-
-    @Transactional
-    @Override
-    public Author save(Author author) {
-        validate(author);
-        return repository.save(author);
+    public void save(String id, String firstName, String lastName) {
+        List<Book> books = bookRepository.findByAuthorId(id);
+        books.forEach(book -> {
+            Author author = book.getAuthor();
+            author.setFirstName(firstName);
+            author.setLastName(lastName);
+            validate(author);
+        });
+        bookRepository.saveAll(books);
     }
 
     @Transactional
     @Override
     public void deleteById(String id) {
-        Author author = findById(id);
-
-        author.getBooks().forEach(book -> {
-            commentRepository.deleteAll(book.getComments());
-
-            Genre genre = genreRepository.findFirstByBooksId(book.getId());
-            genre.getBooks().removeIf(b -> b.getId().equals(book.getId()));
-            genreRepository.save(genre);
-        });
-
-        bookRepository.deleteAll(author.getBooks());
-
-        repository.deleteById(id);
-    }
-
-    @Override
-    public Author findFirstByBooksId(String bookId) {
-        return repository.findFirstByBooksId(bookId);
+        List<Book> books = bookRepository.findByAuthorId(id);
+        books.forEach(book -> commentService.deleteByBookId(book.getId()));
+        bookRepository.deleteAll(books);
     }
 
     private void validate(Author author) {

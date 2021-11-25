@@ -5,12 +5,9 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.otus.pk.spring.domain.Genre;
-import ru.otus.pk.spring.dto.GenreDto;
 import ru.otus.pk.spring.service.GenreService;
 
-import java.util.List;
-
-import static java.lang.String.format;
+import java.util.Set;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -19,34 +16,28 @@ public class GenreShell {
     private final GenreService service;
 
     @ShellMethod(value = "Get Genres count", key = {"gcnt", "genre-count"})
-    public Long count() {
+    public Integer count() {
         return service.count();
     }
 
-    @ShellMethod(value = "Get all Genres", key = {"gall", "genre-all"})
-    public List<GenreDto> getAll() {
-        return service.getAll();
+    @ShellMethod(value = "Find all Genres", key = {"gall", "genre-all"})
+    public Set<Genre> findAll() {
+        return service.findAll();
     }
 
-    @ShellMethod(value = "Get Genre by id", key = {"gid", "genre-id"})
-    public GenreDto getById(@ShellOption String id) {
+    @ShellMethod(value = "Find Genre by id", key = {"gid", "genre-id"})
+    public Genre getById(@ShellOption String id) {
         checkId(id);
 
-        return service.getById(id);
-    }
-
-    @ShellMethod(value = "Add Genre", key = {"gadd", "genre-add"})
-    public String add(@ShellOption String name) {
-        Genre genre = service.save(null, name);
-        return format("Genre has been added successfully.\n%s", genre);
+        return service.findById(id);
     }
 
     @ShellMethod(value = "Edit Genre", key = {"gedit", "genre-edit"})
     public String edit(@ShellOption String id, @ShellOption String name) {
         checkId(id);
 
-        Genre genre = service.save(id, name);
-        return format("Genre has been updated successfully.\n%s", genre);
+        service.save(id, name);
+        return "Genre has been updated successfully.";
     }
 
     @ShellMethod(value = "Delete Genre by id", key = {"gdel", "genre-delete"})

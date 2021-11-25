@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
-import ru.otus.pk.spring.dto.BookDto;
+import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.service.BookService;
 
 import java.util.List;
@@ -22,22 +22,22 @@ public class BookShell {
         return service.count();
     }
 
-    @ShellMethod(value = "Get all Books", key = {"ball", "book-all"})
-    public List<BookDto> getAll() {
-        return service.getAll();
+    @ShellMethod(value = "Find all Books", key = {"ball", "book-all"})
+    public List<Book> findAll() {
+        return service.findAll();
     }
 
-    @ShellMethod(value = "Get Book by id", key = {"bid", "book-id"})
-    public BookDto getById(@ShellOption String id) {
+    @ShellMethod(value = "Find Book by id", key = {"bid", "book-id"})
+    public Book getById(@ShellOption String id) {
         checkId(id);
-        return service.getById(id);
+        return service.findById(id);
     }
 
     @ShellMethod(value = "Add Book", key = {"badd", "book-add"})
     public String add(@ShellOption String name,
                       @ShellOption String authorId, @ShellOption String authorFirstName, @ShellOption String authorLastName,
                       @ShellOption String genreId, @ShellOption String genreName) {
-        BookDto book = service.add(name, authorId, authorFirstName, authorLastName, genreId, genreName);
+        Book book = service.add(name, authorId, authorFirstName, authorLastName, genreId, genreName);
         return format("Book has been added successfully.\n%s", book);
     }
 
@@ -45,7 +45,7 @@ public class BookShell {
     public String edit(@ShellOption String id, @ShellOption String name) {
         checkId(id);
 
-        BookDto book = service.edit(id, name);
+        Book book = service.edit(id, name);
         return format("Book has been updated successfully.\n%s", book);
     }
 
@@ -57,16 +57,16 @@ public class BookShell {
         return "Book has been removed.";
     }
 
-    @ShellMethod(value = "Get Books by Author Id", key = {"ba", "author-books"})
-    public List<BookDto> getByAuthorId(@ShellOption String authorId) {
+    @ShellMethod(value = "Find Books by Author Id", key = {"ba", "author-books"})
+    public List<Book> findByAuthorId(@ShellOption String authorId) {
         CheckUtils.checkId(authorId, "Author id is null!!!");
-        return service.getByAuthorId(authorId);
+        return service.findByAuthorId(authorId);
     }
 
-    @ShellMethod(value = "Get Books by Genre Id", key = {"bg", "genre-books"})
-    public List<BookDto> getByGenreId(@ShellOption String genreId) {
+    @ShellMethod(value = "Find Books by Genre Id", key = {"bg", "genre-books"})
+    public List<Book> findByGenreId(@ShellOption String genreId) {
         CheckUtils.checkId(genreId, "Genre id is null!!!");
-        return service.getByGenreId(genreId);
+        return service.findByGenreId(genreId);
     }
 
     private void checkId(String id) {

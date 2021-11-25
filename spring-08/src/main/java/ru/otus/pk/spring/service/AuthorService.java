@@ -1,25 +1,18 @@
 package ru.otus.pk.spring.service;
 
 import ru.otus.pk.spring.domain.Author;
-import ru.otus.pk.spring.dto.AuthorDto;
 
-import java.util.List;
+import java.util.Set;
 
 public interface AuthorService {
 
-    Long count();
+    Integer count();
 
-    List<AuthorDto> getAll();
+    Set<Author> findAll();
 
     Author findById(String id);
 
-    AuthorDto getById(String id);
-
-    Author save(String id, String firstName, String lastName);
-
-    Author save(Author author);
+    void save(String id, String firstName, String lastName);
 
     void deleteById(String id);
-
-    Author findFirstByBooksId(String bookId);
 }

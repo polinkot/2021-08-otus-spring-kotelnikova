@@ -13,5 +13,5 @@ public class CommentDto {
 
     private String text;
 
-    private CommentBookDto book;
+    private BookDto book;
 }

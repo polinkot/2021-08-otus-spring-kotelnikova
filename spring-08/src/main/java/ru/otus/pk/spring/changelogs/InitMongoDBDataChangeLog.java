@@ -7,17 +7,16 @@ import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Comment;
 import ru.otus.pk.spring.domain.Genre;
-import ru.otus.pk.spring.repository.AuthorRepository;
 import ru.otus.pk.spring.repository.BookRepository;
 import ru.otus.pk.spring.repository.CommentRepository;
-import ru.otus.pk.spring.repository.GenreRepository;
 
 @ChangeLog(order = "001")
 public class InitMongoDBDataChangeLog {
 
-    private Comment comment1;
-    private Comment comment2;
-    private Comment comment3;
+    private Author author1 = new Author("507f191e810c19729de86011", "AuthorF1", "AuthorL1");
+    private Author author2 = new Author("507f191e810c19729de86022", "AuthorF2", "AuthorL2");
+    private Genre genre1 = new Genre("607f191e810c19729de86011", "Genre1");
+    private Genre genre2 = new Genre("607f191e810c19729de86022", "Genre2");
     private Book book1;
     private Book book2;
     private Book book3;
@@ -27,31 +26,17 @@ public class InitMongoDBDataChangeLog {
         database.drop();
     }
 
-    @ChangeSet(order = "001", id = "initComments", author = "pk", runAlways = true)
-    public void initComments(CommentRepository repository) {
-        comment1 = repository.save(new Comment("Comment1"));
-        comment2 = repository.save(new Comment("Comment2"));
-        comment3 = repository.save(new Comment("Comment3"));
-    }
-
-    @ChangeSet(order = "002", id = "initBooks", author = "pk", runAlways = true)
+    @ChangeSet(order = "001", id = "initBooks", author = "pk", runAlways = true)
     public void initBooks(BookRepository repository) {
-        book1 = repository.save(new Book("Book1", comment1, comment3));
-        book2 = repository.save(new Book("Book2", comment2));
-        book3 = repository.save(new Book("Book3"));
+        book1 = repository.save(new Book(null, "Book1", author1, genre1));
+        book2 = repository.save(new Book(null, "Book2", author2, genre2));
+        book3 = repository.save(new Book(null, "Book3", author1, genre1));
     }
 
-    @ChangeSet(order = "003", id = "initAuthors", author = "pk", runAlways = true)
-    public void initAuthors(AuthorRepository repository) {
-        repository.save(new Author("AuthorF1", "AuthorL1", book1));
-        repository.save(new Author("AuthorF2", "AuthorL2", book2, book3));
-        repository.save(new Author("AuthorF3", "AuthorL3"));
-        repository.save(new Author("AuthorF4", "AuthorL4"));
-    }
-
-    @ChangeSet(order = "004", id = "initGenres", author = "pk", runAlways = true)
-    public void initGenres(GenreRepository repository) {
-        repository.save(new Genre("Genre1", book1));
-        repository.save(new Genre("Genre2", book2, book3));
+    @ChangeSet(order = "002", id = "initComments", author = "pk", runAlways = true)
+    public void initComments(CommentRepository repository) {
+        repository.save(new Comment(null, "Comment1", book1));
+        repository.save(new Comment(null, "Comment2", book2));
+        repository.save(new Comment(null, "Comment3", book1));
     }
 }

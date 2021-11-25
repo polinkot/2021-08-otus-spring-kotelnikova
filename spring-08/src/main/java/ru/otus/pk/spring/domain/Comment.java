@@ -6,10 +6,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
-
-import static java.time.LocalDateTime.now;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,9 +16,5 @@ public class Comment {
 
     private String text;
 
-    private LocalDateTime time = now();
-
-    public Comment(String text) {
-        this.text = text;
-    }
+    private Book book;
 }

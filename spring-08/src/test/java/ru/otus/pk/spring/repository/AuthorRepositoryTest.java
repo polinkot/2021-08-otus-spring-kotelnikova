@@ -14,29 +14,29 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @DataMongoTest
 class AuthorRepositoryTest {
 
-    private static final int EXPECTED_NUMBER_OF_AUTHORS = 4;
-
-    @Autowired
-    private AuthorRepository repository;
-
-    @DisplayName("загружать дто автора по id")
-    @Test
-    void shouldGetExpectedAuthorById() {
-        val all = repository.findAll();
-        Author author = all.get(0);
-
-        val actualAuthor = repository.getById(author.getId());
-        assertThat(actualAuthor).isPresent().get()
-                .hasFieldOrPropertyWithValue("firstName", author.getFirstName())
-                .hasFieldOrPropertyWithValue("lastName", author.getLastName());
-    }
-
-    @DisplayName("загружать список дто авторов")
-    @Test
-    void getAll() {
-        val authors = repository.getAll();
-        assertThat(authors).isNotNull().hasSize(EXPECTED_NUMBER_OF_AUTHORS)
-                .allMatch(a -> !isEmpty(a.getFirstName()))
-                .allMatch(a -> !isEmpty(a.getLastName()));
-    }
+//    private static final int EXPECTED_NUMBER_OF_AUTHORS = 4;
+//
+//    @Autowired
+//    private AuthorRepository repository;
+//
+//    @DisplayName("загружать дто автора по id")
+//    @Test
+//    void shouldGetExpectedAuthorById() {
+//        val all = repository.findAll();
+//        Author author = all.get(0);
+//
+//        val actualAuthor = repository.getById(author.getId());
+//        assertThat(actualAuthor).isPresent().get()
+//                .hasFieldOrPropertyWithValue("firstName", author.getFirstName())
+//                .hasFieldOrPropertyWithValue("lastName", author.getLastName());
+//    }
+//
+//    @DisplayName("загружать список дто авторов")
+//    @Test
+//    void getAll() {
+//        val authors = repository.getAll();
+//        assertThat(authors).isNotNull().hasSize(EXPECTED_NUMBER_OF_AUTHORS)
+//                .allMatch(a -> !isEmpty(a.getFirstName()))
+//                .allMatch(a -> !isEmpty(a.getLastName()));
+//    }
 }

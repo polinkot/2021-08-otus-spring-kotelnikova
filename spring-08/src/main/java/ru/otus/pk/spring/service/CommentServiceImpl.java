@@ -5,15 +5,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Comment;
-import ru.otus.pk.spring.dto.CommentDto;
 import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.repository.BookRepository;
 import ru.otus.pk.spring.repository.CommentRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toSet;
+import static java.lang.String.join;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 import static ru.otus.pk.spring.service.BookServiceImpl.BOOK_NOT_FOUND;
 
@@ -35,8 +35,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CommentDto> getAll() {
-        return repository.getAll();
+    public List<Comment> findAll() {
+        return repository.findAll();
     }
 
     @Transactional(readOnly = true)
@@ -45,70 +45,60 @@ public class CommentServiceImpl implements CommentService {
         return repository.findById(id).orElseThrow(() -> new LibraryException(format(COMMENT_NOT_FOUND, id)));
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public CommentDto getById(String id) {
-        return repository.getById(id).orElseThrow(() -> new LibraryException(format(COMMENT_NOT_FOUND, id)));
-    }
-
     @Transactional
     @Override
-    public CommentDto add(String text, String bookId) {
-        Comment comment = new Comment(text);
-        validate(comment);
-        Comment savedComment = repository.save(comment);
-
+    public Comment add(String text, String bookId) {
+        Comment comment = new Comment();
+        comment.setText(text);
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, bookId)));
+        comment.setBook(book);
 
-        book.getComments().add(savedComment);
-        bookRepository.save(book);
-
-        return getById(savedComment.getId());
+        validate(comment);
+        return repository.save(comment);
     }
 
     @Transactional
     @Override
-    public CommentDto edit(String id, String text) {
+    public Comment edit(String id, String text) {
         Comment comment = findById(id);
         comment.setText(text);
         validate(comment);
 
-        Book book = bookRepository.findFirstByCommentsId(id);
-        book.getComments().stream().filter(c -> c.getId().equals(id)).forEach(b -> b.setText(text));
-
-        repository.save(comment);
-        bookRepository.save(book);
-
-        return getById(id);
+        return repository.save(comment);
     }
 
     @Transactional
     @Override
     public void deleteById(String id) {
         repository.deleteById(id);
-
-        Book book = bookRepository.findFirstByCommentsId(id);
-        book.getComments().removeIf(c -> c.getId().equals(id));
-        bookRepository.save(book);
-    }
-
-    @Override
-    public void deleteAll(List<Comment> comments) {
-        repository.deleteAll(comments);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<CommentDto> findByBookId(String bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, bookId)));
-        return repository.getComments(book.getComments().stream().map(Comment::getId).collect(toSet()));
+    public List<Comment> findByBookId(String bookId) {
+        return repository.findByBookId(bookId);
+    }
+
+    @Transactional
+    @Override
+    public void deleteByBookId(String bookId) {
+        repository.deleteByBookId(bookId);
     }
 
     private void validate(Comment comment) {
+        List<String> errors = new ArrayList<>();
+
         if (isEmpty(comment.getText())) {
-            throw new LibraryException("Comment text is null or empty!");
+            errors.add("Comment text is null or empty!");
+        }
+
+        if (isEmpty(comment.getBook())) {
+            errors.add("Comment book is null!");
+        }
+
+        if (!isEmpty(errors)) {
+            throw new LibraryException(join("\n", errors));
         }
     }
 }
