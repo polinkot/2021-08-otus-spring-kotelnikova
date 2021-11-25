@@ -3,6 +3,7 @@ package ru.otus.pk.spring.changelogs;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.mongodb.client.MongoDatabase;
+import org.bson.types.ObjectId;
 import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Comment;
@@ -13,10 +14,10 @@ import ru.otus.pk.spring.repository.CommentRepository;
 @ChangeLog(order = "001")
 public class InitMongoDBDataChangeLog {
 
-    private Author author1 = new Author("507f191e810c19729de86011", "AuthorF1", "AuthorL1");
-    private Author author2 = new Author("507f191e810c19729de86022", "AuthorF2", "AuthorL2");
-    private Genre genre1 = new Genre("607f191e810c19729de86011", "Genre1");
-    private Genre genre2 = new Genre("607f191e810c19729de86022", "Genre2");
+    private Author author1 = new Author(ObjectId.get().toString(), "AuthorF1", "AuthorL1");
+    private Author author2 = new Author(ObjectId.get().toString(), "AuthorF2", "AuthorL2");
+    private Genre genre1 = new Genre(ObjectId.get().toString(), "Genre1");
+    private Genre genre2 = new Genre(ObjectId.get().toString(), "Genre2");
     private Book book1;
     private Book book2;
     private Book book3;

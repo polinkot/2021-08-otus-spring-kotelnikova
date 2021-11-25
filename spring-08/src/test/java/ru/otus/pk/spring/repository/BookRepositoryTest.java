@@ -1,11 +1,13 @@
 package ru.otus.pk.spring.repository;
 
-import lombok.val;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import ru.otus.pk.spring.domain.Book;
+import ru.otus.pk.spring.domain.Author;
+import ru.otus.pk.spring.domain.Genre;
+
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -14,27 +16,32 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @DataMongoTest
 class BookRepositoryTest {
 
-    private static final int EXPECTED_NUMBER_OF_BOOKS = 3;
+    private static final int EXPECTED_NUMBER_OF_AUTHORS = 2;
+    private static final int EXPECTED_NUMBER_OF_GENRES = 2;
 
-//    @Autowired
-//    private BookRepository repository;
-//
-//    @DisplayName("загружать дто книги по id")
-//    @Test
-//    void shouldGetExpectedBookById() {
-//        val all = repository.findAll();
-//        Book book = all.get(0);
-//
-//        val actualBook = repository.getById(book.getId());
-//        assertThat(actualBook).isPresent().get()
-//                .hasFieldOrPropertyWithValue("name", book.getName());
-//    }
-//
-//    @DisplayName("загружать список дто книг")
-//    @Test
-//    void getAll() {
-//        val books = repository.getAll();
-//        assertThat(books).isNotNull().hasSize(EXPECTED_NUMBER_OF_BOOKS)
-//                .allMatch(b -> !isEmpty(b.getName()));
-//    }
+    @Autowired
+    private BookRepository repository;
+
+    @DisplayName("получать всех авторов")
+    @Test
+    void shouldFindAllAuthors() {
+        Set<Author> authors = repository.findAllAuthors();
+        assertThat(authors).isNotEmpty().hasSize(EXPECTED_NUMBER_OF_AUTHORS)
+                .allMatch(a -> !isEmpty(a.getFirstName()))
+                .allMatch(a -> !isEmpty(a.getLastName()))
+                .anyMatch(a -> a.getFirstName().equals("AuthorF1"))
+                .anyMatch(a -> a.getFirstName().equals("AuthorF2"))
+                .anyMatch(a -> a.getLastName().equals("AuthorL1"))
+                .anyMatch(a -> a.getLastName().equals("AuthorL2"));
+    }
+
+    @DisplayName("получать все жанры")
+    @Test
+    void shouldFindAllGenres() {
+        Set<Genre> genres = repository.findAllGenres();
+        assertThat(genres).isNotEmpty().hasSize(EXPECTED_NUMBER_OF_GENRES)
+                .allMatch(g -> !isEmpty(g.getName()))
+                .anyMatch(g -> g.getName().equals("Genre1"))
+                .anyMatch(g -> g.getName().equals("Genre2"));
+    }
 }
