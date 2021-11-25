@@ -1,6 +1,7 @@
 package ru.otus.pk.spring.service;
 
 import org.assertj.core.api.Assertions;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Genre;
-import ru.otus.pk.spring.dto.BookDto;
 import ru.otus.pk.spring.repository.BookRepository;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,111 +23,89 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest(classes = BookServiceImpl.class)
 class BookServiceImplTest {
 
-//    private static final AuthorDto AUTHOR_DTO = new AuthorDto("307f191e810c19729de860ea", "AuthorF", "AuthorL");
-//    private static final GenreDto GENRE_DTO = new GenreDto("407f191e810c19729de860ea", "Genre1");
-//    private static final BookDto BOOK_DTO = new BookDto("507f191e810c19729de860ea", "Book1", AUTHOR_DTO, GENRE_DTO);
-//
-//    private static final Author AUTHOR = new Author(AUTHOR_DTO.getId(), AUTHOR_DTO.getFirstName(), AUTHOR_DTO.getLastName(), new HashSet<>());
-//    private static final Genre GENRE = new Genre(GENRE_DTO.getId(), GENRE_DTO.getName(), new HashSet<>());
-//    private static final Book BOOK = dtoToBook(BOOK_DTO);
-//
-//    @MockBean
-//    private BookRepository repository;
-//    @MockBean
-//    private AuthorService authorService;
-//    @MockBean
-//    private GenreService genreService;
-//    @MockBean
-//    private CommentService commentService;
-//
-//    @Autowired
-//    private BookServiceImpl service;
-//
-//    @DisplayName("возвращать ожидаемое количество книг")
-//    @Test
-//    void shouldReturnExpectedBookCount() {
-//        long expectedCount = 2;
-//
-//        given(repository.count()).willReturn(expectedCount);
-//
-//        long actualCount = service.count();
-//        assertThat(actualCount).isEqualTo(expectedCount);
-//    }
-//
-//    @DisplayName("возвращать ожидаемый список книг")
-//    @Test
-//    void shouldReturnExpectedBooksList() {
-//        given(repository.getAll()).willReturn(List.of(BOOK_DTO));
-//
-//        List<BookDto> actualList = service.getAll();
-//        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(BOOK_DTO);
-//    }
-//
-//    @DisplayName("возвращать ожидаемую книгу по id")
-//    @Test
-//    void shouldReturnExpectedBookById() {
-//        given(repository.getById(BOOK_DTO.getId())).willReturn(Optional.of(BOOK_DTO));
-//
-//        BookDto actualBook = service.getById(BOOK_DTO.getId());
-//        assertThat(actualBook).usingRecursiveComparison().isEqualTo(BOOK_DTO);
-//    }
-//
-//    @DisplayName("добавлять книгу")
-//    @Test
-//    void shouldInsertBook() {
-//        given(repository.save(any(Book.class))).willReturn(BOOK);
-//        given(authorService.findById(AUTHOR.getId())).willReturn(AUTHOR);
-//        given(genreService.findById(GENRE.getId())).willReturn(GENRE);
-//        given(repository.getById(BOOK_DTO.getId())).willReturn(Optional.of(BOOK_DTO));
-//
-//        BookDto actualBook = service.add(BOOK_DTO.getName(),
-//                AUTHOR_DTO.getId(), null, null,
-//                GENRE_DTO.getId(), null);
-//        assertThat(actualBook).isEqualTo(BOOK_DTO);
-//    }
-//
-//    @DisplayName("редактировать книгу")
-//    @Test
-//    void shouldUpdateBook() {
-//        given(repository.findById(BOOK.getId())).willReturn(Optional.of(BOOK));
-//        given(repository.getById(BOOK_DTO.getId())).willReturn(Optional.of(BOOK_DTO));
-//        given(repository.save(any(Book.class))).willReturn(BOOK);
-//        given(authorService.findFirstByBooksId(BOOK.getId())).willReturn(AUTHOR);
-//        given(genreService.findFirstByBooksId(BOOK.getId())).willReturn(GENRE);
-//
-//        BookDto actualBook = service.edit(BOOK_DTO.getId(), BOOK_DTO.getName());
-//        assertThat(actualBook).isEqualTo(BOOK_DTO);
-//    }
-//
-//    @DisplayName("возвращать ожидаемый список книг для автора ")
-//    @Test
-//    void shouldReturnExpectedAuthorBooks() {
-//        BookDto book1 = new BookDto("507f191e810c19729de860ea", "Book1", AUTHOR_DTO, GENRE_DTO);
-//        BookDto book2 = new BookDto("607f191e810c19729de860ea", "Book2", AUTHOR_DTO, GENRE_DTO);
-//
-//        Author author = new Author(AUTHOR_DTO.getId(), AUTHOR_DTO.getFirstName(), AUTHOR_DTO.getLastName(),
-//                Set.of(dtoToBook(book1), dtoToBook(book2)));
-//
-//        given(repository.getBooks(Set.of(book1.getId(), book2.getId()))).willReturn(List.of(book1, book2));
-//        given(authorService.findById(AUTHOR.getId())).willReturn(author);
-//
-//        List<BookDto> actualBooks = service.getByAuthorId(AUTHOR.getId());
-//        Assertions.assertThat(actualBooks).usingFieldByFieldElementComparator().containsExactly(book1, book2);
-//    }
-//
-//    @DisplayName("возвращать ожидаемый список книг для жанра ")
-//    @Test
-//    void shouldReturnExpectedGenreBooks() {
-//        Genre genre = new Genre(GENRE_DTO.getId(), GENRE_DTO.getName(), Set.of(dtoToBook(BOOK_DTO)));
-//
-//        given(repository.getBooks(Set.of(BOOK_DTO.getId()))).willReturn(List.of(BOOK_DTO));
-//        given(genreService.findById(GENRE.getId())).willReturn(genre);
-//
-//        List<BookDto> actualBooks = service.getByGenreId(GENRE.getId());
-//        Assertions.assertThat(actualBooks).usingFieldByFieldElementComparator().containsExactly(BOOK_DTO);
-//    }
-//
-//    private static Book dtoToBook(BookDto dto) {
-//        return new Book(dto.getId(), dto.getName(), new ArrayList<>());
-//    }
+    private static final Author AUTHOR = new Author(ObjectId.get().toString(), "AuthorF1", "AuthorL1");
+    private static final Genre GENRE = new Genre(ObjectId.get().toString(), "Genre1");
+
+    private static final Book BOOK1 = new Book(ObjectId.get().toString(), "Book1", AUTHOR, GENRE);
+    private static final Book BOOK2 = new Book(ObjectId.get().toString(), "Book2", AUTHOR, GENRE);
+
+    @MockBean
+    private BookRepository repository;
+    @MockBean
+    private CommentService commentService;
+
+    @Autowired
+    private BookServiceImpl service;
+
+    @DisplayName("возвращать ожидаемое количество книг")
+    @Test
+    void shouldReturnExpectedBookCount() {
+        long expectedCount = 2;
+
+        given(repository.count()).willReturn(expectedCount);
+
+        long actualCount = service.count();
+        assertThat(actualCount).isEqualTo(expectedCount);
+    }
+
+    @DisplayName("возвращать ожидаемый список книг")
+    @Test
+    void shouldReturnExpectedBooksList() {
+        given(repository.findAll()).willReturn(List.of(BOOK1, BOOK2));
+
+        List<Book> actualList = service.findAll();
+        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactlyInAnyOrder(BOOK1, BOOK2);
+    }
+
+    @DisplayName("возвращать ожидаемую книгу по id")
+    @Test
+    void shouldReturnExpectedBookById() {
+        given(repository.findById(BOOK1.getId())).willReturn(Optional.of(BOOK1));
+
+        Book actualBook = service.findById(BOOK1.getId());
+        assertThat(actualBook).usingRecursiveComparison().isEqualTo(BOOK1);
+    }
+
+    @DisplayName("добавлять книгу")
+    @Test
+    void shouldAddBook() {
+        given(repository.findFirstByAuthorId(AUTHOR.getId())).willReturn(Optional.of(BOOK1));
+        given(repository.findFirstByGenreId(GENRE.getId())).willReturn(Optional.of(BOOK1));
+        given(repository.save(any(Book.class))).willReturn(BOOK1);
+
+        Book actualBook = service.add(BOOK1.getName(),
+                AUTHOR.getId(), null, null,
+                GENRE.getId(), null);
+        assertThat(actualBook).isEqualTo(BOOK1);
+    }
+
+    @DisplayName("редактировать книгу")
+    @Test
+    void shouldUpdateBook() {
+        Book updatedBook = new Book(ObjectId.get().toString(), "updatedBook", AUTHOR, GENRE);
+
+        given(repository.findById(updatedBook.getId())).willReturn(Optional.of(updatedBook));
+        given(repository.save(any(Book.class))).willReturn(updatedBook);
+
+        Book actualBook = service.edit(updatedBook.getId(), updatedBook.getName());
+        assertThat(actualBook).isEqualTo(updatedBook);
+    }
+
+    @DisplayName("возвращать ожидаемый список книг для автора ")
+    @Test
+    void shouldReturnExpectedAuthorBooks() {
+        given(repository.findByAuthorId(AUTHOR.getId())).willReturn(List.of(BOOK1, BOOK2));
+
+        List<Book> actualBooks = service.findByAuthorId(AUTHOR.getId());
+        Assertions.assertThat(actualBooks).usingFieldByFieldElementComparator().containsExactlyInAnyOrder(BOOK1, BOOK2);
+    }
+
+    @DisplayName("возвращать ожидаемый список книг для жанра ")
+    @Test
+    void shouldReturnExpectedGenreBooks() {
+        given(repository.findByGenreId(GENRE.getId())).willReturn(List.of(BOOK1, BOOK2));
+
+        List<Book> actualBooks = service.findByGenreId(GENRE.getId());
+        Assertions.assertThat(actualBooks).usingFieldByFieldElementComparator().containsExactly(BOOK1, BOOK2);
+    }
 }
