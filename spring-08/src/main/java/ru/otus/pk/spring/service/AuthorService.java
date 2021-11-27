@@ -2,13 +2,13 @@ package ru.otus.pk.spring.service;
 
 import ru.otus.pk.spring.domain.Author;
 
-import java.util.Set;
+import java.util.List;
 
 public interface AuthorService {
 
     Integer count();
 
-    Set<Author> findAll();
+    List<Author> findAll();
 
     Author findById(String id);
 

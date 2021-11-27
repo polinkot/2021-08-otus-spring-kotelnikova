@@ -7,7 +7,7 @@ import org.springframework.shell.standard.ShellOption;
 import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.service.AuthorService;
 
-import java.util.Set;
+import java.util.List;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class AuthorShell {
     }
 
     @ShellMethod(value = "Find all Authors", key = {"aall", "author-all"})
-    public Set<Author> findAll() {
+    public List<Author> findAll() {
         return service.findAll();
     }
 

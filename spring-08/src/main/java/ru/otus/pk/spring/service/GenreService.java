@@ -2,13 +2,13 @@ package ru.otus.pk.spring.service;
 
 import ru.otus.pk.spring.domain.Genre;
 
-import java.util.Set;
+import java.util.List;
 
 public interface GenreService {
 
     Integer count();
 
-    Set<Genre> findAll();
+    List<Genre> findAll();
 
     Genre findById(String id);
 

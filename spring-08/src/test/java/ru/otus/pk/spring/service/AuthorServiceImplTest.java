@@ -12,8 +12,8 @@ import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Genre;
 import ru.otus.pk.spring.repository.BookRepository;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -41,7 +41,7 @@ class AuthorServiceImplTest {
     void shouldReturnExpectedAuthorCount() {
         int expectedCount = 2;
 
-        given(bookRepository.findAllAuthors()).willReturn(Set.of(AUTHOR1, AUTHOR2));
+        given(bookRepository.findAllAuthors()).willReturn(List.of(AUTHOR1, AUTHOR2));
 
         Integer actualCount = service.count();
         assertThat(actualCount).isEqualTo(expectedCount);
@@ -50,9 +50,9 @@ class AuthorServiceImplTest {
     @DisplayName("возвращать ожидаемый список авторов")
     @Test
     void shouldReturnExpectedAuthorsList() {
-        given(bookRepository.findAllAuthors()).willReturn(Set.of(AUTHOR1, AUTHOR2));
+        given(bookRepository.findAllAuthors()).willReturn(List.of(AUTHOR1, AUTHOR2));
 
-        Set<Author> actualAuthors = service.findAll();
+        List<Author> actualAuthors = service.findAll();
         Assertions.assertThat(actualAuthors).usingFieldByFieldElementComparator()
                 .containsExactlyInAnyOrder(AUTHOR1, AUTHOR2);
     }

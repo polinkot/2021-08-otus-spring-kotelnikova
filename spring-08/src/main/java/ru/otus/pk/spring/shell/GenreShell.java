@@ -7,7 +7,7 @@ import org.springframework.shell.standard.ShellOption;
 import ru.otus.pk.spring.domain.Genre;
 import ru.otus.pk.spring.service.GenreService;
 
-import java.util.Set;
+import java.util.List;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -21,7 +21,7 @@ public class GenreShell {
     }
 
     @ShellMethod(value = "Find all Genres", key = {"gall", "genre-all"})
-    public Set<Genre> findAll() {
+    public List<Genre> findAll() {
         return service.findAll();
     }
 

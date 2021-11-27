@@ -12,8 +12,8 @@ import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Genre;
 import ru.otus.pk.spring.repository.BookRepository;
 
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -41,7 +41,7 @@ class GenreServiceImplTest {
     void shouldReturnExpectedGenreCount() {
         int expectedCount = 2;
 
-        given(bookRepository.findAllGenres()).willReturn(Set.of(GENRE1, GENRE2));
+        given(bookRepository.findAllGenres()).willReturn(List.of(GENRE1, GENRE2));
 
         Integer actualCount = service.count();
         assertThat(actualCount).isEqualTo(expectedCount);
@@ -50,9 +50,9 @@ class GenreServiceImplTest {
     @DisplayName("возвращать ожидаемый список жанров")
     @Test
     void shouldReturnExpectedGenresList() {
-        given(bookRepository.findAllGenres()).willReturn(Set.of(GENRE1, GENRE2));
+        given(bookRepository.findAllGenres()).willReturn(List.of(GENRE1, GENRE2));
 
-        Set<Genre> actualGenres = service.findAll();
+        List<Genre> actualGenres = service.findAll();
         Assertions.assertThat(actualGenres).usingFieldByFieldElementComparator().containsExactlyInAnyOrder(GENRE1, GENRE2);
     }
 

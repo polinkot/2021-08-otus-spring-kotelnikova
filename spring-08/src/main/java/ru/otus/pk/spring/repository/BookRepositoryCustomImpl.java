@@ -7,12 +7,9 @@ import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Genre;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @RequiredArgsConstructor
 public class BookRepositoryCustomImpl implements BookRepositoryCustom {
@@ -20,25 +17,25 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public Set<Author> findAllAuthors() {
+    public List<Author> findAllAuthors() {
         List<AggregationOperation> operations = List.of(
-                project().and("author.id").as("_id")
-                        .and("author.firstName").as("firstName")
-                        .and("author.lastName").as("lastName"));
+                group("author.id", "author.firstName", "author.lastName")
+                , project().and("id").as("_id")
+                        .and("firstName").as("firstName")
+                        .and("lastName").as("lastName")
+        );
 
-        return new HashSet<>(mongoTemplate
-                .aggregate(newAggregation(operations), Book.class, Author.class)
-                .getMappedResults());
+        return mongoTemplate.aggregate(newAggregation(operations), Book.class, Author.class).getMappedResults();
     }
 
     @Override
-    public Set<Genre> findAllGenres() {
+    public List<Genre> findAllGenres() {
         List<AggregationOperation> operations = List.of(
-                project().and("genre.id").as("_id")
-                        .and("genre.name").as("name"));
+                group("genre.id", "genre.name")
+                , project().and("id").as("_id")
+                        .and("name").as("name")
+        );
 
-        return new HashSet<>(mongoTemplate
-                .aggregate(newAggregation(operations), Book.class, Genre.class)
-                .getMappedResults());
+        return mongoTemplate.aggregate(newAggregation(operations), Book.class, Genre.class).getMappedResults();
     }
 }

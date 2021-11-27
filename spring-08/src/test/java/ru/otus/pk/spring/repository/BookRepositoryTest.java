@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Genre;
 
-import java.util.Set;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.util.ObjectUtils.isEmpty;
@@ -25,7 +25,7 @@ class BookRepositoryTest {
     @DisplayName("получать всех авторов")
     @Test
     void shouldFindAllAuthors() {
-        Set<Author> authors = repository.findAllAuthors();
+        List<Author> authors = repository.findAllAuthors();
         assertThat(authors).isNotEmpty().hasSize(EXPECTED_NUMBER_OF_AUTHORS)
                 .allMatch(a -> !isEmpty(a.getFirstName()))
                 .allMatch(a -> !isEmpty(a.getLastName()))
@@ -38,7 +38,7 @@ class BookRepositoryTest {
     @DisplayName("получать все жанры")
     @Test
     void shouldFindAllGenres() {
-        Set<Genre> genres = repository.findAllGenres();
+        List<Genre> genres = repository.findAllGenres();
         assertThat(genres).isNotEmpty().hasSize(EXPECTED_NUMBER_OF_GENRES)
                 .allMatch(g -> !isEmpty(g.getName()))
                 .anyMatch(g -> g.getName().equals("Genre1"))

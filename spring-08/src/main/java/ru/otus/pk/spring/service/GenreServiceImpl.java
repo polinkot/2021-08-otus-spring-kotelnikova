@@ -9,7 +9,6 @@ import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.repository.BookRepository;
 
 import java.util.List;
-import java.util.Set;
 
 import static java.lang.String.format;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
@@ -31,7 +30,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Transactional(readOnly = true)
     @Override
-    public Set<Genre> findAll() {
+    public List<Genre> findAll() {
         return bookRepository.findAllGenres();
     }
 

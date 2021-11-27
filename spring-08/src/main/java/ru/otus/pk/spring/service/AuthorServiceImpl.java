@@ -10,7 +10,6 @@ import ru.otus.pk.spring.repository.BookRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
@@ -34,7 +33,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional(readOnly = true)
     @Override
-    public Set<Author> findAll() {
+    public List<Author> findAll() {
         return bookRepository.findAllAuthors();
     }
 
