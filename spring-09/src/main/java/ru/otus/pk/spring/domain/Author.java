@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static java.lang.String.format;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @AllArgsConstructor
@@ -23,4 +24,8 @@ public class Author {
 
     @Column(name = "last_name", nullable = false)
     private String lastName;
+
+    public String getFullName() {
+        return format("%s %s", firstName, lastName);
+    }
 }

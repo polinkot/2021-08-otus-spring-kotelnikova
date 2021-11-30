@@ -20,6 +20,8 @@ public interface BookService {
               Long authorId, String authorFirstName, String authorLastName,
               Long genreId, String genreName);
 
+    Book save(Book book);
+
     void deleteById(Long id);
 
     List<Book> findByAuthorId(Long authorId);
