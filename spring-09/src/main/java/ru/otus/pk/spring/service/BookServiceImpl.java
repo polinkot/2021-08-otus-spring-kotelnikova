@@ -71,16 +71,11 @@ public class BookServiceImpl implements BookService {
         return repository.save(book);
     }
 
-
-    // still update only
     @Transactional
     @Override
     public Book save(Book book) {
-        Book existingBook = findById(book.getId());
-        existingBook.setName(book.getName());
-
-        validate(existingBook);
-        return repository.save(existingBook);
+        validate(book);
+        return repository.save(book);
     }
 
     @Transactional

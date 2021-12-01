@@ -6,8 +6,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
+import ru.otus.pk.spring.domain.Genre;
+import ru.otus.pk.spring.service.AuthorService;
 import ru.otus.pk.spring.service.BookService;
+import ru.otus.pk.spring.service.GenreService;
 
 import java.util.List;
 
@@ -16,6 +20,8 @@ import java.util.List;
 public class BookController {
 
     private final BookService service;
+    private final AuthorService authorService;
+    private final GenreService genreService;
 
     @GetMapping("/")
     public String finAll(Model model) {
@@ -26,8 +32,15 @@ public class BookController {
 
     @GetMapping("/edit")
     public String edit(@RequestParam("id") Long id, Model model) {
-        Book book = service.findById(id);
+        Book book = id > 0 ? service.findById(id) : new Book();
         model.addAttribute("book", book);
+
+        List<Author> authors = authorService.findAll();
+        model.addAttribute("authors", authors);
+
+        List<Genre> genres = genreService.findAll();
+        model.addAttribute("genres", genres);
+
         return "book";
     }
 

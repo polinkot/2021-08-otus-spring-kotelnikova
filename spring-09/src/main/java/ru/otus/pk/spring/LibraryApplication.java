@@ -11,6 +11,6 @@ public class LibraryApplication {
     @SneakyThrows
     public static void main(String[] args) {
         SpringApplication.run(LibraryApplication.class, args);
-        Console.main(args);
+//        Console.main(args);
     }
 }

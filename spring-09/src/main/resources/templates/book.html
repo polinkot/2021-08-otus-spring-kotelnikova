@@ -38,17 +38,28 @@
     </div>
 
     <div class="row">
-        <label for="author">Author:</label>
-        <input id="author" type="text" readonly="readonly" th:value="${book.author.fullName}" value="Book author"/>
+        <label for="author" id="author">Author:</label>
+
+        <select th:field="*{book.author}">
+            <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.fullName}" th:selected="${book.author != null && book.author.id == author.id}"></option>
+        </select>
+<!--        <input id="author" type="text" readonly="readonly" th:value="${book.author.id}" value="Book author"/>-->
     </div>
 
     <div class="row">
         <label for="genre">Genre:</label>
-        <input id="genre" type="text" readonly="readonly" th:value="${book.genre.name}" value="Book genre"/>
+
+        <select th:field="*{book.genre}" id="genre">
+            <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}" th:selected="${book.genre != null && book.genre.id == genre.id}"></option>
+        </select>
+<!--        <input id="genre" type="text" readonly="readonly" th:value="${book.genre.name}" value="Book genre"/>-->
     </div>
 
     <!--    <input id="book-author" name="author.id" type="hidden" readonly="readonly" th:value="${book.author.id}" value="Book author ID"/>-->
     <!--    <input id="book-genre" name="genre.id" type="hidden" readonly="readonly" th:value="${book.genre.id}" value="Book genre ID"/>-->
+
+<!--        <input id="book-author" name="author.id" type="hidden" readonly="readonly" value="1"/>-->
+<!--        <input id="book-genre" name="genre.id" type="hidden" readonly="readonly" value="1"/>-->
 
     <div class="row">
         <button type="submit">Save</button>
