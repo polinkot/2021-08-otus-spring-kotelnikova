@@ -12,14 +12,6 @@ public interface BookService {
 
     Book findById(Long id);
 
-    Book createNew(String bookName,
-                   Long authorId, String authorFirstName, String authorLastName,
-                   Long genreId, String genreName);
-
-    Book save(Long id, String name,
-              Long authorId, String authorFirstName, String authorLastName,
-              Long genreId, String genreName);
-
     Book save(Book book);
 
     void deleteById(Long id);

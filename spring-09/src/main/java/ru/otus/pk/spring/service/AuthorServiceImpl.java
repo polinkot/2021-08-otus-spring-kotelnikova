@@ -40,22 +40,7 @@ public class AuthorServiceImpl implements AuthorService {
         return repository.findById(id).orElseThrow(() -> new LibraryException(format(AUTHOR_NOT_FOUND, id)));
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Author createNew(String firstName, String lastName) {
-        Author author = new Author(null, firstName, lastName);
-        validate(author);
-        return author;
-    }
-
-    @Transactional
-    @Override
-    public Author save(Long id, String firstName, String lastName) {
-        Author author = id != null ? findById(id) : new Author();
-
-        author.setFirstName(firstName);
-        author.setLastName(lastName);
-
+    public Author save(Author author) {
         validate(author);
         return repository.save(author);
     }

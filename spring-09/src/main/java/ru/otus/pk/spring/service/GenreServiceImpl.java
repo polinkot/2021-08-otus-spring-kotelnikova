@@ -38,21 +38,9 @@ public class GenreServiceImpl implements GenreService {
         return repository.findById(id).orElseThrow(() -> new LibraryException(format(GENRE_NOT_FOUND, id)));
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Genre createNew(String name) {
-        Genre genre = new Genre(null, name);
-        validate(genre);
-        return genre;
-    }
-
     @Transactional
     @Override
-    public Genre save(Long id, String name) {
-        Genre genre = id != null ? findById(id) : new Genre();
-
-        genre.setName(name);
-
+    public Genre save(Genre genre) {
         validate(genre);
         return repository.save(genre);
     }

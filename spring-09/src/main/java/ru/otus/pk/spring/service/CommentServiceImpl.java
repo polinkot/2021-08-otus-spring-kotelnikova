@@ -20,8 +20,6 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository repository;
 
-    private final BookService bookService;
-
     @Transactional(readOnly = true)
     @Override
     public long count() {
@@ -42,10 +40,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional
     @Override
-    public Comment save(Long id, String text, Long bookId) {
-        Comment comment = id != null ? findById(id) : new Comment(null, text, bookService.findById(bookId));
-        comment.setText(text);
-
+    public Comment save(Comment comment) {
         validate(comment);
         return repository.save(comment);
     }

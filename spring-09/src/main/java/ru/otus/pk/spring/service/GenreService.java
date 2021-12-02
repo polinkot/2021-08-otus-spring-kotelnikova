@@ -12,9 +12,7 @@ public interface GenreService {
 
     Genre findById(Long id);
 
-    Genre createNew(String name);
-
-    Genre save(Long id, String name);
+    Genre save(Genre genre);
 
     void deleteById(Long id);
 }

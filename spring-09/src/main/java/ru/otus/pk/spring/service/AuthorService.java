@@ -12,9 +12,7 @@ public interface AuthorService {
 
     Author findById(Long id);
 
-    Author createNew(String firstName, String lastName);
-
-    Author save(Long id, String firstName, String lastName);
+    Author save(Author author);
 
     void deleteById(Long id);
 }

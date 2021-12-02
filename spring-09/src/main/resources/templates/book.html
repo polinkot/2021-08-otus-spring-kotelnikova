@@ -20,11 +20,20 @@
         .row {
             margin-top: 10px;
         }
+
+        .books, .books td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
 
-<form id="edit-form" th:action="@{/edit(id=${book.id})}" th:method="post" action="books.html">
+<p>
+    <a th:href="@{/books}" href="books.html">Book list</a>
+</p>
+
+<form id="edit-form" th:action="@{/books/edit(id=${book.id})}" th:method="post" action="books.html">
     <h1>Book Info:</h1>
 
     <div class="row">
@@ -40,11 +49,12 @@
     <div class="row">
         <label for="author">Author:</label>
 
-        <select th:field="*{book.author}"  id="author" th:disabled="${book.id != null && book.id > 0}">
+        <select th:field="*{book.author}" id="author">
             <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.fullName}"
-                    th:selected="${book.author != null && book.author.id == author.id}"></option>
+                    th:selected="${book.author != null && book.author.id == author.id}"
+                    th:disabled="${book.id > 0 && book.author.id != author.id}"
+            ></option>
         </select>
-        <!--        <input id="author" type="text" readonly="readonly" th:value="${book.author.id}" value="Book author"/>-->
     </div>
 
     <div class="row">
@@ -52,27 +62,59 @@
 
         <select th:field="*{book.genre}" id="genre">
             <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"
-                    th:selected="${book.genre != null && book.genre.id == genre.id}"></option>
+                    th:selected="${book.genre != null && book.genre.id == genre.id}"
+                    th:disabled="${book.id > 0 && book.genre.id != genre.id}"
+            ></option>
         </select>
-        <!--        <input id="genre" type="text" readonly="readonly" th:value="${book.genre.name}" value="Book genre"/>-->
     </div>
-
-    <!--    <input id="book-author" name="author.id" type="hidden" readonly="readonly" th:value="${book.author.id}" value="Book author ID"/>-->
-    <!--    <input id="book-genre" name="genre.id" type="hidden" readonly="readonly" th:value="${book.genre.id}" value="Book genre ID"/>-->
-
-    <!--        <input id="book-author" name="author.id" type="hidden" readonly="readonly" value="1"/>-->
-    <!--        <input id="book-genre" name="genre.id" type="hidden" readonly="readonly" value="1"/>-->
 
     <div class="row">
         <button type="submit">Save</button>
     </div>
 </form>
 
-<form id="delete-form" th:action="@{/delete(id=${book.id})}" th:method="post" action="books.html">
+<form id="delete-form" th:action="@{/books/delete}" th:method="post" action="books.html">
     <div class="row">
-        <button type="submit" onclick="return confirm('Are you sure you want to delete this item?');">Delete</button>
+        <input id="delete-book-id" th:value="${book.id}" name="id" type="hidden"/>
+        <button type="submit" onclick="return confirm('Are you sure you want to delete this book?');">Delete</button>
     </div>
 </form>
+
+<div th:hidden="${book.id < 1}">
+    <h2>Comments:</h2>
+
+    <table class="books">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Text</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="comment : ${comments}">
+            <td th:text="${comment.id}">ID</td>
+            <td th:text="${comment.text}">Text</td>
+            <td>
+                <a th:href="@{/comments/delete(id=${comment.id},bookId=${book.id})}" href="book.html">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form id="comment-form" th:action="@{/comments/add}" th:method="post" action="book.html">
+        <div class="row">
+            <label for="comment-text">New comment:</label>
+            <input id="comment-text" name="text" type="text" value="Comment text"/>
+            <!--        <input id="comment-book" th:field="*{book}" th:value="${book}" name="book" type="text"/>-->
+            <input id="comment-book" th:value="${book.id}" name="book.id" type="hidden"/>
+        </div>
+
+        <div class="row">
+            <button type="submit">Add</button>
+        </div>
+    </form>
+</div>
 
 </body>
 </html>
