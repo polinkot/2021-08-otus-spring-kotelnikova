@@ -102,12 +102,11 @@
         </tbody>
     </table>
 
-    <form id="comment-form" th:action="@{/comments/add}" th:method="post" action="book.html">
+    <form id="comment-form" th:action="@{/comments/add}" th:method="post" th:object="${comment}" action="book.html">
         <div class="row">
             <label for="comment-text">New comment:</label>
             <input id="comment-text" name="text" type="text" value="Comment text"/>
-            <!--        <input id="comment-book" th:field="*{book}" th:value="${book}" name="book" type="text"/>-->
-            <input id="comment-book" th:value="${book.id}" name="book.id" type="hidden"/>
+            <input id="comment-book" th:field="*{book}" type="text"/>
         </div>
 
         <div class="row">

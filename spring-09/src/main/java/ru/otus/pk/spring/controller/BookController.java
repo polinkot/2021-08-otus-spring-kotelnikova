@@ -46,9 +46,7 @@ public class BookController {
         List<Comment> comments = id > 0 ? commentService.findByBookId(id) : new ArrayList<>();
         model.addAttribute("comments", comments);
 
-//        Comment comment = new Comment();
-//        comment.setBook(book);
-//        model.addAttribute("comment", comment);
+        model.addAttribute("comment", new Comment(null, null, book));
 
         return "book";
     }
