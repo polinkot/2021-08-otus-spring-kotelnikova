@@ -30,8 +30,6 @@ class CommentServiceImplTest {
 
     @MockBean
     private CommentRepository repository;
-    @MockBean
-    private BookService bookService;
 
     @Autowired
     private CommentServiceImpl service;
@@ -67,11 +65,11 @@ class CommentServiceImplTest {
 
     @DisplayName("добавлять комментарий")
     @Test
-    void shouldInsertComment() {
+    void shouldAddComment() {
         given(repository.save(any(Comment.class))).willReturn(COMMENT);
 
-//        Comment actualComment = service.save(null, COMMENT.getText(), COMMENT.getBook().getId());
-//        assertThat(actualComment).isEqualTo(COMMENT);
+        Comment actualComment = service.save(new Comment(10L, "comment1", BOOK));
+        assertThat(actualComment).isEqualTo(COMMENT);
     }
 
     @DisplayName("редактировать комментарий")
@@ -80,8 +78,8 @@ class CommentServiceImplTest {
         given(repository.findById(COMMENT.getId())).willReturn(Optional.of(COMMENT));
         given(repository.save(any(Comment.class))).willReturn(COMMENT);
 
-//        Comment actualComment = service.save(COMMENT.getId(), COMMENT.getText(), COMMENT.getBook().getId());
-//        assertThat(actualComment).isEqualTo(COMMENT);
+        Comment actualComment = service.save(COMMENT);
+        assertThat(actualComment).isEqualTo(COMMENT);
     }
 
     @DisplayName("возвращать ожидаемый список комментариев для книги ")

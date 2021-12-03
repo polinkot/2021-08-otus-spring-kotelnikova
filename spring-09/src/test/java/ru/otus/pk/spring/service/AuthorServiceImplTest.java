@@ -59,11 +59,11 @@ class AuthorServiceImplTest {
 
     @DisplayName("добавлять автора")
     @Test
-    void shouldInsertAuthor() {
+    void shouldAddAuthor() {
         given(repository.save(any(Author.class))).willReturn(EXPECTED_AUTHOR);
 
-//        Author actualAuthor = service.save(null, "AuthorF", "AuthorL");
-//        assertThat(actualAuthor).isEqualTo(EXPECTED_AUTHOR);
+        Author actualAuthor = service.save(new Author(10L, "author1F", "author1L"));
+        assertThat(actualAuthor).isEqualTo(EXPECTED_AUTHOR);
     }
 
     @DisplayName("редактировать автора")
@@ -74,7 +74,7 @@ class AuthorServiceImplTest {
         given(repository.findById(expectedAuthor.getId())).willReturn(Optional.of(expectedAuthor));
         given(repository.save(any(Author.class))).willReturn(expectedAuthor);
 
-//        Author actualAuthor = service.save(1L, "changedF", "AuthorL");
-//        assertThat(actualAuthor).isEqualTo(expectedAuthor);
+        Author actualAuthor = service.save(expectedAuthor);
+        assertThat(actualAuthor).isEqualTo(expectedAuthor);
     }
 }

@@ -28,10 +28,6 @@ class BookServiceImplTest {
 
     @MockBean
     private BookRepository repository;
-    @MockBean
-    private AuthorService authorService;
-    @MockBean
-    private GenreService genreService;
 
     @Autowired
     private BookServiceImpl service;
@@ -67,15 +63,11 @@ class BookServiceImplTest {
 
     @DisplayName("добавлять книгу")
     @Test
-    void shouldInsertBook() {
+    void shouldAddBook() {
         given(repository.save(any(Book.class))).willReturn(EXPECTED_BOOK);
-        given(authorService.findById(AUTHOR.getId())).willReturn(AUTHOR);
-        given(genreService.findById(GENRE.getId())).willReturn(GENRE);
 
-//        Book actualBook = service.save(null, EXPECTED_BOOK.getName(),
-//                AUTHOR.getId(), null, null,
-//                GENRE.getId(), null);
-//        assertThat(actualBook).isEqualTo(EXPECTED_BOOK);
+        Book actualBook = service.save(new Book(10L, "book1", AUTHOR, GENRE));
+        assertThat(actualBook).isEqualTo(EXPECTED_BOOK);
     }
 
     @DisplayName("редактировать книгу")
@@ -86,8 +78,8 @@ class BookServiceImplTest {
         given(repository.findById(expectedBook.getId())).willReturn(Optional.of(expectedBook));
         given(repository.save(any(Book.class))).willReturn(expectedBook);
 
-//        Book actualBook = service.save(1L, expectedBook.getName(), null, null, null, null, null);
-//        assertThat(actualBook).isEqualTo(expectedBook);
+        Book actualBook = service.save(EXPECTED_BOOK);
+        assertThat(actualBook).isEqualTo(expectedBook);
     }
 
     @DisplayName("возвращать ожидаемый список книг для автора ")
