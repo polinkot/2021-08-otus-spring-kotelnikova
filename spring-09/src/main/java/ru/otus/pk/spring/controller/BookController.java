@@ -3,7 +3,9 @@ package ru.otus.pk.spring.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Comment;
@@ -57,7 +59,7 @@ public class BookController {
         return "redirect:/books";
     }
 
-    @RequestMapping("/books/delete")
+    @PostMapping("/books/delete")
     public String delete(@RequestParam("id") Long id) {
         service.deleteById(id);
         return "redirect:/books";
