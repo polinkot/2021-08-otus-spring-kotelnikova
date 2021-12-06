@@ -1,10 +1,12 @@
 package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.exception.LibraryException;
+import ru.otus.pk.spring.exception.ObjectNotFoundException;
 import ru.otus.pk.spring.repository.BookRepository;
 
 import java.util.List;
@@ -35,7 +37,7 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     @Override
     public Book findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new LibraryException(format(BOOK_NOT_FOUND, id)));
+        return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(format(BOOK_NOT_FOUND, id)));
     }
 
     @Transactional
@@ -48,7 +50,11 @@ public class BookServiceImpl implements BookService {
     @Transactional
     @Override
     public void deleteById(Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ObjectNotFoundException(format(BOOK_NOT_FOUND, id), e);
+        }
     }
 
     @Transactional(readOnly = true)

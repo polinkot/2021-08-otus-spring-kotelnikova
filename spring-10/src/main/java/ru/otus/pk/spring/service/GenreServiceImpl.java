@@ -1,10 +1,12 @@
 package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.domain.Genre;
 import ru.otus.pk.spring.exception.LibraryException;
+import ru.otus.pk.spring.exception.ObjectNotFoundException;
 import ru.otus.pk.spring.repository.GenreRepository;
 
 import java.util.List;
@@ -35,7 +37,7 @@ public class GenreServiceImpl implements GenreService {
     @Transactional(readOnly = true)
     @Override
     public Genre findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new LibraryException(format(GENRE_NOT_FOUND, id)));
+        return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(format(GENRE_NOT_FOUND, id)));
     }
 
     @Transactional
@@ -48,7 +50,11 @@ public class GenreServiceImpl implements GenreService {
     @Transactional
     @Override
     public void deleteById(Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ObjectNotFoundException(format(GENRE_NOT_FOUND, id), e);
+        }
     }
 
     private void validate(Genre genre) {

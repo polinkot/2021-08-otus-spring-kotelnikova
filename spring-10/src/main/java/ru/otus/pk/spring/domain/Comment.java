@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -42,10 +43,11 @@ public class Comment {
     @Column(name = "time", nullable = false)
     private LocalDateTime time = now();
 
+    @JsonIgnore
     @ManyToOne(fetch = LAZY)
-    private ru.otus.pk.spring.domain.Book book;
+    private Book book;
 
-    public Comment(Long id, String text, ru.otus.pk.spring.domain.Book book) {
+    public Comment(Long id, String text, Book book) {
         this.id = id;
         this.text = text;
         this.book = book;

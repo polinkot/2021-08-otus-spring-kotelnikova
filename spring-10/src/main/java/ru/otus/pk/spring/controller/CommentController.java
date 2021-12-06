@@ -1,27 +1,41 @@
 package ru.otus.pk.spring.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import ru.otus.pk.spring.controller.dto.CommentDto;
+import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Comment;
+import ru.otus.pk.spring.service.BookService;
 import ru.otus.pk.spring.service.CommentService;
 
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+
 @RequiredArgsConstructor
-@Controller
+@RestController
 public class CommentController {
 
+    private final BookService bookService;
     private final CommentService service;
 
-//    @PostMapping("/comments/add")
-//    public String save(Comment comment) {
-//        service.save(comment);
-//        return "redirect:/books/edit?id=" + comment.getBook().getId();
-//    }
-//
-//    @PostMapping("/comments/delete")
-//    public String delete(@RequestParam("id") Long id, @RequestParam("bookId") Long bookId) {
-//        service.deleteById(id);
-//        return "redirect:/books/edit?id=" + bookId;
-//    }
+    @GetMapping("/book/{bookId}/comments")
+    public List<Comment> findByBookId(@PathVariable("bookId") Long bookId) {
+        return service.findByBookId(bookId);
+    }
+
+    @ResponseStatus(CREATED)
+    @PostMapping("/comments")
+    public Comment create(@RequestBody CommentDto dto) {
+        Book book = bookService.findById(dto.getBookId());
+        Comment comment = new Comment(null, dto.getText(), book);
+        return service.save(comment);
+    }
+
+    @ResponseStatus(OK)
+    @DeleteMapping("/comments/{id}")
+    public void delete(@PathVariable("id") Long id) {
+        service.deleteById(id);
+    }
 }
