@@ -22,7 +22,7 @@ public class BookController {
     private final AuthorService authorService;
     private final GenreService genreService;
 
-    @GetMapping({"/", "/books"})
+    @GetMapping("/books")
     public List<Book> finAll() {
         return service.findAll();
     }
