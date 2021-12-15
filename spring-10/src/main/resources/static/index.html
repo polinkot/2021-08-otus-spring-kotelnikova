@@ -14,6 +14,7 @@
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/books.js"></script>
 </head>
 <body>
 
@@ -33,6 +34,10 @@
     <tbody>
     </tbody>
 </table>
+
+<div>
+    <input type="button" onclick="showEditor()" value="Add Book">
+</div>
 
 </span>
 
@@ -63,133 +68,30 @@
     </tr>
 </table>
 
+<span id="commentList">
+    <table class="books" id="comments">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Text</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div>
+        <input type="text" id="commentText">
+        <input type="button" onclick="addComment()" value="Add Comment">
+    </div>
 </span>
 
-<div id="addBook">
-    <input type="button" onclick="showEditor()" value="Add Book">
-</div>
+</span>
 
 <script>
-    function loadBooks() {
-        $.get('/books').done(function (books) {
-            $('#books > tbody').empty();
-
-            books.forEach(function (book) {
-                $('#books > tbody').append(`
-                    <tr>
-                        <td>${book.id}</td>
-                        <td>${book.name}</td>
-                        <td>${book.author.fullName}</td>
-                        <td>${book.genre.name}</td>
-                        <td>
-                            <a href="#" onclick="editBook(${book.id})">Edit</a>
-                            <a href="#" onclick="deleteBook(${book.id})">Delete</a>
-                        </td>
-                    </tr>
-                `)
-            });
-        })
-    }
-
-    function loadAuthors() {
-        $.get('/authors').done(function (authors) {
-            $('#bookAuthorId').empty();
-
-            authors.forEach(function (author) {
-                $('#bookAuthorId').append(`
-                        <option value="${author.id}">${author.fullName}</option>
-                `)
-            });
-        })
-    }
-
-    function loadGenres() {
-        $.get('/genres').done(function (genres) {
-            $('#bookGenreId').empty();
-
-            genres.forEach(function (genre) {
-                $('#bookGenreId').append(`
-                        <option value="${genre.id}">${genre.name}</option>
-                `)
-            });
-        })
-    }
-
-    function clearEditBlock() {
-        $('#bookId').val('');
-        $('#bookName').val('');
-        $('#bookAuthorId').val('');
-        $('#bookGenreId').val('');
-    }
-
-    function showList() {
-        $('#bookEditor').hide();
-        clearEditBlock();
-
-        loadBooks();
-
-        $('#bookList').show();
-        $('#addBook').show();
-    }
-
-    function showEditor() {
-        $('#bookList').hide();
-        $('#addBook').hide();
-
-        loadAuthors();
-        loadGenres();
-
-        $('#bookEditor').show();
-    }
-
-    function editBook(id) {
-        $.get('/books/' + id).done(function (book) {
-            $('#bookId').val(id);
-            $('#bookName').val(book.name);
-            $('#bookAuthorId').val(book.author.id);
-            $('#bookGenreId').val(book.genre.id);
-        })
-
-        showEditor();
-    }
-
-    function saveBook() {
-        let id = $('#bookId').val();
-        let method = (id === '') ? 'POST' : 'PUT';
-
-        $.ajax({
-            url: '/books',
-            type: method,
-            data: JSON.stringify({
-                id: id,
-                name: $('#bookName').val(),
-                authorId: $('#bookAuthorId').val(),
-                genreId: $('#bookGenreId').val()
-            }),
-            contentType: 'application/json; charset=utf-8',
-            dataType: 'json',
-            success: function () {
-                showList();
-            }
-        });
-    }
-
-    function deleteBook(id) {
-        if (!confirm('Are you sure you want to delete this book?')) {
-            return;
-        }
-
-        $.ajax({
-            url: '/books/' + id,
-            type: 'DELETE',
-            success: function () {
-                loadBooks();
-            }
-        });
-    }
-
     $(document).ready(loadBooks());
-
 </script>
+
 </body>
 </html>
