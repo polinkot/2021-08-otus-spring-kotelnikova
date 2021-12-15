@@ -32,26 +32,6 @@ public class BookController {
         return service.findById(id);
     }
 
-    //    @GetMapping("/books/edit")
-//    public String edit(@RequestParam("id") Long id, Model model) {
-//        Book book = id > 0 ? service.findById(id) : new Book();
-//        model.addAttribute("book", book);
-//
-//        List<Author> authors = authorService.findAll();
-//        model.addAttribute("authors", authors);
-//
-//        List<Genre> genres = genreService.findAll();
-//        model.addAttribute("genres", genres);
-//
-//        List<Comment> comments = id > 0 ? commentService.findByBookId(id) : new ArrayList<>();
-//        model.addAttribute("comments", comments);
-//
-//        model.addAttribute("comment", new Comment(null, null, book));
-//
-//        return "book";
-//    }
-//
-
     @ResponseStatus(CREATED)
     @PostMapping("/books")
     public Book create(@RequestBody BookDto dto) {
