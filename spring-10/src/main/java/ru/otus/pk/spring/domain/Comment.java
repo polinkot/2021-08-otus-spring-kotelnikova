@@ -43,7 +43,7 @@ public class Comment {
     @Column(name = "time", nullable = false)
     private LocalDateTime time = now();
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(fetch = LAZY)
     private Book book;
 

@@ -33,7 +33,6 @@ public class CommentController {
         return service.save(comment);
     }
 
-    @ResponseStatus(OK)
     @DeleteMapping("/comments/{id}")
     public void delete(@PathVariable("id") Long id) {
         service.deleteById(id);
