@@ -11,12 +11,14 @@ import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.domain.Comment;
 import ru.otus.pk.spring.domain.Genre;
+import ru.otus.pk.spring.domain.mapper.CommentMapper;
 import ru.otus.pk.spring.service.BookService;
 import ru.otus.pk.spring.service.CommentService;
 
 import java.util.List;
 
 import static java.lang.String.format;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -47,17 +49,22 @@ public class CommentControllerTest {
     @MockBean
     private BookService bookService;
 
+    @MockBean
+    private CommentMapper mapper;
+
     @DisplayName("возвращать ожидаемый список комментариев для книги ")
     @Test
-    void shouldReturnExpectedBookCommentsCount() throws Exception {
+    void shouldReturnExpectedBookComments() throws Exception {
         given(service.findByBookId(anyLong())).willReturn(List.of(COMMENT));
+        given(mapper.toDto(any(Comment.class))).willReturn(COMMENT_DTO);
 
         this.mockMvc.perform(get(format("/book/%s/comments", BOOK.getId()))).andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(content().contentType(APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].id", is(COMMENT.getId().intValue())))
-                .andExpect(jsonPath("$[0].text", is(COMMENT.getText())))
-                .andExpect(jsonPath("$[0].book.id", is(BOOK.getId().intValue())));
+                .andExpect(jsonPath("$[0].id", is(COMMENT_DTO.getId().intValue())))
+                .andExpect(jsonPath("$[0].text", is(COMMENT_DTO.getText())))
+                .andExpect(jsonPath("$[0].bookId", is(COMMENT_DTO.getBookId().intValue())));
     }
 
     @DisplayName("добавлять комментарий")
