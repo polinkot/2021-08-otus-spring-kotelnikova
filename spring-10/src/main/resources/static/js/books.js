@@ -92,14 +92,17 @@
     }
 
     function editBook(id) {
+        showEditor(id);
+
         $.get('/books/' + id).done(function (book) {
             $('#bookId').val(id);
             $('#bookName').val(book.name);
             $('#bookAuthorId').val(book.author.id);
             $('#bookGenreId').val(book.genre.id);
-        })
 
-        showEditor(id);
+            $('#bookAuthorId option:not(:selected)').attr('disabled', true);
+            $('#bookGenreId option:not(:selected)').attr('disabled', true);
+        })
     }
 
     function saveBook() {
