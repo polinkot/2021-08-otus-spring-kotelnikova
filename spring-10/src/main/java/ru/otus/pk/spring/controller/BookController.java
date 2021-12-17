@@ -3,18 +3,15 @@ package ru.otus.pk.spring.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.pk.spring.controller.dto.BookDto;
-import ru.otus.pk.spring.domain.Author;
-import ru.otus.pk.spring.domain.Book;
-import ru.otus.pk.spring.domain.Genre;
-import ru.otus.pk.spring.service.AuthorService;
-import ru.otus.pk.spring.service.BookService;
-import ru.otus.pk.spring.service.GenreService;
+import ru.otus.pk.spring.domain.*;
+import ru.otus.pk.spring.service.*;
 
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
 @RestController
 public class BookController {
 

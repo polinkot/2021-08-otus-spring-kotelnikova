@@ -58,7 +58,7 @@ public class CommentControllerTest {
         given(service.findByBookId(anyLong())).willReturn(List.of(COMMENT));
         given(mapper.toDto(any(Comment.class))).willReturn(COMMENT_DTO);
 
-        this.mockMvc.perform(get(format("/book/%s/comments", BOOK.getId()))).andDo(print())
+        this.mockMvc.perform(get(format("/api/v1/book/%s/comments", BOOK.getId()))).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(content().contentType(APPLICATION_JSON))
@@ -72,7 +72,7 @@ public class CommentControllerTest {
     public void shouldAddComment() throws Exception {
         given(service.save(any(Comment.class))).willReturn(COMMENT);
 
-        this.mockMvc.perform(post("/comments")
+        this.mockMvc.perform(post("/api/v1/comments")
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(COMMENT_DTO)))
                 .andExpect(status().isCreated())
@@ -87,7 +87,7 @@ public class CommentControllerTest {
     void shouldDeleteComment() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
-        this.mockMvc.perform(delete("/comments/" + COMMENT.getId()))
+        this.mockMvc.perform(delete("/api/v1/comments/" + COMMENT.getId()))
                 .andExpect(status().isOk());
     }
 }

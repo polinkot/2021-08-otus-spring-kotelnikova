@@ -36,7 +36,7 @@ public class GenreControllerTest {
     public void shouldReturnExpectedGenresList() throws Exception {
         given(service.findAll()).willReturn(List.of(GENRE));
 
-        this.mockMvc.perform(get("/genres")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/v1/genres")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(GENRE.getId().intValue())))

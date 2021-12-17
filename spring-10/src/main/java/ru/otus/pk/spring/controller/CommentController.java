@@ -15,6 +15,7 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
 @RestController
 public class CommentController {
 

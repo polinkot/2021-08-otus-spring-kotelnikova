@@ -36,7 +36,7 @@ public class AuthorControllerTest {
     public void shouldReturnExpectedAuthorsList() throws Exception {
         given(service.findAll()).willReturn(List.of(AUTHOR));
 
-        this.mockMvc.perform(get("/authors")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/v1/authors")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(AUTHOR.getId().intValue())))

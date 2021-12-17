@@ -54,7 +54,7 @@ public class BookControllerTest {
     public void shouldReturnExpectedBooksList() throws Exception {
         given(service.findAll()).willReturn(List.of(BOOK));
 
-        this.mockMvc.perform(get("/books")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/v1/books")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(BOOK.getId().intValue())))
@@ -68,7 +68,7 @@ public class BookControllerTest {
     public void shouldReturnExpectedBookById() throws Exception {
         given(service.findById(BOOK.getId())).willReturn(BOOK);
 
-        this.mockMvc.perform(get("/books/" + BOOK.getId())).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/v1/books/" + BOOK.getId())).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(BOOK.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(BOOK.getName())))
@@ -81,7 +81,7 @@ public class BookControllerTest {
     public void shouldAddBook() throws Exception {
         given(service.save(any(Book.class))).willReturn(BOOK);
 
-        this.mockMvc.perform(post("/books")
+        this.mockMvc.perform(post("/api/v1/books")
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(BOOK_DTO)))
                 .andExpect(status().isCreated())
@@ -98,7 +98,7 @@ public class BookControllerTest {
         given(service.findById(anyLong())).willReturn(BOOK);
         given(service.save(any(Book.class))).willReturn(BOOK);
 
-        this.mockMvc.perform(put("/books")
+        this.mockMvc.perform(put("/api/v1/books")
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(BOOK_DTO)))
                 .andExpect(status().isOk())
@@ -114,7 +114,7 @@ public class BookControllerTest {
     void shouldDeleteBook() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
-        this.mockMvc.perform(delete("/books/" + BOOK.getId()))
+        this.mockMvc.perform(delete("/api/v1/books/" + BOOK.getId()))
                 .andExpect(status().isOk());
     }
 }

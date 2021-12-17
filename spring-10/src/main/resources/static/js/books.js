@@ -1,5 +1,5 @@
     function loadBooks() {
-        $.get('/books').done(function (books) {
+        $.get('/api/v1/books').done(function (books) {
             $('#books > tbody').empty();
 
             books.forEach(function (book) {
@@ -24,7 +24,7 @@
             return;
         }
 
-        $.get('/book/' + bookId + '/comments').done(function (comments) {
+        $.get('/api/v1/book/' + bookId + '/comments').done(function (comments) {
             $('#comments > tbody').empty();
 
             comments.forEach(function (comment) {
@@ -42,7 +42,7 @@
     }
 
     function loadAuthors() {
-        $.get('/authors').done(function (authors) {
+        $.get('/api/v1/authors').done(function (authors) {
             $('#bookAuthorId').empty();
 
             authors.forEach(function (author) {
@@ -54,7 +54,7 @@
     }
 
     function loadGenres() {
-        $.get('/genres').done(function (genres) {
+        $.get('/api/v1/genres').done(function (genres) {
             $('#bookGenreId').empty();
 
             genres.forEach(function (genre) {
@@ -94,7 +94,7 @@
     function editBook(id) {
         showEditor(id);
 
-        $.get('/books/' + id).done(function (book) {
+        $.get('/api/v1/books/' + id).done(function (book) {
             $('#bookId').val(id);
             $('#bookName').val(book.name);
             $('#bookAuthorId').val(book.author.id);
@@ -110,7 +110,7 @@
         let method = (id === '') ? 'POST' : 'PUT';
 
         $.ajax({
-            url: '/books',
+            url: '/api/v1/books',
             type: method,
             data: JSON.stringify({
                 id: id,
@@ -132,7 +132,7 @@
         }
 
         $.ajax({
-            url: '/books/' + id,
+            url: '/api/v1/books/' + id,
             type: 'DELETE',
             success: function () {
                 loadBooks();
@@ -144,7 +144,7 @@
         let bookId = $('#bookId').val();
 
         $.ajax({
-            url: '/comments',
+            url: '/api/v1/comments',
             type: 'POST',
             data: JSON.stringify({
                 text: $('#commentText').val(),
@@ -165,7 +165,7 @@
         }
 
         $.ajax({
-            url: '/comments/' + commentId,
+            url: '/api/v1/comments/' + commentId,
             type: 'DELETE',
             success: function () {
                 loadComments($('#bookId').val());
