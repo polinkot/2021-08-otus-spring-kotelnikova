@@ -12,7 +12,8 @@
  * "Белая магия" Spring Data: Spring Data JPA - spring-07    
  * Spring Data для подключения к нереляционным БД - spring-08   
  * Spring MVC View - spring-09   
- * Современные приложения на Spring MVC - spring-10   
+ * Современные приложения на Spring MVC - spring-10  
+ * Spring WebFlux - spring-11    
 
 
 📚Домашние задания разработаны для курса ["Разработчик на Spring Framework"](https://otus.ru/lessons/javaspring/?int_source=courses_catalog&int_term=programming)
