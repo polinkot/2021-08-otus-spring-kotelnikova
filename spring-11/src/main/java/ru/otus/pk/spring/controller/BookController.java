@@ -13,18 +13,23 @@ public class BookController {
 
     private final BookRepository repository;
 
-    @GetMapping("/book")
+    @GetMapping("/books")
     public Flux<Book> all() {
         return repository.findAll();
     }
 
-    @GetMapping("/book/{id}")
+    @GetMapping("/books/{id}")
     public Mono<Book> byId(@PathVariable("id") String id) {
         return repository.findById(id);
     }
 
-    @PostMapping("/book")
-    public Mono<Book> save(@RequestBody Mono<Book> dto) {
-        return repository.save(dto);
+    @PostMapping("/books")
+    public Mono<Book> save(@RequestBody Book book) {
+        return repository.save(book);
+    }
+
+    @PutMapping(value = "/books")
+    public void update(@RequestBody Book book) {
+        repository.save(book).subscribe();
     }
 }
