@@ -33,7 +33,7 @@
                         <td>${comment.id}</td>
                         <td>${comment.text}</td>
                         <td>
-                            <a href="#" onclick="deleteComment(${comment.id})">Delete</a>
+                            <a href="#" onclick="deleteComment('${comment.id}')">Delete</a>
                         </td>
                     </tr>
                 `)

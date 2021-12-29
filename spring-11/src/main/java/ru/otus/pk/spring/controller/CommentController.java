@@ -22,4 +22,9 @@ public class CommentController {
     public Flux<Comment> findByBookId(@PathVariable("bookId") String bookId) {
         return repository.findByBookId(bookId);
     }
+
+    @DeleteMapping("/comments/{id}")
+    public void delete(@PathVariable("id") String id) {
+        repository.deleteById(id).subscribe();
+    }
 }
