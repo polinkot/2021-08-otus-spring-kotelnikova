@@ -11,7 +11,7 @@
                         <td>${book.genre.name}</td>
                         <td>
                             <a href="#" onclick="editBook('${book.id}')">Edit</a>
-                            <a href="#" onclick="deleteBook(${book.id})">Delete</a>
+                            <a href="#" onclick="deleteBook('${book.id}')">Delete</a>
                         </td>
                     </tr>
                 `)
@@ -46,7 +46,7 @@
             $('#bookAuthorId').empty();
 
             authors.forEach(function (author) {
-                $('#bookAuthorId').append(` <option value="${author.id}" data-info='${JSON.stringify(author)}' >${author.fullName}</option> `)
+                $('#bookAuthorId').append(` <option value="${author.id}" data-author='${JSON.stringify(author)}' >${author.fullName}</option> `)
             });
         })
     }
@@ -56,7 +56,7 @@
             $('#bookGenreId').empty();
 
             genres.forEach(function (genre) {
-                $('#bookGenreId').append(` <option value="${genre.id}" data-info='${JSON.stringify(genre)}'>${genre.name}</option> `)
+                $('#bookGenreId').append(` <option value="${genre.id}" data-genre='${JSON.stringify(genre)}'>${genre.name}</option> `)
             });
         })
     }
@@ -66,6 +66,7 @@
         $('#bookName').val('');
         $('#bookAuthorId').val('');
         $('#bookGenreId').val('');
+        $('#bookJSON').data('book', '');
         $('#comments > tbody').empty();
     }
 
@@ -95,6 +96,7 @@
             $('#bookName').val(book.name);
             $('#bookAuthorId').val(book.author.id);
             $('#bookGenreId').val(book.genre.id);
+            $('#bookJSON').data( "book", book);
 
             $('#bookAuthorId option:not(:selected)').attr('disabled', true);
             $('#bookGenreId option:not(:selected)').attr('disabled', true);
@@ -111,8 +113,8 @@
             data: JSON.stringify({
                 id: id,
                 name: $('#bookName').val(),
-                author: $('#bookAuthorId').find(":selected").data("info"),
-                genre: $('#bookGenreId').find(":selected").data("info")
+                author: $('#bookAuthorId').find(":selected").data("author"),
+                genre: $('#bookGenreId').find(":selected").data("genre")
             }),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
@@ -137,19 +139,21 @@
     }
 
     function addComment() {
-        let bookId = $('#bookId').val();
+        let data = JSON.stringify({
+            text: $('#commentText').val(),
+            book: $('#bookJSON').data("book")
+        });
 
         $.ajax({
             url: '/comments',
             type: 'POST',
-            data: JSON.stringify({
-                text: $('#commentText').val(),
-                bookId: bookId
-            }),
+            data: data,
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            success: function () {
+            complete: function () {
                 $('#commentText').val('');
+
+                let bookId = $('#bookId').val();
                 loadComments(bookId);
             }
         });
