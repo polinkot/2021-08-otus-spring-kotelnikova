@@ -118,7 +118,7 @@
             }),
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            complete: function () {
+            success: function () {
                 showList();
             }
         });
@@ -150,7 +150,7 @@
             data: data,
             contentType: 'application/json; charset=utf-8',
             dataType: 'json',
-            complete: function () {
+            success: function () {
                 $('#commentText').val('');
 
                 let bookId = $('#bookId').val();
