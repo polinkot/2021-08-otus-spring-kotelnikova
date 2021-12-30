@@ -7,8 +7,7 @@ import reactor.core.publisher.Mono;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.repository.BookRepository;
 
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,8 +25,14 @@ public class BookController {
         return repository.findById(id);
     }
 
-    @RequestMapping(value = "/books", method = {POST, PUT})
-    public Mono<Book> save(@RequestBody Book book) {
+    @ResponseStatus(CREATED)
+    @PostMapping("/books")
+    public Mono<Book> add(@RequestBody Book book) {
+        return repository.save(book);
+    }
+
+    @PutMapping("/books")
+    public Mono<Book> update(@RequestBody Book book) {
         return repository.save(book);
     }
 

@@ -49,8 +49,19 @@ public class BookControllerTest {
 
     @DisplayName("добавлять книгу")
     @Test
-    public void saveTest() {
+    public void addTest() {
         webTestClient.post()
+                .uri("/books")
+                .bodyValue(new Book())
+                .exchange()
+                .expectStatus()
+                .isCreated();
+    }
+
+    @DisplayName("редактировать книгу")
+    @Test
+    public void updateTest() {
+        webTestClient.put()
                 .uri("/books")
                 .bodyValue(new Book())
                 .exchange()

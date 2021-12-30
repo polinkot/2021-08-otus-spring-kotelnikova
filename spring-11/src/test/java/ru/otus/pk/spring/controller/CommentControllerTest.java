@@ -46,7 +46,7 @@ public class CommentControllerTest {
                 .bodyValue(new Comment())
                 .exchange()
                 .expectStatus()
-                .isOk();
+                .isCreated();
     }
 
     @DisplayName("удалять коментарий")
