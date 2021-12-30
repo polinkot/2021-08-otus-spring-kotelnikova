@@ -6,10 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 import ru.otus.pk.spring.domain.Book;
-import ru.otus.pk.spring.domain.Comment;
 
 import java.util.Set;
 
@@ -35,10 +33,8 @@ class CommentRepositoryTest {
                 .filter(book -> book.getName().equals("Book1"))
                 .findFirst().orElseThrow(Exception::new);
 
-        Flux<Comment> comments = repository.findByBookId(book1.getId());
-
         StepVerifier
-                .create(comments)
+                .create(repository.findByBookId(book1.getId()))
                 .assertNext(comment -> {
                     assertNotNull(comment.getId());
                     assertTrue(NAMES.contains(comment.getText()));
