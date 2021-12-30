@@ -7,6 +7,4 @@ import ru.otus.pk.spring.domain.Comment;
 public interface CommentRepository extends ReactiveMongoRepository<Comment, String> {
 
     Flux<Comment> findByBookId(String bookId);
-
-    void deleteByBookId(String bookId);
 }
