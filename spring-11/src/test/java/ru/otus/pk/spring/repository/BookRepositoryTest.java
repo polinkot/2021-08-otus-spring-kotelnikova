@@ -4,20 +4,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import ru.otus.pk.spring.domain.Author;
-import ru.otus.pk.spring.domain.Genre;
+import reactor.test.StepVerifier;
 
-import java.util.List;
+import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.util.ObjectUtils.isEmpty;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("Репозиторий для работы с книгами должен ")
 @DataMongoTest
 class BookRepositoryTest {
 
-    private static final int EXPECTED_NUMBER_OF_AUTHORS = 2;
-    private static final int EXPECTED_NUMBER_OF_GENRES = 2;
+    private static final Set<String> GENRES = Set.of("Genre1", "Genre2");
+    private static final Set<String> AUTHOR_FIRST_NAMES = Set.of("AuthorF1", "AuthorF2");
+    private static final Set<String> AUTHOR_LAST_NAMES = Set.of("AuthorL1", "AuthorL2");
 
     @Autowired
     private BookRepository repository;
@@ -25,23 +25,36 @@ class BookRepositoryTest {
     @DisplayName("получать всех авторов")
     @Test
     void shouldFindAllAuthors() {
-        List<Author> authors = repository.findAllAuthors();
-        assertThat(authors).isNotEmpty().hasSize(EXPECTED_NUMBER_OF_AUTHORS)
-                .allMatch(a -> !isEmpty(a.getFirstName()))
-                .allMatch(a -> !isEmpty(a.getLastName()))
-                .anyMatch(a -> a.getFirstName().equals("AuthorF1"))
-                .anyMatch(a -> a.getFirstName().equals("AuthorF2"))
-                .anyMatch(a -> a.getLastName().equals("AuthorL1"))
-                .anyMatch(a -> a.getLastName().equals("AuthorL2"));
+        StepVerifier
+                .create(repository.findAllAuthors())
+                .assertNext(author -> {
+                    assertNotNull(author.getId());
+                    assertTrue(AUTHOR_FIRST_NAMES.contains(author.getFirstName()));
+                    assertTrue(AUTHOR_LAST_NAMES.contains(author.getLastName()));
+                })
+                .assertNext(author -> {
+                    assertNotNull(author.getId());
+                    assertTrue(AUTHOR_FIRST_NAMES.contains(author.getFirstName()));
+                    assertTrue(AUTHOR_LAST_NAMES.contains(author.getLastName()));
+                })
+                .expectComplete()
+                .verify();
     }
 
     @DisplayName("получать все жанры")
     @Test
     void shouldFindAllGenres() {
-        List<Genre> genres = repository.findAllGenres();
-        assertThat(genres).isNotEmpty().hasSize(EXPECTED_NUMBER_OF_GENRES)
-                .allMatch(g -> !isEmpty(g.getName()))
-                .anyMatch(g -> g.getName().equals("Genre1"))
-                .anyMatch(g -> g.getName().equals("Genre2"));
+        StepVerifier
+                .create(repository.findAllGenres())
+                .assertNext(genre -> {
+                    assertNotNull(genre.getId());
+                    assertTrue(GENRES.contains(genre.getName()));
+                })
+                .assertNext(genre -> {
+                    assertNotNull(genre.getId());
+                    assertTrue(GENRES.contains(genre.getName()));
+                })
+                .expectComplete()
+                .verify();
     }
 }

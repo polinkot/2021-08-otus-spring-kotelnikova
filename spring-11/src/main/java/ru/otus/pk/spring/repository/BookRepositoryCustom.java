@@ -1,12 +1,11 @@
 package ru.otus.pk.spring.repository;
 
+import reactor.core.publisher.Flux;
 import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Genre;
 
-import java.util.List;
-
 public interface BookRepositoryCustom {
-    List<Author> findAllAuthors();
+    Flux<Author> findAllAuthors();
 
-    List<Genre> findAllGenres();
+    Flux<Genre> findAllGenres();
 }
