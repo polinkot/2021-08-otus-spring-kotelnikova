@@ -6,6 +6,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.repository.BookRepository;
+import ru.otus.pk.spring.repository.CommentRepository;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -14,6 +15,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class BookController {
 
     private final BookRepository repository;
+    private final CommentRepository commentRepository;
 
     @GetMapping("/books")
     public Flux<Book> all() {
@@ -38,6 +40,7 @@ public class BookController {
 
     @DeleteMapping("/books/{id}")
     public Mono<Void> delete(@PathVariable("id") String id) {
+        commentRepository.deleteByBookId(id);
         return repository.deleteById(id);
     }
 }
