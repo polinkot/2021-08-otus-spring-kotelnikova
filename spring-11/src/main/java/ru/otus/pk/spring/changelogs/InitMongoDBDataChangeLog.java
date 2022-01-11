@@ -2,32 +2,29 @@ package ru.otus.pk.spring.changelogs;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import org.bson.types.ObjectId;
 import ru.otus.pk.spring.domain.*;
-import ru.otus.pk.spring.repository.BookRepository;
-import ru.otus.pk.spring.repository.CommentRepository;
+
+import java.util.List;
 
 @ChangeLog(order = "001")
 public class InitMongoDBDataChangeLog {
 
-    private static final Author AUTHOR1 = new Author(ObjectId.get().toString(), "AuthorF1", "AuthorL1");
-    private static final Author AUTHOR2 = new Author(ObjectId.get().toString(), "AuthorF2", "AuthorL2");
-    private static final Genre GENRE1 = new Genre(ObjectId.get().toString(), "Genre1");
-    private static final Genre GENRE2 = new Genre(ObjectId.get().toString(), "Genre2");
-    private Book book1;
-    private Book book2;
+    @ChangeSet(order = "000", id = "init", author = "pk", runAlways = true)
+    public void init(MongockTemplate template) {
+        Author author1 = new Author(ObjectId.get().toString(), "AuthorF1", "AuthorL1");
+        Author author2 = new Author(ObjectId.get().toString(), "AuthorF2", "AuthorL2");
 
-    @ChangeSet(order = "000", id = "initBooks", author = "pk", runAlways = true)
-    public void initBooks(BookRepository repository) {
-        repository.save(new Book(null, "Book1", AUTHOR1, GENRE1)).subscribe(b -> book1 = b);
-        repository.save(new Book(null, "Book2", AUTHOR2, GENRE2)).subscribe(b -> book2 = b);
-        repository.save(new Book(null, "Book3", AUTHOR1, GENRE1)).subscribe();
-    }
+        Genre genre1 = new Genre(ObjectId.get().toString(), "Genre1");
+        Genre genre2 = new Genre(ObjectId.get().toString(), "Genre2");
 
-    @ChangeSet(order = "001", id = "initComments", author = "pk", runAlways = true)
-    public void initComments(CommentRepository repository) {
-        repository.save(new Comment(null, "Comment1", book1)).subscribe();
-        repository.save(new Comment(null, "Comment2", book2)).subscribe();
-        repository.save(new Comment(null, "Comment3", book1)).subscribe();
+        Book book1 = template.save(new Book(null, "Book1", author1, genre1));
+        Book book2 = template.save(new Book(null, "Book2", author2, genre2));
+        template.save(new Book(null, "Book3", author1, genre1));
+
+        template.insertAll(List.of(new Comment(null, "Comment1", book1),
+                new Comment(null, "Comment2", book2),
+                new Comment(null, "Comment3", book1)));
     }
 }

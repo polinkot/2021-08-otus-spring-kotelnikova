@@ -11,6 +11,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.repository.BookRepository;
+import ru.otus.pk.spring.repository.CommentRepository;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -26,6 +27,9 @@ public class BookControllerTest {
 
     @MockBean
     private BookRepository repository;
+
+    @MockBean
+    private CommentRepository commentRepository;
 
     @DisplayName("возвращать книгу по id")
     @Test
