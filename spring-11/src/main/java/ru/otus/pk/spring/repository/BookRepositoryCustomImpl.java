@@ -1,7 +1,7 @@
 package ru.otus.pk.spring.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
 import reactor.core.publisher.Flux;
 import ru.otus.pk.spring.domain.*;
@@ -13,7 +13,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 @RequiredArgsConstructor
 public class BookRepositoryCustomImpl implements BookRepositoryCustom {
 
-    private final MongoTemplate mongoTemplate;
+    private final ReactiveMongoOperations reactiveMongoOperations;
 
     @Override
     public Flux<Author> findAllAuthors() {
@@ -24,7 +24,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                         .and("lastName").as("lastName")
         );
 
-        return Flux.fromIterable(mongoTemplate.aggregate(newAggregation(operations), Book.class, Author.class).getMappedResults());
+        return reactiveMongoOperations.aggregate(newAggregation(operations), Book.class, Author.class);
     }
 
     @Override
@@ -35,6 +35,6 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                         .and("name").as("name")
         );
 
-        return Flux.fromIterable(mongoTemplate.aggregate(newAggregation(operations), Book.class, Genre.class).getMappedResults());
+        return reactiveMongoOperations.aggregate(newAggregation(operations), Book.class, Genre.class);
     }
 }

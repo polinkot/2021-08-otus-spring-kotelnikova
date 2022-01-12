@@ -40,7 +40,7 @@ public class BookController {
 
     @DeleteMapping("/books/{id}")
     public Mono<Void> delete(@PathVariable("id") String id) {
-        commentRepository.deleteByBookId(id);
-        return repository.deleteById(id);
+        return Mono.zip(commentRepository.deleteByBookId(id), repository.deleteById(id))
+                .flatMap(result -> Mono.empty());
     }
 }
