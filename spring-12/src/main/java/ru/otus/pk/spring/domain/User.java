@@ -11,7 +11,10 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = "id")
+@ToString(exclude = "password")
 @Entity
 @Table(name = "user")
 public class User implements UserDetails {
@@ -28,22 +31,16 @@ public class User implements UserDetails {
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
+    @Column(name = "account_non_expired", nullable = false)
+    private boolean accountNonExpired;
+
+    @Column(name = "account_non_locked", nullable = false)
+    private boolean accountNonLocked;
+
+    @Column(name = "credentials_non_expired", nullable = false)
+    private boolean credentialsNonExpired;
+
     @OneToMany(fetch = EAGER)
     @JoinColumn(name = "user_id")
     private Set<Authority> authorities;
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
 }

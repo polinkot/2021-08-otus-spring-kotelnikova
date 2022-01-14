@@ -30,7 +30,10 @@ CREATE TABLE user (
   password VARCHAR(100) NOT NULL,
   full_name VARCHAR(100),
   email VARCHAR(100),
-  enabled boolean NOT NULL DEFAULT true
+  enabled boolean NOT NULL DEFAULT true,
+  account_non_expired boolean NOT NULL DEFAULT true,
+  account_non_locked boolean NOT NULL DEFAULT true,
+  credentials_non_expired boolean NOT NULL DEFAULT true
 );
 
 drop table if exists authority;

@@ -7,7 +7,10 @@ import javax.persistence.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode(of = "id")
+@ToString
 @Entity
 @Table(name = "authority")
 public class Authority implements GrantedAuthority {
