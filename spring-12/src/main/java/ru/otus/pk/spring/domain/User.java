@@ -28,6 +28,12 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "full_name")
+    private String fullName;
+
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "enabled", nullable = false)
     private boolean enabled;
 

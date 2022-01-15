@@ -1,4 +1,4 @@
-package ru.otus.pk.spring.service;
+package ru.otus.pk.spring.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.*;
