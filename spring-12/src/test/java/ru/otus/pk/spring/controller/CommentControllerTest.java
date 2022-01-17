@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.controller;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("Контроллер для работы с комментариями должен ")
 @ExtendWith(SpringExtension.class)
 @WithMockUser
 @WebMvcTest(CommentController.class)
@@ -39,6 +41,7 @@ public class CommentControllerTest {
     @MockBean
     private CommentService service;
 
+    @DisplayName("для авторизованного пользователя возвращать ответ 302 (REDIRECTION) при сохранении комментария")
     @Test
     void save() throws Exception {
         given(service.save(any(Comment.class))).willReturn(COMMENT);
@@ -50,6 +53,7 @@ public class CommentControllerTest {
                 .andExpect(status().isFound());
     }
 
+    @DisplayName("для авторизованного пользователя возвращать ответ 302 (REDIRECTION) при удалении комментария")
     @Test
     void delete() throws Exception {
         doNothing().when(service).deleteById(anyLong());
@@ -59,5 +63,27 @@ public class CommentControllerTest {
                 .param("id", "1")
                 .param("bookId", "1"))
                 .andExpect(status().isFound());
+    }
+
+    @DisplayName("для неавторизованного пользователя возвращать ответ 403 (FORBIDDEN) при сохранении комментария")
+    @Test
+    void saveForbidden() throws Exception {
+        given(service.save(any(Comment.class))).willReturn(COMMENT);
+
+        this.mockMvc.perform(post("/comments/add")
+                .param("text", "comment1")
+                .param("book.id", "1"))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("для неавторизованного пользователя возвращать ответ 403 (FORBIDDEN) при удалении комментария")
+    @Test
+    void deleteForbidden() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
+
+        this.mockMvc.perform(post("/comments/delete")
+                .param("id", "1")
+                .param("bookId", "1"))
+                .andExpect(status().isForbidden());
     }
 }

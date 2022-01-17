@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.controller;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayName("Контроллер для работы с книгами должен ")
 @ExtendWith(SpringExtension.class)
-@WithMockUser
 @WebMvcTest(BookController.class)
 public class BookControllerTest {
 
@@ -52,6 +53,8 @@ public class BookControllerTest {
     @MockBean
     private CommentService commentService;
 
+    @DisplayName("для авторизованного пользователя возвращать успешный ответ при получении списка книг")
+    @WithMockUser
     @Test
     public void finAll() throws Exception {
         given(service.findAll()).willReturn(List.of(BOOK));
@@ -59,6 +62,8 @@ public class BookControllerTest {
         this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk());
     }
 
+    @DisplayName("для авторизованного пользователя возвращать успешный ответ при получении информации о книге")
+    @WithMockUser
     @Test
     void edit() throws Exception {
         given(service.findById(anyLong())).willReturn(BOOK);
@@ -69,6 +74,8 @@ public class BookControllerTest {
         this.mockMvc.perform(get("/books/edit?id=" + BOOK.getId())).andDo(print()).andExpect(status().isOk());
     }
 
+    @DisplayName("для авторизованного пользователя возвращать ответ 302 (REDIRECTION) при сохранении книги")
+    @WithMockUser
     @Test
     void save() throws Exception {
         given(service.save(any(Book.class))).willReturn(BOOK);
@@ -80,6 +87,8 @@ public class BookControllerTest {
                 .andExpect(status().isFound());
     }
 
+    @DisplayName("для авторизованного пользователя возвращать ответ 302 (REDIRECTION) при удалении книги")
+    @WithMockUser
     @Test
     void delete() throws Exception {
         doNothing().when(service).deleteById(anyLong());
@@ -88,5 +97,45 @@ public class BookControllerTest {
                 .with(csrf())
                 .param("id", "1"))
                 .andExpect(status().isFound());
+    }
+
+    @DisplayName("для неавторизованного пользователя возвращать ответ 302 (REDIRECTION) при получении списка книг")
+    @Test
+    public void finAllForbidden() throws Exception {
+        given(service.findAll()).willReturn(List.of(BOOK));
+
+        this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isFound());
+    }
+
+    @DisplayName("для неавторизованного пользователя возвращать ответ 302 (REDIRECTION) при получении информации о книге")
+    @Test
+    void editForbidden() throws Exception {
+        given(service.findById(anyLong())).willReturn(BOOK);
+        given(authorService.findAll()).willReturn(List.of(AUTHOR));
+        given(genreService.findAll()).willReturn(List.of(GENRE));
+        given(commentService.findByBookId(anyLong())).willReturn(List.of(COMMENT));
+
+        this.mockMvc.perform(get("/books/edit?id=" + BOOK.getId())).andDo(print()).andExpect(status().isFound());
+    }
+
+    @DisplayName("для неавторизованного пользователя возвращать ответ 403 (FORBIDDEN) при сохранении книги")
+    @Test
+    void saveForbidden() throws Exception {
+        given(service.save(any(Book.class))).willReturn(BOOK);
+
+        this.mockMvc.perform(post("/books/edit")
+                .param("id", "1")
+                .param("name", "book1"))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("для неавторизованного пользователя возвращать ответ 403 (FORBIDDEN) при удалении книги")
+    @Test
+    void deleteForbidden() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
+
+        this.mockMvc.perform(post("/books/delete")
+                .param("id", "1"))
+                .andExpect(status().isForbidden());
     }
 }
