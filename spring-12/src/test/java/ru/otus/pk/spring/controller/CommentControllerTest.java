@@ -5,11 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.domain.*;
-import ru.otus.pk.spring.security.CustomUserDetailsService;
 import ru.otus.pk.spring.service.CommentService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -34,7 +34,7 @@ public class CommentControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CustomUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @MockBean
     private CommentService service;
