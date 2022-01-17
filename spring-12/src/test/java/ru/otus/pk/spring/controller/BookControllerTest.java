@@ -10,7 +10,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.domain.*;
-import ru.otus.pk.spring.security.CustomUserDetailsService;
 import ru.otus.pk.spring.service.*;
 
 import java.util.List;
