@@ -20,8 +20,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().antMatchers("/**").authenticated()
-                .and().formLogin().defaultSuccessUrl("/books");
+                .authorizeRequests().antMatchers("/", "/books", "/books/edit").permitAll()
+                .and().authorizeRequests().antMatchers("/comments/add", "/comments/delete").authenticated()
+                .and().authorizeRequests().antMatchers("/books/save", "/books/delete").hasAnyRole("ADMIN")
+                .and().authorizeRequests().antMatchers("/**").denyAll()
+                .and().formLogin().defaultSuccessUrl("/books")
+                .and().logout().logoutSuccessUrl("/books").permitAll()
+                .and().exceptionHandling().accessDeniedPage("/error403");
     }
 
     @Bean

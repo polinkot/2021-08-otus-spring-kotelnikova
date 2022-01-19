@@ -33,7 +33,7 @@
     <a th:href="@{/books}" href="books.html">Book list</a>
 </p>
 
-<form id="edit-form" th:action="@{/books/edit(id=${book.id})}" th:method="post" action="books.html">
+<form id="edit-form" th:action="@{/books/save(id=${book.id})}" th:method="post" action="books.html">
     <h1>Book Info:</h1>
 
     <div class="row">

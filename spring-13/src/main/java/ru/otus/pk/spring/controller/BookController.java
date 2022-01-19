@@ -45,7 +45,7 @@ public class BookController {
         return "book";
     }
 
-    @PostMapping("/books/edit")
+    @PostMapping("/books/save")
     public String save(Book book) {
         service.save(book);
         return "redirect:/books";
