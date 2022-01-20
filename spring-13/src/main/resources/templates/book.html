@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8"/>
     <title>Edit book</title>
@@ -28,6 +28,8 @@
     </style>
 </head>
 <body>
+<div sec:authorize="!isAuthenticated()"><a href="/login">login</a></div>
+<div sec:authorize="isAuthenticated()"><a href="/logout">logout</a></div>
 
 <p>
     <a th:href="@{/books}" href="books.html">Book list</a>
@@ -43,13 +45,15 @@
 
     <div class="row">
         <label for="book-name">Name:</label>
-        <input id="book-name" name="name" type="text" th:value="${book.name}" value="Book name"/>
+        <input type="text" readonly="readonly" th:value="${book.name}" value="Book name" sec:authorize="!hasRole('ADMIN')"/>
+        <input id="book-name" name="name" type="text" th:value="${book.name}" value="Book name" sec:authorize="hasRole('ADMIN')"/>
     </div>
 
     <div class="row">
         <label for="author">Author:</label>
+        <input type="text" readonly="readonly" th:value="${book.author.fullName}" value="Book author" sec:authorize="!hasRole('ADMIN')"/>
 
-        <select th:field="*{book.author}" id="author">
+        <select th:field="*{book.author}" id="author" sec:authorize="hasRole('ADMIN')">
             <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.fullName}"
                     th:selected="${book.author != null && book.author.id == author.id}"
                     th:disabled="${book.id > 0 && book.author.id != author.id}"
@@ -59,8 +63,9 @@
 
     <div class="row">
         <label for="genre">Genre:</label>
+        <input type="text" readonly="readonly" th:value="${book.genre.name}" value="Book genre" sec:authorize="!hasRole('ADMIN')"/>
 
-        <select th:field="*{book.genre}" id="genre">
+        <select th:field="*{book.genre}" id="genre" sec:authorize="hasRole('ADMIN')">
             <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"
                     th:selected="${book.genre != null && book.genre.id == genre.id}"
                     th:disabled="${book.id > 0 && book.genre.id != genre.id}"
@@ -68,13 +73,13 @@
         </select>
     </div>
 
-    <div class="row">
+    <div class="row" sec:authorize="hasRole('ADMIN')">
         <button type="submit">Save</button>
     </div>
 </form>
 
 <form id="delete-form" th:action="@{/books/delete}" th:method="post" action="books.html">
-    <div class="row">
+    <div class="row" sec:authorize="hasRole('ADMIN')" th:if="${book.id > 0}">
         <input id="delete-book-id" th:value="${book.id}" name="id" type="hidden"/>
         <button type="submit" onclick="return confirm('Are you sure you want to delete this book?');">Delete</button>
     </div>
@@ -88,14 +93,14 @@
         <tr>
             <th>ID</th>
             <th>Text</th>
-            <th>Actions</th>
+            <th sec:authorize="isAuthenticated()">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="comment : ${comments}">
             <td th:text="${comment.id}">ID</td>
             <td th:text="${comment.text}">Text</td>
-            <td>
+            <td sec:authorize="isAuthenticated()">
                 <form th:action="@{/comments/delete(id=${comment.id},bookId=${book.id})}" th:method="post" action="book.html">
                     <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?');">Delete</button>
                 </form>
@@ -105,13 +110,13 @@
     </table>
 
     <form id="comment-form" th:action="@{/comments/add}" th:method="post" th:object="${comment}" action="book.html">
-        <div class="row">
+        <div class="row" sec:authorize="isAuthenticated()">
             <label for="comment-text">New comment:</label>
             <input id="comment-text" name="text" type="text" value="Comment text"/>
             <input id="comment-book" th:field="*{book}" type="hidden"/>
         </div>
 
-        <div class="row">
+        <div class="row" sec:authorize="isAuthenticated()">
             <button type="submit">Add</button>
         </div>
     </form>
