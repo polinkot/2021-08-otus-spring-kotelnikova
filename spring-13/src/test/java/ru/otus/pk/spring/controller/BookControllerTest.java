@@ -53,8 +53,7 @@ public class BookControllerTest {
     @MockBean
     private CommentService commentService;
 
-    @DisplayName("для авторизованного пользователя возвращать успешный ответ при получении списка книг")
-    @WithMockUser
+    @DisplayName("для всех возвращать список книг")
     @Test
     public void finAll() throws Exception {
         given(service.findAll()).willReturn(List.of(BOOK));
@@ -62,8 +61,7 @@ public class BookControllerTest {
         this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk());
     }
 
-    @DisplayName("для авторизованного пользователя возвращать успешный ответ при получении информации о книге")
-    @WithMockUser
+    @DisplayName("для всех возвращать информацию о книге")
     @Test
     void edit() throws Exception {
         given(service.findById(anyLong())).willReturn(BOOK);
@@ -74,23 +72,46 @@ public class BookControllerTest {
         this.mockMvc.perform(get("/books/edit?id=" + BOOK.getId())).andDo(print()).andExpect(status().isOk());
     }
 
-    @DisplayName("для авторизованного пользователя возвращать ответ 302 (REDIRECTION) при сохранении книги")
-    @WithMockUser
+    @DisplayName("для роли ADMIN сохранять книгу")
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     @Test
-    void save() throws Exception {
+    void saveForAdmin() throws Exception {
         given(service.save(any(Book.class))).willReturn(BOOK);
 
-        this.mockMvc.perform(post("/books/edit")
+        this.mockMvc.perform(post("/books/save")
                 .with(csrf())
                 .param("id", "1")
                 .param("name", "book1"))
                 .andExpect(status().isFound());
     }
 
-    @DisplayName("для авторизованного пользователя возвращать ответ 302 (REDIRECTION) при удалении книги")
-    @WithMockUser
+    @DisplayName("для роли USER не сохранять книгу")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
-    void delete() throws Exception {
+    void saveForUser() throws Exception {
+        given(service.save(any(Book.class))).willReturn(BOOK);
+
+        this.mockMvc.perform(post("/books/save")
+                .param("id", "1")
+                .param("name", "book1"))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("для неавторизованного не сохранять книгу")
+    @Test
+    void saveNotAuth() throws Exception {
+        given(service.save(any(Book.class))).willReturn(BOOK);
+
+        this.mockMvc.perform(post("/books/save")
+                .param("id", "1")
+                .param("name", "book1"))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("для роли ADMIN удалять книгу")
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    @Test
+    void deleteForAdmin() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
         this.mockMvc.perform(post("/books/delete")
@@ -99,39 +120,20 @@ public class BookControllerTest {
                 .andExpect(status().isFound());
     }
 
-    @DisplayName("для неавторизованного пользователя возвращать ответ 302 (REDIRECTION) при получении списка книг")
+    @DisplayName("для роли USER не удалять книгу")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
-    public void finAllForbidden() throws Exception {
-        given(service.findAll()).willReturn(List.of(BOOK));
+    void deleteForUser() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
 
-        this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isFound());
-    }
-
-    @DisplayName("для неавторизованного пользователя возвращать ответ 302 (REDIRECTION) при получении информации о книге")
-    @Test
-    void editForbidden() throws Exception {
-        given(service.findById(anyLong())).willReturn(BOOK);
-        given(authorService.findAll()).willReturn(List.of(AUTHOR));
-        given(genreService.findAll()).willReturn(List.of(GENRE));
-        given(commentService.findByBookId(anyLong())).willReturn(List.of(COMMENT));
-
-        this.mockMvc.perform(get("/books/edit?id=" + BOOK.getId())).andDo(print()).andExpect(status().isFound());
-    }
-
-    @DisplayName("для неавторизованного пользователя возвращать ответ 403 (FORBIDDEN) при сохранении книги")
-    @Test
-    void saveForbidden() throws Exception {
-        given(service.save(any(Book.class))).willReturn(BOOK);
-
-        this.mockMvc.perform(post("/books/edit")
-                .param("id", "1")
-                .param("name", "book1"))
+        this.mockMvc.perform(post("/books/delete")
+                .param("id", "1"))
                 .andExpect(status().isForbidden());
     }
 
-    @DisplayName("для неавторизованного пользователя возвращать ответ 403 (FORBIDDEN) при удалении книги")
+    @DisplayName("для неавторизованного не удалять книгу")
     @Test
-    void deleteForbidden() throws Exception {
+    void deleteNotAuth() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
         this.mockMvc.perform(post("/books/delete")

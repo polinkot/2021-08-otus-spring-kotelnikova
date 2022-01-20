@@ -41,9 +41,10 @@ public class CommentControllerTest {
     @MockBean
     private CommentService service;
 
-    @DisplayName("для авторизованного пользователя возвращать ответ 302 (REDIRECTION) при сохранении комментария")
+    @DisplayName("для авторизованного сохранять комментарий")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
-    void save() throws Exception {
+    void saveForUser() throws Exception {
         given(service.save(any(Comment.class))).willReturn(COMMENT);
 
         this.mockMvc.perform(post("/comments/add")
@@ -53,7 +54,19 @@ public class CommentControllerTest {
                 .andExpect(status().isFound());
     }
 
-    @DisplayName("для авторизованного пользователя возвращать ответ 302 (REDIRECTION) при удалении комментария")
+    @DisplayName("для неавторизованного не сохранять комментарий")
+    @Test
+    void saveNotAuth() throws Exception {
+        given(service.save(any(Comment.class))).willReturn(COMMENT);
+
+        this.mockMvc.perform(post("/comments/add")
+                .param("text", "comment1")
+                .param("book.id", "1"))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("для авторизованного удалять комментарий")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     void delete() throws Exception {
         doNothing().when(service).deleteById(anyLong());
@@ -65,20 +78,9 @@ public class CommentControllerTest {
                 .andExpect(status().isFound());
     }
 
-    @DisplayName("для неавторизованного пользователя возвращать ответ 403 (FORBIDDEN) при сохранении комментария")
+    @DisplayName("для неавторизованного не удалять комментарий")
     @Test
-    void saveForbidden() throws Exception {
-        given(service.save(any(Comment.class))).willReturn(COMMENT);
-
-        this.mockMvc.perform(post("/comments/add")
-                .param("text", "comment1")
-                .param("book.id", "1"))
-                .andExpect(status().isForbidden());
-    }
-
-    @DisplayName("для неавторизованного пользователя возвращать ответ 403 (FORBIDDEN) при удалении комментария")
-    @Test
-    void deleteForbidden() throws Exception {
+    void deleteNotAuth() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
         this.mockMvc.perform(post("/comments/delete")
