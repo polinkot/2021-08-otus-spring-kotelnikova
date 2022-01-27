@@ -15,19 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.NonNull;
 import ru.otus.pk.spring.domain.Author;
 import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.mongodomain.MongoBook;
-import ru.otus.pk.spring.repository.AuthorRepository;
-import ru.otus.pk.spring.service.BookTransformationService;
-import ru.otus.pk.spring.service.CleanUpService;
+import ru.otus.pk.spring.service.*;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.*;
 
-import static java.util.stream.Collectors.toSet;
 import static org.slf4j.LoggerFactory.getLogger;
 
 @Configuration
@@ -47,12 +43,8 @@ public class JobConfig {
     @Autowired
     private CleanUpService cleanUpService;
 
-
     @Autowired
-    AuthorRepository authorRepository;
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+    private AuthorService authorService;
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -103,51 +95,10 @@ public class JobConfig {
                     public void beforeWrite(@NonNull List list) {
                         logger.info("Начало записи");
 
-                        Map<String, Author> authors = new HashMap<>();
-                        new ArrayList<Book>(list).forEach(book ->
-                                authors.put(book.getAuthor().getMongoId(), book.getAuthor())
-                        );
-
-                        authorRepository.findByMongoIds(authors.keySet())
-                                .forEach(author -> authors.put(author.getMongoId(), author));
-
-//                        Map<String, Author> existingAuthors = ofEntries(authorRepository.findByMongoIds(authors.keySet())
-//                                .toArray(Entry[]::new));
-//                        authors.putAll(existingAuthors);
-
-                        Set<Author> newAuthors = authors.values().stream()
-                                .filter(author -> author.getId() == null).collect(toSet());
-                        authorRepository.saveAll(newAuthors)
-                                .forEach(author -> authors.put(author.getMongoId(), author));
-
+                        Map<String, Author> authors = authorService.createAuthors(list);
                         new ArrayList<Book>(list).forEach(book -> book.setAuthor(authors.get(book.getAuthor().getMongoId())));
 
-
-//                        Author saved = authorRepository
-//                                .save(new Author(null, "book.getAuthor().getFirstName()", "book.getAuthor().getLastName()", "97987987" + System.currentTimeMillis()));
-//                        System.out.println("__________" + saved);
-//
-//                        list.forEach(book -> ((Book)book).setAuthor(saved));
-
-//                        System.out.println("##############################");
-//                        System.out.println(list.get(0).getClass());
-//                        ((ru.otus.pk.spring.jpadomain.Book)list.get(0))
-//                                .setAuthor(((ru.otus.pk.spring.jpadomain.Book) list.get(1)).getAuthor());
-
-//                        ((Book) list.get(0)).setAuthor(new Author(null, "wwww", "123123"));
-//                        Author author = ofNullable(entityManager.find(Author.class, 1L))
-//                                .orElse(null);
-////                                .orElse(new Author(null, book.getAuthor().getFirstName(), book.getAuthor().getLastName()));
-//                        System.out.println("***********************author");
-//                        System.out.println(author);
-//
-//                        Genre genre = ofNullable(entityManager.find(Genre.class,1L))
-//                                .orElse(null);
-////                                .orElse(new Genre(null, book.getGenre().getName()));
                         System.out.println();
-//                        System.out.println(genre);
-
-
                     }
 
                     public void afterWrite(@NonNull List list) {
