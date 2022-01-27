@@ -31,7 +31,7 @@ public class JobConfig {
 
     private static final int CHUNK_SIZE = 3;
 
-    public static final String IMPORT_USER_JOB_NAME = "importUserJob";
+    public static final String IMPORT_BOOK_JOB_NAME = "importBookJob";
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -52,8 +52,8 @@ public class JobConfig {
     private EntityManagerFactory entityManagerFactory;
 
     @Bean
-    public Job importUserJob(Step transformBooksStep, Step cleanUpStep) {
-        return jobBuilderFactory.get(IMPORT_USER_JOB_NAME)
+    public Job importBookJob(Step transformBooksStep, Step cleanUpStep) {
+        return jobBuilderFactory.get(IMPORT_BOOK_JOB_NAME)
                 .incrementer(new RunIdIncrementer())
                 .flow(transformBooksStep)
                 .next(cleanUpStep)
@@ -103,8 +103,6 @@ public class JobConfig {
                             book.setAuthor(authors.get(book.getAuthor().getMongoId()));
                             book.setGenre(genres.get(book.getGenre().getMongoId()));
                         });
-
-                        System.out.println();
                     }
 
                     public void afterWrite(@NonNull List list) {
