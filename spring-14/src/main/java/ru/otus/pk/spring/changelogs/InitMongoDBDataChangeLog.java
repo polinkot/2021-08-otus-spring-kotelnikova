@@ -25,13 +25,14 @@ public class InitMongoDBDataChangeLog {
 
         MongoGenre genre1 = new MongoGenre(ObjectId.get().toString(), "Genre1");
         MongoGenre genre2 = new MongoGenre(ObjectId.get().toString(), "Genre2");
+        MongoGenre genre3 = new MongoGenre(ObjectId.get().toString(), "Genre3");
 
         MongoBook book1 = template.save(new MongoBook(null, "Book1", author1, genre1));
         MongoBook book2 = template.save(new MongoBook(null, "Book2", author2, genre2));
         template.save(new MongoBook(null, "Book11", author1, genre1));
-        template.save(new MongoBook(null, "Book3", author3, genre1));
-        template.save(new MongoBook(null, "Book33", author3, genre1));
-        template.save(new MongoBook(null, "Book22", author2, genre1));
+        template.save(new MongoBook(null, "Book3", author3, genre3));
+        template.save(new MongoBook(null, "Book33", author3, genre3));
+        template.save(new MongoBook(null, "Book22", author2, genre2));
 
         template.insertAll(List.of(new MongoComment(null, "Comment1", book1),
                 new MongoComment(null, "Comment2", book2),
