@@ -14,7 +14,7 @@ public class MongoBook {
 
     private String name;
 
-    private MongoAuthor mongoAuthor;
+    private MongoAuthor author;
 
-    private MongoGenre mongoGenre;
+    private MongoGenre genre;
 }

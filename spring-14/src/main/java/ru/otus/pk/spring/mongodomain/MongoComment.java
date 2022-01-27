@@ -14,5 +14,5 @@ public class MongoComment {
 
     private String text;
 
-    private MongoBook mongoBook;
+    private MongoBook book;
 }

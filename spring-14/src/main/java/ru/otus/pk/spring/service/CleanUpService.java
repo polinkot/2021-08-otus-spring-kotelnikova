@@ -33,8 +33,3 @@ public class CleanUpService {
         System.out.println("Завершающие мероприятия закончены");
     }
 }
-
-
-
-
-
