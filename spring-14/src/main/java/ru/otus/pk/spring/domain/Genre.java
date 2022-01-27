@@ -11,6 +11,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @Entity
 @Table(name = "genre")
+@SecondaryTable(name = "mongo_genre", pkJoinColumns = @PrimaryKeyJoinColumn(name = "genre_id"))
 public class Genre {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -18,4 +19,7 @@ public class Genre {
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
+
+    @Column(name = "mongo_id", table = "mongo_genre")
+    private String mongoId;
 }

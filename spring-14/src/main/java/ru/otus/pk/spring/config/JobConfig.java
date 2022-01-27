@@ -16,8 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.lang.NonNull;
-import ru.otus.pk.spring.domain.Author;
-import ru.otus.pk.spring.domain.Book;
+import ru.otus.pk.spring.domain.*;
 import ru.otus.pk.spring.mongodomain.MongoBook;
 import ru.otus.pk.spring.service.*;
 
@@ -45,6 +44,9 @@ public class JobConfig {
 
     @Autowired
     private AuthorService authorService;
+
+    @Autowired
+    private GenreService genreService;
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -96,7 +98,11 @@ public class JobConfig {
                         logger.info("Начало записи");
 
                         Map<String, Author> authors = authorService.createAuthors(list);
-                        new ArrayList<Book>(list).forEach(book -> book.setAuthor(authors.get(book.getAuthor().getMongoId())));
+                        Map<String, Genre> genres = genreService.createGenres(list);
+                        new ArrayList<Book>(list).forEach(book -> {
+                            book.setAuthor(authors.get(book.getAuthor().getMongoId()));
+                            book.setGenre(genres.get(book.getGenre().getMongoId()));
+                        });
 
                         System.out.println();
                     }

@@ -25,7 +25,7 @@ public class CleanUpService {
         List<Author> authors = jdbcTemplate.query("select * from author join mongo_author on author_id = id ", new BeanPropertyRowMapper<>(Author.class));
         System.out.println(authors);
 
-        List<Genre> genres = jdbcTemplate.query("select * from genre ", new BeanPropertyRowMapper<>(Genre.class));
+        List<Genre> genres = jdbcTemplate.query("select * from genre join mongo_genre on genre_id = id ", new BeanPropertyRowMapper<>(Genre.class));
         System.out.println(genres);
 
         System.out.println("Выполняю завершающие мероприятия...");
