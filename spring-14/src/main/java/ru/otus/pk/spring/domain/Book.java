@@ -27,10 +27,10 @@ public class Book {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
+    @ManyToOne(cascade = ALL)
     private Author author;
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
+    @ManyToOne(cascade = ALL)
     private Genre genre;
 
     @Column(name = "mongo_id", table = "mongo_book")
