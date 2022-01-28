@@ -131,19 +131,6 @@ public class JobConfig {
                         logger.info("Ошибка записи");
                     }
                 })
-//                .listener(new ItemProcessListener<>() {
-//                    public void beforeProcess(Book o) {
-//                        logger.info("Начало обработки");
-//                    }
-//
-//                    public void afterProcess(@NonNull Book o, ru.otus.pk.spring.jpadomain.Book o2) {
-//                        logger.info("Конец обработки");
-//                    }
-//
-//                    public void onProcessError(@NonNull Book o, @NonNull Exception e) {
-//                        logger.info("Ошибка обработки");
-//                    }
-//                })
                 .listener(new ChunkListener() {
                     public void beforeChunk(@NonNull ChunkContext chunkContext) {
                         logger.info("Начало пачки");
@@ -157,7 +144,6 @@ public class JobConfig {
                         logger.info("Ошибка пачки");
                     }
                 })
-//                .taskExecutor(new SimpleAsyncTaskExecutor())
                 .build();
     }
 
@@ -222,19 +208,6 @@ public class JobConfig {
                         logger.info("Ошибка записи");
                     }
                 })
-//                .listener(new ItemProcessListener<>() {
-//                    public void beforeProcess(Book o) {
-//                        logger.info("Начало обработки");
-//                    }
-//
-//                    public void afterProcess(@NonNull Book o, ru.otus.pk.spring.jpadomain.Book o2) {
-//                        logger.info("Конец обработки");
-//                    }
-//
-//                    public void onProcessError(@NonNull Book o, @NonNull Exception e) {
-//                        logger.info("Ошибка обработки");
-//                    }
-//                })
                 .listener(new ChunkListener() {
                     public void beforeChunk(@NonNull ChunkContext chunkContext) {
                         logger.info("Начало пачки");
@@ -248,7 +221,6 @@ public class JobConfig {
                         logger.info("Ошибка пачки");
                     }
                 })
-//                .taskExecutor(new SimpleAsyncTaskExecutor())
                 .build();
     }
 
