@@ -1,11 +1,11 @@
-package ru.otus.pk.spring.mongodomain;
+package ru.otus.pk.spring.jdbc;
 
 import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Book2 {
+public class Book {
     private Long id;
 
     private String name;

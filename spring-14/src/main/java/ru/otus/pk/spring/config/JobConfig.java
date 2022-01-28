@@ -74,16 +74,16 @@ public class JobConfig {
                         logger.info("Конец job");
                         logger.info("*******************");
 
-                        List<Book2> books = jdbcTemplate.query("select * from book join mongo_book on book_id = id ", new BeanPropertyRowMapper<>(Book2.class));
+                        var books = jdbcTemplate.query("select * from book join mongo_book on book_id = id ", new BeanPropertyRowMapper<>(Book.class));
                         books.forEach(System.out::println);
 
-                        List<Author> authors = jdbcTemplate.query("select * from author join mongo_author on author_id = id ", new BeanPropertyRowMapper<>(Author.class));
+                        var authors = jdbcTemplate.query("select * from author join mongo_author on author_id = id ", new BeanPropertyRowMapper<>(Author.class));
                         authors.forEach(System.out::println);
 
-                        List<Genre> genres = jdbcTemplate.query("select * from genre join mongo_genre on genre_id = id ", new BeanPropertyRowMapper<>(Genre.class));
+                        var genres = jdbcTemplate.query("select * from genre join mongo_genre on genre_id = id ", new BeanPropertyRowMapper<>(Genre.class));
                         genres.forEach(System.out::println);
 
-                        List<Comment2> comments = jdbcTemplate.query("select * from comment ", new BeanPropertyRowMapper<>(Comment2.class));
+                        var comments = jdbcTemplate.query("select * from comment ", new BeanPropertyRowMapper<>(ru.otus.pk.spring.jdbc.Comment.class));
                         comments.forEach(System.out::println);
                     }
                 })
