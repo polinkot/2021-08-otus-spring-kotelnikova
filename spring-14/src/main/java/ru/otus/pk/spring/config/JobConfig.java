@@ -2,7 +2,8 @@ package ru.otus.pk.spring.config;
 
 import org.slf4j.Logger;
 import org.springframework.batch.core.*;
-import org.springframework.batch.core.configuration.annotation.*;
+import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.item.ItemProcessor;
@@ -53,7 +54,7 @@ public class JobConfig {
     private EntityManagerFactory entityManagerFactory;
 
     @Autowired
-    JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
     @Bean
     public Job importBookJob(Step transformBooksStep, Step transformCommentsStep) {
@@ -99,20 +100,20 @@ public class JobConfig {
                 .writer(bookWriter)
                 .listener(new ItemReadListener<>() {
                     public void beforeRead() {
-                        logger.info("Начало чтения");
+                        logger.info("Book: Начало чтения");
                     }
 
                     public void afterRead(@NonNull MongoBook o) {
-                        logger.info("Конец чтения");
+                        logger.info("Book: Конец чтения");
                     }
 
                     public void onReadError(@NonNull Exception e) {
-                        logger.info("Ошибка чтения");
+                        logger.info("Book: Ошибка чтения");
                     }
                 })
                 .listener(new ItemWriteListener<>() {
                     public void beforeWrite(@NonNull List list) {
-                        logger.info("Начало записи");
+                        logger.info("Book: Начало записи");
 
                         Map<String, Author> authors = authorService.createAuthors(list);
                         Map<String, Genre> genres = genreService.createGenres(list);
@@ -124,7 +125,7 @@ public class JobConfig {
                     }
 
                     public void afterWrite(@NonNull List list) {
-                        logger.info("Конец записи");
+                        logger.info("Book: Конец записи");
                     }
 
                     public void onWriteError(@NonNull Exception e, @NonNull List list) {
@@ -133,15 +134,15 @@ public class JobConfig {
                 })
                 .listener(new ChunkListener() {
                     public void beforeChunk(@NonNull ChunkContext chunkContext) {
-                        logger.info("Начало пачки");
+                        logger.info("Book: Начало пачки");
                     }
 
                     public void afterChunk(@NonNull ChunkContext chunkContext) {
-                        logger.info("Конец пачки");
+                        logger.info("Book: Конец пачки");
                     }
 
                     public void afterChunkError(@NonNull ChunkContext chunkContext) {
-                        logger.info("Ошибка пачки");
+                        logger.info("Book: Ошибка пачки");
                     }
                 })
                 .build();
@@ -180,20 +181,20 @@ public class JobConfig {
                 .writer(commentWriter)
                 .listener(new ItemReadListener<>() {
                     public void beforeRead() {
-                        logger.info("Начало чтения");
+                        logger.info("Comment: Начало чтения");
                     }
 
                     public void afterRead(@NonNull MongoComment o) {
-                        logger.info("Конец чтения");
+                        logger.info("Comment: Конец чтения");
                     }
 
                     public void onReadError(@NonNull Exception e) {
-                        logger.info("Ошибка чтения");
+                        logger.info("Comment: Ошибка чтения");
                     }
                 })
                 .listener(new ItemWriteListener<>() {
                     public void beforeWrite(@NonNull List list) {
-                        logger.info("Начало записи");
+                        logger.info("Comment: Начало записи");
 
                         Map<String, Book> books = boookService.findBooks(list);
                         new ArrayList<Comment>(list)
@@ -201,24 +202,24 @@ public class JobConfig {
                     }
 
                     public void afterWrite(@NonNull List list) {
-                        logger.info("Конец записи");
+                        logger.info("Comment: Конец записи");
                     }
 
                     public void onWriteError(@NonNull Exception e, @NonNull List list) {
-                        logger.info("Ошибка записи");
+                        logger.info("Comment: Ошибка записи");
                     }
                 })
                 .listener(new ChunkListener() {
                     public void beforeChunk(@NonNull ChunkContext chunkContext) {
-                        logger.info("Начало пачки");
+                        logger.info("Comment: Начало пачки");
                     }
 
                     public void afterChunk(@NonNull ChunkContext chunkContext) {
-                        logger.info("Конец пачки");
+                        logger.info("Comment: Конец пачки");
                     }
 
                     public void afterChunkError(@NonNull ChunkContext chunkContext) {
-                        logger.info("Ошибка пачки");
+                        logger.info("Comment: Ошибка пачки");
                     }
                 })
                 .build();
