@@ -10,9 +10,9 @@ public class Book {
 
     private String name;
 
-    private Long author_id;
+    private Long authorId;
 
-    private Long genre_id;
+    private Long genreId;
 
-    private String mongo_id;
+    private String mongoId;
 }

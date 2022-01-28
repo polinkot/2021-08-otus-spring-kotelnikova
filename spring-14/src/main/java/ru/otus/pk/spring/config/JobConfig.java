@@ -74,7 +74,7 @@ public class JobConfig {
                         logger.info("Конец job");
                         logger.info("*******************");
 
-                        var books = jdbcTemplate.query("select * from book join mongo_book on book_id = id ", new BeanPropertyRowMapper<>(Book.class));
+                        var books = jdbcTemplate.query("select * from book join mongo_book on book_id = id ", new BeanPropertyRowMapper<>(ru.otus.pk.spring.jdbc.Book.class));
                         books.forEach(System.out::println);
 
                         var authors = jdbcTemplate.query("select * from author join mongo_author on author_id = id ", new BeanPropertyRowMapper<>(Author.class));

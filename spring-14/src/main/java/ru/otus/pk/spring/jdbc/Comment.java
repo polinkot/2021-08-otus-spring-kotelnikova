@@ -10,5 +10,5 @@ public class Comment {
 
     private String text;
 
-    private Long book_id;
+    private Long bookId;
 }
