@@ -90,13 +90,13 @@ public class JobConfig {
     }
 
     @Bean
-    public Step transformBooksStep(ItemReader<MongoBook> reader, JpaItemWriter<Book> writer,
-                                   ItemProcessor<MongoBook, Book> itemProcessor) {
+    public Step transformBooksStep(ItemReader<MongoBook> bookReader, JpaItemWriter<Book> bookWriter,
+                                   ItemProcessor<MongoBook, Book> bookProcessor) {
         return stepBuilderFactory.get("step1")
                 .<MongoBook, Book>chunk(CHUNK_SIZE)
-                .reader(reader)
-                .processor(itemProcessor)
-                .writer(writer)
+                .reader(bookReader)
+                .processor(bookProcessor)
+                .writer(bookWriter)
                 .listener(new ItemReadListener<>() {
                     public void beforeRead() {
                         logger.info("Начало чтения");
@@ -161,11 +161,10 @@ public class JobConfig {
                 .build();
     }
 
-    //    @StepScope
     @Bean
-    public MongoItemReader<MongoBook> reader(MongoTemplate template) {
+    public MongoItemReader<MongoBook> bookReader(MongoTemplate template) {
         return new MongoItemReaderBuilder<MongoBook>()
-                .name("bookItemReader")
+                .name("bookReader")
                 .template(template)
                 .jsonQuery("{}")
                 .targetType(MongoBook.class)
@@ -173,15 +172,13 @@ public class JobConfig {
                 .build();
     }
 
-    //    @StepScope
     @Bean
-    public ItemProcessor<MongoBook, Book> processor(TransformationService service) {
+    public ItemProcessor<MongoBook, Book> bookProcessor(TransformationService service) {
         return service::transformBook;
     }
 
     @Bean
-    @StepScope
-    public JpaItemWriter<Book> writer() {
+    public JpaItemWriter<Book> bookWriter() {
         JpaItemWriter<Book> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(entityManagerFactory);
         return writer;
@@ -258,7 +255,7 @@ public class JobConfig {
     @Bean
     public MongoItemReader<MongoComment> commentReader(MongoTemplate template) {
         return new MongoItemReaderBuilder<MongoComment>()
-                .name("commentItemReader")
+                .name("commentReader")
                 .template(template)
                 .jsonQuery("{}")
                 .targetType(MongoComment.class)
