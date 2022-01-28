@@ -5,7 +5,6 @@ import org.springframework.batch.core.*;
 import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.tasklet.MethodInvokingTaskletAdapter;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.data.MongoItemReader;
@@ -15,10 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.NonNull;
 import ru.otus.pk.spring.domain.*;
-import ru.otus.pk.spring.mongodomain.MongoBook;
-import ru.otus.pk.spring.mongodomain.MongoComment;
+import ru.otus.pk.spring.mongodomain.*;
 import ru.otus.pk.spring.service.*;
 
 import javax.persistence.EntityManagerFactory;
@@ -41,9 +41,6 @@ public class JobConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    private CleanUpService cleanUpService;
-
-    @Autowired
     private BookService boookService;
 
     @Autowired
@@ -55,13 +52,15 @@ public class JobConfig {
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
     @Bean
-    public Job importBookJob(Step transformBooksStep, Step transformCommentsStep, Step cleanUpStep) {
+    public Job importBookJob(Step transformBooksStep, Step transformCommentsStep) {
         return jobBuilderFactory.get(IMPORT_BOOK_JOB_NAME)
                 .incrementer(new RunIdIncrementer())
                 .flow(transformBooksStep)
                 .next(transformCommentsStep)
-                .next(cleanUpStep)
                 .end()
                 .listener(new JobExecutionListener() {
                     @Override
@@ -72,6 +71,19 @@ public class JobConfig {
                     @Override
                     public void afterJob(@NonNull JobExecution jobExecution) {
                         logger.info("Конец job");
+                        logger.info("*******************");
+
+                        List<Book2> books = jdbcTemplate.query("select * from book join mongo_book on book_id = id ", new BeanPropertyRowMapper<>(Book2.class));
+                        books.forEach(System.out::println);
+
+                        List<Author> authors = jdbcTemplate.query("select * from author join mongo_author on author_id = id ", new BeanPropertyRowMapper<>(Author.class));
+                        authors.forEach(System.out::println);
+
+                        List<Genre> genres = jdbcTemplate.query("select * from genre join mongo_genre on genre_id = id ", new BeanPropertyRowMapper<>(Genre.class));
+                        genres.forEach(System.out::println);
+
+                        List<Comment2> comments = jdbcTemplate.query("select * from comment ", new BeanPropertyRowMapper<>(Comment2.class));
+                        comments.forEach(System.out::println);
                     }
                 })
                 .build();
@@ -264,22 +276,5 @@ public class JobConfig {
         JpaItemWriter<Comment> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(entityManagerFactory);
         return writer;
-    }
-
-    @Bean
-    public MethodInvokingTaskletAdapter cleanUpTasklet() {
-        MethodInvokingTaskletAdapter adapter = new MethodInvokingTaskletAdapter();
-
-        adapter.setTargetObject(cleanUpService);
-        adapter.setTargetMethod("cleanUp");
-
-        return adapter;
-    }
-
-    @Bean
-    public Step cleanUpStep() {
-        return this.stepBuilderFactory.get("cleanUpStep")
-                .tasklet(cleanUpTasklet())
-                .build();
     }
 }
