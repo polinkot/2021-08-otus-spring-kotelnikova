@@ -19,8 +19,10 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.NonNull;
 import ru.otus.pk.spring.domain.*;
-import ru.otus.pk.spring.mongodomain.*;
-import ru.otus.pk.spring.service.*;
+import ru.otus.pk.spring.mongodomain.MongoBook;
+import ru.otus.pk.spring.mongodomain.MongoComment;
+import ru.otus.pk.spring.service.MigrationService;
+import ru.otus.pk.spring.service.TransformationService;
 
 import javax.persistence.EntityManagerFactory;
 import java.util.*;
@@ -42,13 +44,7 @@ public class JobConfig {
     private StepBuilderFactory stepBuilderFactory;
 
     @Autowired
-    private BookService boookService;
-
-    @Autowired
-    private AuthorService authorService;
-
-    @Autowired
-    private GenreService genreService;
+    private MigrationService migrationService;
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -72,7 +68,7 @@ public class JobConfig {
                     @Override
                     public void afterJob(@NonNull JobExecution jobExecution) {
                         logger.info("Конец job");
-                        logger.info("*******************");
+                        System.out.println("********* Migrated: **********");
 
                         var books = jdbcTemplate.query("select * from book join mongo_book on book_id = id ", new BeanPropertyRowMapper<>(ru.otus.pk.spring.jdbc.Book.class));
                         books.forEach(System.out::println);
@@ -115,8 +111,8 @@ public class JobConfig {
                     public void beforeWrite(@NonNull List list) {
                         logger.info("Book: Начало записи");
 
-                        Map<String, Author> authors = authorService.createAuthors(list);
-                        Map<String, Genre> genres = genreService.createGenres(list);
+                        Map<String, Author> authors = migrationService.createAuthors(list);
+                        Map<String, Genre> genres = migrationService.createGenres(list);
                         new ArrayList<Book>(list)
                                 .forEach(book -> {
                                     book.setAuthor(authors.get(book.getAuthor().getMongoId()));
@@ -196,7 +192,7 @@ public class JobConfig {
                     public void beforeWrite(@NonNull List list) {
                         logger.info("Comment: Начало записи");
 
-                        Map<String, Book> books = boookService.findBooks(list);
+                        Map<String, Book> books = migrationService.findBooks(list);
                         new ArrayList<Comment>(list)
                                 .forEach(comment -> comment.setBook(books.get(comment.getBook().getMongoId())));
                     }
