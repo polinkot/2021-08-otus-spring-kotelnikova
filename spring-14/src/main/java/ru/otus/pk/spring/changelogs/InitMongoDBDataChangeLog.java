@@ -37,7 +37,5 @@ public class InitMongoDBDataChangeLog {
         template.insertAll(List.of(new MongoComment(null, "Comment1", book1),
                 new MongoComment(null, "Comment2", book2),
                 new MongoComment(null, "Comment3", book1)));
-
-//        System.out.println(template.findAll(Book.class));
     }
 }
