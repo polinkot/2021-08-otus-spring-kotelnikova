@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.lang.NonNull;
 import ru.otus.pk.spring.domain.*;
 import ru.otus.pk.spring.mongodomain.MongoBook;
+import ru.otus.pk.spring.mongodomain.MongoComment;
 import ru.otus.pk.spring.service.*;
 
 import javax.persistence.EntityManagerFactory;
@@ -43,6 +44,9 @@ public class JobConfig {
     private CleanUpService cleanUpService;
 
     @Autowired
+    private BookService boookService;
+
+    @Autowired
     private AuthorService authorService;
 
     @Autowired
@@ -52,10 +56,11 @@ public class JobConfig {
     private EntityManagerFactory entityManagerFactory;
 
     @Bean
-    public Job importBookJob(Step transformBooksStep, Step cleanUpStep) {
+    public Job importBookJob(Step transformBooksStep, Step transformCommentsStep, Step cleanUpStep) {
         return jobBuilderFactory.get(IMPORT_BOOK_JOB_NAME)
                 .incrementer(new RunIdIncrementer())
                 .flow(transformBooksStep)
+                .next(transformCommentsStep)
                 .next(cleanUpStep)
                 .end()
                 .listener(new JobExecutionListener() {
@@ -99,10 +104,11 @@ public class JobConfig {
 
                         Map<String, Author> authors = authorService.createAuthors(list);
                         Map<String, Genre> genres = genreService.createGenres(list);
-                        new ArrayList<Book>(list).forEach(book -> {
-                            book.setAuthor(authors.get(book.getAuthor().getMongoId()));
-                            book.setGenre(genres.get(book.getGenre().getMongoId()));
-                        });
+                        new ArrayList<Book>(list)
+                                .forEach(book -> {
+                                    book.setAuthor(authors.get(book.getAuthor().getMongoId()));
+                                    book.setGenre(genres.get(book.getGenre().getMongoId()));
+                                });
                     }
 
                     public void afterWrite(@NonNull List list) {
@@ -157,14 +163,105 @@ public class JobConfig {
 
     //    @StepScope
     @Bean
-    public ItemProcessor<MongoBook, Book> processor(BookTransformationService service) {
-        return service::transform;
+    public ItemProcessor<MongoBook, Book> processor(TransformationService service) {
+        return service::transformBook;
     }
 
     @Bean
     @StepScope
     public JpaItemWriter<Book> writer() {
         JpaItemWriter<Book> writer = new JpaItemWriter<>();
+        writer.setEntityManagerFactory(entityManagerFactory);
+        return writer;
+    }
+
+    @Bean
+    public Step transformCommentsStep(ItemReader<MongoComment> commentReader, JpaItemWriter<Comment> commentWriter,
+                                      ItemProcessor<MongoComment, Comment> commentProcessor) {
+        return stepBuilderFactory.get("step2")
+                .<MongoComment, Comment>chunk(CHUNK_SIZE)
+                .reader(commentReader)
+                .processor(commentProcessor)
+                .writer(commentWriter)
+                .listener(new ItemReadListener<>() {
+                    public void beforeRead() {
+                        logger.info("Начало чтения");
+                    }
+
+                    public void afterRead(@NonNull MongoComment o) {
+                        logger.info("Конец чтения");
+                    }
+
+                    public void onReadError(@NonNull Exception e) {
+                        logger.info("Ошибка чтения");
+                    }
+                })
+                .listener(new ItemWriteListener<>() {
+                    public void beforeWrite(@NonNull List list) {
+                        logger.info("Начало записи");
+
+                        Map<String, Book> books = boookService.findBooks(list);
+                        new ArrayList<Comment>(list)
+                                .forEach(comment -> comment.setBook(books.get(comment.getBook().getMongoId())));
+                    }
+
+                    public void afterWrite(@NonNull List list) {
+                        logger.info("Конец записи");
+                    }
+
+                    public void onWriteError(@NonNull Exception e, @NonNull List list) {
+                        logger.info("Ошибка записи");
+                    }
+                })
+//                .listener(new ItemProcessListener<>() {
+//                    public void beforeProcess(Book o) {
+//                        logger.info("Начало обработки");
+//                    }
+//
+//                    public void afterProcess(@NonNull Book o, ru.otus.pk.spring.jpadomain.Book o2) {
+//                        logger.info("Конец обработки");
+//                    }
+//
+//                    public void onProcessError(@NonNull Book o, @NonNull Exception e) {
+//                        logger.info("Ошибка обработки");
+//                    }
+//                })
+                .listener(new ChunkListener() {
+                    public void beforeChunk(@NonNull ChunkContext chunkContext) {
+                        logger.info("Начало пачки");
+                    }
+
+                    public void afterChunk(@NonNull ChunkContext chunkContext) {
+                        logger.info("Конец пачки");
+                    }
+
+                    public void afterChunkError(@NonNull ChunkContext chunkContext) {
+                        logger.info("Ошибка пачки");
+                    }
+                })
+//                .taskExecutor(new SimpleAsyncTaskExecutor())
+                .build();
+    }
+
+    @Bean
+    public MongoItemReader<MongoComment> commentReader(MongoTemplate template) {
+        return new MongoItemReaderBuilder<MongoComment>()
+                .name("commentItemReader")
+                .template(template)
+                .jsonQuery("{}")
+                .targetType(MongoComment.class)
+                .sorts(new HashMap<>())
+                .build();
+    }
+
+    @Bean
+    public ItemProcessor<MongoComment, Comment> commentProcessor(TransformationService service) {
+        return service::transformComment;
+    }
+
+    @Bean
+    public JpaItemWriter<Comment> commentWriter() {
+        JpaItemWriter<Comment> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(entityManagerFactory);
         return writer;
     }

@@ -13,4 +13,6 @@ public class Book2 {
     private Long author_id;
 
     private Long genre_id;
+
+    private String mongo_id;
 }

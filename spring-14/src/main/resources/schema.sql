@@ -28,3 +28,6 @@ create table mongo_author(author_id bigserial, mongo_id varchar(255) not null un
 
 drop table if exists mongo_genre;
 create table mongo_genre(genre_id bigserial, mongo_id varchar(255) not null unique);
+
+drop table if exists mongo_book;
+create table mongo_book(book_id bigserial, mongo_id varchar(255) not null unique);

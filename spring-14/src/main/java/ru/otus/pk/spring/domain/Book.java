@@ -17,6 +17,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @EqualsAndHashCode(exclude = {"author", "genre"})
 @Entity
 @Table(name = "book")
+@SecondaryTable(name = "mongo_book", pkJoinColumns = @PrimaryKeyJoinColumn(name = "book_id"))
 public class Book {
 
     @Id
@@ -31,4 +32,7 @@ public class Book {
 
     @ManyToOne(fetch = LAZY, cascade = ALL)
     private Genre genre;
+
+    @Column(name = "mongo_id", table = "mongo_book")
+    private String mongoId;
 }
