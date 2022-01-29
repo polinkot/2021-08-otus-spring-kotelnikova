@@ -89,7 +89,7 @@ public class JobConfig {
     @Bean
     public Step transformBooksStep(ItemReader<MongoBook> bookReader, JpaItemWriter<Book> bookWriter,
                                    ItemProcessor<MongoBook, Book> bookProcessor) {
-        return stepBuilderFactory.get("step1")
+        return stepBuilderFactory.get("transformBooksStep")
                 .<MongoBook, Book>chunk(CHUNK_SIZE)
                 .reader(bookReader)
                 .processor(bookProcessor)
@@ -111,13 +111,13 @@ public class JobConfig {
                     public void beforeWrite(@NonNull List list) {
                         logger.info("Book: Начало записи");
 
-                        Map<String, Author> authors = migrationService.createAuthors(list);
-                        Map<String, Genre> genres = migrationService.createGenres(list);
-                        new ArrayList<Book>(list)
-                                .forEach(book -> {
-                                    book.setAuthor(authors.get(book.getAuthor().getMongoId()));
-                                    book.setGenre(genres.get(book.getGenre().getMongoId()));
-                                });
+                        List<Book> books = new ArrayList<Book>(list);
+                        Map<String, Author> authors = migrationService.createAuthors(books);
+                        Map<String, Genre> genres = migrationService.createGenres(books);
+                        books.forEach(book -> {
+                            book.setAuthor(authors.get(book.getAuthor().getMongoId()));
+                            book.setGenre(genres.get(book.getGenre().getMongoId()));
+                        });
                     }
 
                     public void afterWrite(@NonNull List list) {
@@ -170,7 +170,7 @@ public class JobConfig {
     @Bean
     public Step transformCommentsStep(ItemReader<MongoComment> commentReader, JpaItemWriter<Comment> commentWriter,
                                       ItemProcessor<MongoComment, Comment> commentProcessor) {
-        return stepBuilderFactory.get("step2")
+        return stepBuilderFactory.get("transformCommentsStep")
                 .<MongoComment, Comment>chunk(CHUNK_SIZE)
                 .reader(commentReader)
                 .processor(commentProcessor)
@@ -192,9 +192,9 @@ public class JobConfig {
                     public void beforeWrite(@NonNull List list) {
                         logger.info("Comment: Начало записи");
 
-                        Map<String, Book> books = migrationService.findBooks(list);
-                        new ArrayList<Comment>(list)
-                                .forEach(comment -> comment.setBook(books.get(comment.getBook().getMongoId())));
+                        List<Comment> comments = new ArrayList<Comment>(list);
+                        Map<String, Book> books = migrationService.findBooks(comments);
+                        comments.forEach(comment -> comment.setBook(books.get(comment.getBook().getMongoId())));
                     }
 
                     public void afterWrite(@NonNull List list) {
