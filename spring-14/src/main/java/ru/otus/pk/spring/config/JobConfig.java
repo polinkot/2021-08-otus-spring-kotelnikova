@@ -18,14 +18,15 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.lang.NonNull;
+import ru.otus.pk.spring.batch.*;
 import ru.otus.pk.spring.domain.*;
 import ru.otus.pk.spring.mongodomain.MongoBook;
 import ru.otus.pk.spring.mongodomain.MongoComment;
-import ru.otus.pk.spring.service.MigrationService;
-import ru.otus.pk.spring.service.TransformationService;
+import ru.otus.pk.spring.repository.*;
 
 import javax.persistence.EntityManagerFactory;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -42,9 +43,6 @@ public class JobConfig {
 
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
-
-    @Autowired
-    private MigrationService migrationService;
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -110,14 +108,6 @@ public class JobConfig {
                 .listener(new ItemWriteListener<>() {
                     public void beforeWrite(@NonNull List list) {
                         logger.info("Book: Начало записи");
-
-                        List<Book> books = new ArrayList<Book>(list);
-                        Map<String, Author> authors = migrationService.createAuthors(books);
-                        Map<String, Genre> genres = migrationService.createGenres(books);
-                        books.forEach(book -> {
-                            book.setAuthor(authors.get(book.getAuthor().getMongoId()));
-                            book.setGenre(genres.get(book.getGenre().getMongoId()));
-                        });
                     }
 
                     public void afterWrite(@NonNull List list) {
@@ -161,8 +151,8 @@ public class JobConfig {
     }
 
     @Bean
-    public JpaItemWriter<Book> bookWriter() {
-        JpaItemWriter<Book> writer = new JpaItemWriter<>();
+    public JpaItemWriter<Book> bookWriter(AuthorRepository authorRepository, GenreRepository genreRepository) {
+        JpaItemWriter<Book> writer = new BookItemWriter<>(authorRepository, genreRepository);
         writer.setEntityManagerFactory(entityManagerFactory);
         return writer;
     }
@@ -191,10 +181,6 @@ public class JobConfig {
                 .listener(new ItemWriteListener<>() {
                     public void beforeWrite(@NonNull List list) {
                         logger.info("Comment: Начало записи");
-
-                        List<Comment> comments = new ArrayList<Comment>(list);
-                        Map<String, Book> books = migrationService.findBooks(comments);
-                        comments.forEach(comment -> comment.setBook(books.get(comment.getBook().getMongoId())));
                     }
 
                     public void afterWrite(@NonNull List list) {
@@ -238,8 +224,8 @@ public class JobConfig {
     }
 
     @Bean
-    public JpaItemWriter<Comment> commentWriter() {
-        JpaItemWriter<Comment> writer = new JpaItemWriter<>();
+    public JpaItemWriter<Comment> commentWriter(BookRepository bookRepository) {
+        JpaItemWriter<Comment> writer = new CommentItemWriter<>(bookRepository);
         writer.setEntityManagerFactory(entityManagerFactory);
         return writer;
     }

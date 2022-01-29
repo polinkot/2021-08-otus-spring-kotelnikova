@@ -1,4 +1,4 @@
-package ru.otus.pk.spring.service;
+package ru.otus.pk.spring.batch;
 
 import org.springframework.stereotype.Service;
 import ru.otus.pk.spring.domain.*;

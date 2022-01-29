@@ -1,22 +1,34 @@
-package ru.otus.pk.spring.service;
+package ru.otus.pk.spring.batch;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.domain.*;
-import ru.otus.pk.spring.repository.*;
+import ru.otus.pk.spring.repository.AuthorRepository;
+import ru.otus.pk.spring.repository.GenreRepository;
 
 import java.util.*;
 
 import static java.util.stream.Collectors.toSet;
 
 @RequiredArgsConstructor
-@Service
-public class MigrationService {
+public class BookItemWriter<T> extends JpaItemWriter<T> {
 
     private final AuthorRepository authorRepository;
     private final GenreRepository genreRepository;
-    private final BookRepository bookRepository;
+
+    @Override
+    public void write(List list) {
+        List<Book> books = new ArrayList<Book>(list);
+        Map<String, Author> authors = createAuthors(books);
+        Map<String, Genre> genres = createGenres(books);
+        books.forEach(book -> {
+            book.setAuthor(authors.get(book.getAuthor().getMongoId()));
+            book.setGenre(genres.get(book.getGenre().getMongoId()));
+        });
+
+        super.write(list);
+    }
 
     @Transactional
     public Map<String, Author> createAuthors(List<Book> books) {
@@ -48,16 +60,5 @@ public class MigrationService {
                 .forEach(genre -> genres.put(genre.getMongoId(), genre));
 
         return genres;
-    }
-
-    @Transactional(readOnly = true)
-    public Map<String, Book> findBooks(List<Comment> comments) {
-        Map<String, Book> books = new HashMap<>();
-        comments.forEach(comment -> books.put(comment.getBook().getMongoId(), comment.getBook()));
-
-        bookRepository.findByMongoIdIn(books.keySet())
-                .forEach(book -> books.put(book.getMongoId(), book));
-
-        return books;
     }
 }
