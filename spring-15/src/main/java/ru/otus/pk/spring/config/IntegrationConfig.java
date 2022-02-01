@@ -31,11 +31,11 @@ public class IntegrationConfig {
 
     @Bean
     public IntegrationFlow inspectionFlow() {
-        return IntegrationFlows.from("inspectionChannel")
+        return IntegrationFlows.from(inspectionChannel())
                 .split()
                 .handle("reportService", "generateReport")
                 .aggregate()
-                .channel("reportChannel")
+                .channel(reportChannel())
                 .get();
     }
 }
