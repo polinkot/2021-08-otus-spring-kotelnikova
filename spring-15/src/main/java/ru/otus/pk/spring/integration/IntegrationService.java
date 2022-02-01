@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.integration;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,12 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.apache.commons.lang3.RandomUtils.nextLong;
 
+@RequiredArgsConstructor
 @IntegrationComponentScan
 @Service
 public class IntegrationService {
 
-    @Autowired
-    private ReportGateway reportGateway;
+    private final ReportGateway reportGateway;
 
     public void start() throws InterruptedException {
         ForkJoinPool pool = ForkJoinPool.commonPool();
