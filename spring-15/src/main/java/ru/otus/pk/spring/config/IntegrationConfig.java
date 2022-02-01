@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
@@ -8,11 +9,15 @@ import org.springframework.integration.channel.QueueChannel;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.dsl.*;
 import org.springframework.integration.scheduling.PollerMetadata;
+import ru.otus.pk.spring.service.ReportService;
 
 @IntegrationComponentScan
 @Configuration
 @EnableIntegration
 public class IntegrationConfig {
+
+    @Autowired
+    private ReportService reportService;
 
     @Bean
     public QueueChannel inspectionChannel() {
@@ -33,7 +38,7 @@ public class IntegrationConfig {
     public IntegrationFlow inspectionFlow() {
         return IntegrationFlows.from(inspectionChannel())
                 .split()
-                .handle("reportService", "generateReport")
+                .handle(reportService, "generateReport")
                 .aggregate()
                 .channel(reportChannel())
                 .get();
