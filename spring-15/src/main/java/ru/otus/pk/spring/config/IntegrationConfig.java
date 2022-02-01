@@ -1,6 +1,6 @@
 package ru.otus.pk.spring.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
@@ -11,13 +11,15 @@ import org.springframework.integration.dsl.*;
 import org.springframework.integration.scheduling.PollerMetadata;
 import ru.otus.pk.spring.service.ReportService;
 
+import static org.springframework.integration.scheduling.PollerMetadata.DEFAULT_POLLER;
+
+@RequiredArgsConstructor
 @IntegrationComponentScan
 @Configuration
 @EnableIntegration
 public class IntegrationConfig {
 
-    @Autowired
-    private ReportService reportService;
+    private final ReportService reportService;
 
     @Bean
     public QueueChannel inspectionChannel() {
@@ -29,7 +31,7 @@ public class IntegrationConfig {
         return MessageChannels.publishSubscribe().get();
     }
 
-    @Bean(name = PollerMetadata.DEFAULT_POLLER)
+    @Bean(name = DEFAULT_POLLER)
     public PollerMetadata poller() {
         return Pollers.fixedRate(100).maxMessagesPerPoll(2).get();
     }
