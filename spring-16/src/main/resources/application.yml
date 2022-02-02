@@ -24,3 +24,9 @@ sql:
       path: /h2-console
       settings:
         web-allow-others: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health, loggers, metrics"
