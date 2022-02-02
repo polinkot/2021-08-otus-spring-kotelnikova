@@ -1,3 +1,6 @@
+Проверка наличия книг в библиотеке   
+http://localhost:8080/actuator/health/bookCnt   
+
 Домашнее задание   
 Использовать метрики, healthchecks и logfile   
 
