@@ -18,5 +18,6 @@
  * Spring Security: ACL - spring-13    
  * Spring Batch - spring-14   
  * Spring Integration: Endpoints и Flow Components - spring-15   
-
+ * Монолиты vs. Microservices (Round 2), Spring Boot Actuator - must have в микросервисах - spring-16   
+   
 📚Домашние задания разработаны для курса ["Разработчик на Spring Framework"](https://otus.ru/lessons/javaspring/?int_source=courses_catalog&int_term=programming)
