@@ -1,6 +1,11 @@
 spring:
   datasource:
-    url: jdbc:h2:mem:testdb
+    initialization-mode: always
+    # Эти свойства будут перегружены свойствами в docker-compose.yml
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
 
   jpa:
     generate-ddl: false
@@ -12,15 +17,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-sql:
-  init:
-    mode: always
-    data-locations: data.sql
-    schema-locations: schema.sql
-
-  h2:
-    console:
-      path: /h2-console
-      settings:
-        web-allow-others: true
