@@ -1,0 +1,18 @@
+ 
+ docker image ls
+ 
+
+ 
+ docker run -p 8080:8080 spring-17:1.0-SNAPSHOT
+ 
+ docker run -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+ 
+ docker-compose -f docker-compose.yml up -d
+ 
+ 
+ 
+
+
+
+
+
