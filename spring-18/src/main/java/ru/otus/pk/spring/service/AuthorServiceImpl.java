@@ -42,6 +42,8 @@ public class AuthorServiceImpl implements AuthorService {
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(format(AUTHOR_NOT_FOUND, id)));
     }
 
+    @Transactional
+    @Override
     public Author save(Author author) {
         validate(author);
         return repository.save(author);
