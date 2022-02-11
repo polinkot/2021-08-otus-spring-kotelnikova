@@ -1,5 +1,8 @@
 package ru.otus.pk.spring.controller;
 
+import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.decorators.Decorators;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.pk.spring.controller.dto.BookDto;
@@ -18,10 +21,15 @@ public class BookController {
     private final BookService service;
     private final AuthorService authorService;
     private final GenreService genreService;
+    private final CircuitBreaker circuitBreaker;
 
     @GetMapping("/books")
     public List<Book> finAll() {
-        return service.findAll();
+        return Decorators.ofSupplier(service::findAll)
+                .withCircuitBreaker(circuitBreaker)
+                .withFallback(List.of(CallNotPermittedException.class), e -> service.findAllFallbackCallNotPermittedException())
+                .withFallback(List.of(Exception.class), e -> service.findAllFallback())
+                .decorate().get();
     }
 
     @GetMapping("/books/{id}")
