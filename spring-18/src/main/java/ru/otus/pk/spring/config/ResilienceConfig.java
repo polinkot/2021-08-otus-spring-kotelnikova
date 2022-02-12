@@ -11,39 +11,26 @@ import static io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.Sliding
 @Configuration
 public class ResilienceConfig {
 
+    private static final CircuitBreakerConfig CONFIG = CircuitBreakerConfig.custom()
+            .slidingWindowType(COUNT_BASED)
+            .slidingWindowSize(3)
+            .slowCallRateThreshold(1f)
+            .slowCallDurationThreshold(Duration.ofSeconds(1))
+            .minimumNumberOfCalls(1)
+            .build();
+
     @Bean
     public CircuitBreaker bookCircuitBreaker() {
-        return CircuitBreakerRegistry.of(CircuitBreakerConfig.custom()
-                .slidingWindowType(COUNT_BASED)
-                .slidingWindowSize(3)
-                .slowCallRateThreshold(1f)
-                .slowCallDurationThreshold(Duration.ofSeconds(1))
-                .minimumNumberOfCalls(1)
-                .build())
-                .circuitBreaker("bookCircuitBreaker");
+        return CircuitBreakerRegistry.of(CONFIG).circuitBreaker("bookCircuitBreaker");
     }
 
     @Bean
     public CircuitBreaker authorCircuitBreaker() {
-        return CircuitBreakerRegistry.of(CircuitBreakerConfig.custom()
-                .slidingWindowType(COUNT_BASED)
-                .slidingWindowSize(3)
-                .slowCallRateThreshold(1f)
-                .slowCallDurationThreshold(Duration.ofSeconds(1))
-                .minimumNumberOfCalls(1)
-                .build())
-                .circuitBreaker("authorCircuitBreaker");
+        return CircuitBreakerRegistry.of(CONFIG).circuitBreaker("authorCircuitBreaker");
     }
 
     @Bean
     public CircuitBreaker genreCircuitBreaker() {
-        return CircuitBreakerRegistry.of(CircuitBreakerConfig.custom()
-                .slidingWindowType(COUNT_BASED)
-                .slidingWindowSize(3)
-                .slowCallRateThreshold(1f)
-                .slowCallDurationThreshold(Duration.ofSeconds(1))
-                .minimumNumberOfCalls(1)
-                .build())
-                .circuitBreaker("genreCircuitBreaker");
+        return CircuitBreakerRegistry.of(CONFIG).circuitBreaker("genreCircuitBreaker");
     }
 }
