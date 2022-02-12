@@ -33,4 +33,9 @@ public class ResilienceConfig {
     public CircuitBreaker genreCircuitBreaker() {
         return CircuitBreakerRegistry.of(CONFIG).circuitBreaker("genreCircuitBreaker");
     }
+
+    @Bean
+    public CircuitBreaker commentCircuitBreaker() {
+        return CircuitBreakerRegistry.of(CONFIG).circuitBreaker("commentCircuitBreaker");
+    }
 }

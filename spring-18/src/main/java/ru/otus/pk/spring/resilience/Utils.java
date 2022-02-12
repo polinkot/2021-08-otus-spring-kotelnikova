@@ -49,4 +49,9 @@ public class Utils {
         System.out.println(e.getClass() + "     " + e.getMessage());
         return new ArrayList<>();
     }
+
+    public static List<Comment> commentsFallback(Throwable e) {
+        System.out.println(e.getClass() + "     " + e.getMessage());
+        return new ArrayList<>();
+    }
 }

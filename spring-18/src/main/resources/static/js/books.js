@@ -24,7 +24,7 @@
             return;
         }
 
-        $.get('/api/v1/book/' + bookId + '/comments').done(function (comments) {
+        $.get('/api/v1/books/' + bookId + '/comments').done(function (comments) {
             $('#comments > tbody').empty();
 
             comments.forEach(function (comment) {

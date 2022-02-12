@@ -13,6 +13,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static org.springframework.util.ObjectUtils.isEmpty;
+import static ru.otus.pk.spring.resilience.Utils.failureForDemo;
 
 @RequiredArgsConstructor
 @Service
@@ -60,6 +61,8 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     @Override
     public List<Comment> findByBookId(Long bookId) {
+        failureForDemo("ru.otus.pk.spring.service.CommentServiceImpl.findByBookId");
+
         return repository.findByBookId(bookId);
     }
 
