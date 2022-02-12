@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.controller.dto.BookDto;
 import ru.otus.pk.spring.domain.*;
+import ru.otus.pk.spring.resilience.ResilienceService;
 import ru.otus.pk.spring.service.*;
 
 import java.util.List;
@@ -48,6 +49,9 @@ public class BookControllerTest {
 
     @MockBean
     private CircuitBreaker circuitBreaker;
+
+    @MockBean
+    private ResilienceService resilienceService;
 
     @DisplayName("возвращать ожидаемый список книг")
     @Test

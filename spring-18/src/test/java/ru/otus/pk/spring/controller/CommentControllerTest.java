@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.controller;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.controller.dto.CommentDto;
 import ru.otus.pk.spring.domain.*;
 import ru.otus.pk.spring.domain.mapper.CommentMapper;
+import ru.otus.pk.spring.resilience.ResilienceService;
 import ru.otus.pk.spring.service.BookService;
 import ru.otus.pk.spring.service.CommentService;
 
@@ -48,6 +50,12 @@ public class CommentControllerTest {
 
     @MockBean
     private CommentMapper mapper;
+
+    @MockBean
+    private CircuitBreaker circuitBreaker;
+
+    @MockBean
+    private ResilienceService resilienceService;
 
     @DisplayName("возвращать ожидаемый список комментариев для книги ")
     @Test

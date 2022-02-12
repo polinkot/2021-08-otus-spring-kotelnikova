@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.domain.Author;
+import ru.otus.pk.spring.resilience.ResilienceService;
 import ru.otus.pk.spring.service.AuthorService;
 
 import java.util.List;
@@ -34,6 +35,9 @@ public class AuthorControllerTest {
 
     @MockBean
     private CircuitBreaker circuitBreaker;
+
+    @MockBean
+    private ResilienceService resilienceService;
 
     @DisplayName("возвращать ожидаемый список авторов")
     @Test
