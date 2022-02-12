@@ -15,7 +15,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static org.springframework.util.ObjectUtils.isEmpty;
-import static ru.otus.pk.spring.resilience.Utils.failureForDemo;
+import static ru.otus.pk.spring.resilience.FailureUtils.failureForDemo;
 
 @RequiredArgsConstructor
 @Service
