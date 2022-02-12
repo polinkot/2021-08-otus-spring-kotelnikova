@@ -2,7 +2,7 @@ package ru.otus.pk.spring.controller;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.decorators.Decorators;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.pk.spring.controller.dto.BookDto;
 import ru.otus.pk.spring.domain.*;
@@ -14,6 +14,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.CREATED;
 import static ru.otus.pk.spring.resilience.Utils.EXCEPTIONS;
 
+@RequiredArgsConstructor
 @RequestMapping("/api/v1")
 @RestController
 public class BookController {
@@ -21,20 +22,12 @@ public class BookController {
     private final BookService service;
     private final AuthorService authorService;
     private final GenreService genreService;
-    private final CircuitBreaker circuitBreaker;
-
-    public BookController(BookService service, AuthorService authorService, GenreService genreService,
-                          @Qualifier("bookCircuitBreaker") CircuitBreaker circuitBreaker) {
-        this.service = service;
-        this.authorService = authorService;
-        this.genreService = genreService;
-        this.circuitBreaker = circuitBreaker;
-    }
+    private final CircuitBreaker bookCircuitBreaker;
 
     @GetMapping("/books")
     public List<Book> findAll() {
         return Decorators.ofSupplier(service::findAll)
-                .withCircuitBreaker(circuitBreaker)
+                .withCircuitBreaker(bookCircuitBreaker)
                 .withFallback(EXCEPTIONS, Utils::booksFallback)
                 .decorate().get();
     }
@@ -42,7 +35,7 @@ public class BookController {
     @GetMapping("/books/{id}")
     public Book findById(@PathVariable("id") Long id) {
         return Decorators.ofSupplier(() -> service.findById(id))
-                .withCircuitBreaker(circuitBreaker)
+                .withCircuitBreaker(bookCircuitBreaker)
                 .withFallback(EXCEPTIONS, Utils::bookFallback)
                 .decorate().get();
     }
