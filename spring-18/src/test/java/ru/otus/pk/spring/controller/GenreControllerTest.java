@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.controller;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class GenreControllerTest {
 
     @MockBean
     private GenreService service;
+
+    @MockBean
+    private CircuitBreaker circuitBreaker;
 
     @DisplayName("возвращать ожидаемый список жанров")
     @Test

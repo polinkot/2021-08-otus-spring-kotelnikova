@@ -39,4 +39,14 @@ public class Utils {
         System.out.println(e.getMessage());
         return BOOK;
     }
+
+    public static List<Author> authorsFallback(Throwable e) {
+        System.out.println(e.getClass() + "     " + e.getMessage());
+        return new ArrayList<>();
+    }
+
+    public static List<Genre> genresFallback(Throwable e) {
+        System.out.println(e.getClass() + "     " + e.getMessage());
+        return new ArrayList<>();
+    }
 }

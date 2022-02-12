@@ -42,8 +42,6 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(readOnly = true)
     @Override
     public Author findById(Long id) {
-        failureForDemo("ru.otus.pk.spring.service.AuthorServiceImpl.findById");
-
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(format(AUTHOR_NOT_FOUND, id)));
     }
 

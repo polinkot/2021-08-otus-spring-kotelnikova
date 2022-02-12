@@ -1,5 +1,6 @@
 package ru.otus.pk.spring.controller;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,12 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.controller.dto.BookDto;
-import ru.otus.pk.spring.domain.Author;
-import ru.otus.pk.spring.domain.Book;
-import ru.otus.pk.spring.domain.Genre;
-import ru.otus.pk.spring.service.AuthorService;
-import ru.otus.pk.spring.service.BookService;
-import ru.otus.pk.spring.service.GenreService;
+import ru.otus.pk.spring.domain.*;
+import ru.otus.pk.spring.service.*;
 
 import java.util.List;
 
@@ -48,6 +45,9 @@ public class BookControllerTest {
 
     @MockBean
     private GenreService genreService;
+
+    @MockBean
+    private CircuitBreaker circuitBreaker;
 
     @DisplayName("возвращать ожидаемый список книг")
     @Test

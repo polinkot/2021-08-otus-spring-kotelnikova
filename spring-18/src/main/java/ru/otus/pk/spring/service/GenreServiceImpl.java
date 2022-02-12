@@ -40,8 +40,6 @@ public class GenreServiceImpl implements GenreService {
     @Transactional(readOnly = true)
     @Override
     public Genre findById(Long id) {
-        failureForDemo("ru.otus.pk.spring.service.GenreServiceImpl.findById");
-
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(format(GENRE_NOT_FOUND, id)));
     }
 
