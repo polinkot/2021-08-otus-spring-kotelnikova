@@ -63,7 +63,7 @@ public class CommentControllerTest {
         given(service.findByBookId(anyLong())).willReturn(List.of(COMMENT));
         given(mapper.toDto(any(Comment.class))).willReturn(COMMENT_DTO);
 
-        this.mockMvc.perform(get(format("/api/v1/book/%s/comments", BOOK.getId()))).andDo(print())
+        this.mockMvc.perform(get(format("/api/v1/books/%s/comments", BOOK.getId()))).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(content().contentType(APPLICATION_JSON))
