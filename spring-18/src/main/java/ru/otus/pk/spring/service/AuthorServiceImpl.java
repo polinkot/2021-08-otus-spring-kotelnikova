@@ -15,6 +15,7 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static org.springframework.util.ObjectUtils.isEmpty;
+import static ru.otus.pk.spring.resilience.Utils.failureForDemo;
 
 @RequiredArgsConstructor
 @Service
@@ -33,12 +34,16 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(readOnly = true)
     @Override
     public List<Author> findAll() {
+        failureForDemo("ru.otus.pk.spring.service.AuthorServiceImpl.findAll");
+
         return repository.findAll();
     }
 
     @Transactional(readOnly = true)
     @Override
     public Author findById(Long id) {
+        failureForDemo("ru.otus.pk.spring.service.AuthorServiceImpl.findById");
+
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(format(AUTHOR_NOT_FOUND, id)));
     }
 

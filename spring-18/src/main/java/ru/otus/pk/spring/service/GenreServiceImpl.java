@@ -13,6 +13,7 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static org.springframework.util.ObjectUtils.isEmpty;
+import static ru.otus.pk.spring.resilience.Utils.failureForDemo;
 
 @RequiredArgsConstructor
 @Service
@@ -31,12 +32,16 @@ public class GenreServiceImpl implements GenreService {
     @Transactional(readOnly = true)
     @Override
     public List<Genre> findAll() {
+        failureForDemo("ru.otus.pk.spring.service.GenreServiceImpl.findAll");
+
         return repository.findAll();
     }
 
     @Transactional(readOnly = true)
     @Override
     public Genre findById(Long id) {
+        failureForDemo("ru.otus.pk.spring.service.GenreServiceImpl.findById");
+
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(format(GENRE_NOT_FOUND, id)));
     }
 

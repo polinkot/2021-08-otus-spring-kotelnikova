@@ -4,25 +4,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.pk.spring.domain.*;
+import ru.otus.pk.spring.domain.Book;
 import ru.otus.pk.spring.exception.LibraryException;
 import ru.otus.pk.spring.exception.ObjectNotFoundException;
 import ru.otus.pk.spring.repository.BookRepository;
 
 import java.util.List;
-import java.util.Random;
 
 import static java.lang.String.format;
 import static org.springframework.util.ObjectUtils.isEmpty;
+import static ru.otus.pk.spring.resilience.Utils.failureForDemo;
 
 @RequiredArgsConstructor
 @Service
 public class BookServiceImpl implements BookService {
 
     public static final String BOOK_NOT_FOUND = "Book not found!!! id = %s";
-
-    private static final Author AUTHOR = new Author(1L, "N/A", "N/A");
-    private static final Genre GENRE = new Genre(1L, "N/A");
 
     private final BookRepository repository;
 
@@ -43,6 +40,8 @@ public class BookServiceImpl implements BookService {
     @Transactional(readOnly = true)
     @Override
     public Book findById(Long id) {
+        failureForDemo("ru.otus.pk.spring.service.BookServiceImpl.findById ");
+
         return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(format(BOOK_NOT_FOUND, id)));
     }
 
@@ -86,35 +85,6 @@ public class BookServiceImpl implements BookService {
 
         if (book.getGenre() == null) {
             throw new LibraryException("Book genre is null or empty!");
-        }
-    }
-
-    @Override
-    public List<Book> findAllFallbackCallNotPermittedException() {
-        return List.of(new Book(1L, "CallNotPermittedException", AUTHOR, GENRE));
-    }
-
-    @Override
-    public List<Book> findAllFallback() {
-        return List.of(new Book(1L, "Exception", AUTHOR, GENRE));
-    }
-
-    private void failureForDemo(String method) {
-        if (new Random().nextBoolean()) {
-            System.out.println(method + " success");
-            return;
-        }
-
-        if (new Random().nextBoolean()) {
-            System.out.println(method + " Exception for Demo");
-            throw new IllegalStateException(method + " IllegalStateException for Demo");
-        }
-
-        try {
-            System.out.println(method + " delayed for Demo");
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 }

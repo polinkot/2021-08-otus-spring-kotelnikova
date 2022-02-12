@@ -19,8 +19,4 @@ public interface BookService {
     List<Book> findByAuthorId(Long authorId);
 
     List<Book> findByGenreId(Long genreId);
-
-    List<Book> findAllFallbackCallNotPermittedException();
-
-    List<Book> findAllFallback();
 }

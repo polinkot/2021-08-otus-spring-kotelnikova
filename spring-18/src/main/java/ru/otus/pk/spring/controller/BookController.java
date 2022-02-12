@@ -1,17 +1,18 @@
 package ru.otus.pk.spring.controller;
 
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.decorators.Decorators;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.pk.spring.controller.dto.BookDto;
 import ru.otus.pk.spring.domain.*;
+import ru.otus.pk.spring.resilience.Utils;
 import ru.otus.pk.spring.service.*;
 
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static ru.otus.pk.spring.resilience.Utils.EXCEPTIONS;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -24,17 +25,19 @@ public class BookController {
     private final CircuitBreaker circuitBreaker;
 
     @GetMapping("/books")
-    public List<Book> finAll() {
+    public List<Book> findAll() {
         return Decorators.ofSupplier(service::findAll)
                 .withCircuitBreaker(circuitBreaker)
-                .withFallback(List.of(CallNotPermittedException.class), e -> service.findAllFallbackCallNotPermittedException())
-                .withFallback(List.of(Exception.class), e -> service.findAllFallback())
+                .withFallback(EXCEPTIONS, Utils::booksFallback)
                 .decorate().get();
     }
 
     @GetMapping("/books/{id}")
     public Book findById(@PathVariable("id") Long id) {
-        return service.findById(id);
+        return Decorators.ofSupplier(() -> service.findById(id))
+                .withCircuitBreaker(circuitBreaker)
+                .withFallback(EXCEPTIONS, Utils::bookFallback)
+                .decorate().get();
     }
 
     @ResponseStatus(CREATED)
