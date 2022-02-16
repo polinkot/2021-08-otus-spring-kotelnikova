@@ -15,4 +15,7 @@ public class Dog implements Animal {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
 }
