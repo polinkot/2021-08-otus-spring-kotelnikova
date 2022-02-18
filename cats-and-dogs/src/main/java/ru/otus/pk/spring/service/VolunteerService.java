@@ -1,4 +1,4 @@
-package ru.otus.pk.spring.sevrice;
+package ru.otus.pk.spring.service;
 
 import ru.otus.pk.spring.domain.Volunteer;
 

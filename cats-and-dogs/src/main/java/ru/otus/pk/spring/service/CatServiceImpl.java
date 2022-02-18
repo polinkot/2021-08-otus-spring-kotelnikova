@@ -1,4 +1,4 @@
-package ru.otus.pk.spring.sevrice;
+package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;

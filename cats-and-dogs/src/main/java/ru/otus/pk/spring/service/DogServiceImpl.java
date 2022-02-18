@@ -1,22 +1,22 @@
-package ru.otus.pk.spring.sevrice;
+package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.pk.spring.domain.Volunteer;
-import ru.otus.pk.spring.repository.VolunteerRepository;
+import ru.otus.pk.spring.domain.Dog;
+import ru.otus.pk.spring.repository.DogRepository;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class VolunteerServiceImpl implements VolunteerService {
+public class DogServiceImpl implements DogService {
 
-    private final VolunteerRepository repository;
+    private final DogRepository repository;
 
     @Transactional(readOnly = true)
     @Override
-    public List<Volunteer> findAll() {
+    public List<Dog> findAll() {
         return repository.findAll();
     }
 }

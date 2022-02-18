@@ -1,22 +1,22 @@
-package ru.otus.pk.spring.sevrice;
+package ru.otus.pk.spring.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.pk.spring.domain.Owner;
-import ru.otus.pk.spring.repository.OwnerRepository;
+import ru.otus.pk.spring.domain.Volunteer;
+import ru.otus.pk.spring.repository.VolunteerRepository;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class OwnerServiceImpl implements OwnerService {
+public class VolunteerServiceImpl implements VolunteerService {
 
-    private final OwnerRepository repository;
+    private final VolunteerRepository repository;
 
     @Transactional(readOnly = true)
     @Override
-    public List<Owner> findAll() {
+    public List<Volunteer> findAll() {
         return repository.findAll();
     }
 }
