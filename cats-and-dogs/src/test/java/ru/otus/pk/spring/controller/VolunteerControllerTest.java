@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = VolunteerController.class)
 public class VolunteerControllerTest {
 
-    private static final Volunteer VOLUNTEER = new Volunteer(1L);
+    private static final Volunteer VOLUNTEER = new Volunteer(1L, "Volunteer1", "89107776655");
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,6 +39,8 @@ public class VolunteerControllerTest {
         this.mockMvc.perform(get("/api/v1/volunteers")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(VOLUNTEER.getId().intValue())));
+                .andExpect(jsonPath("$[0].id", is(VOLUNTEER.getId().intValue())))
+                .andExpect(jsonPath("$[0].name", is(VOLUNTEER.getName())))
+                .andExpect(jsonPath("$[0].phone", is(VOLUNTEER.getPhone())));
     }
 }

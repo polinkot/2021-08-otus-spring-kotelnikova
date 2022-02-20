@@ -8,8 +8,16 @@ create table cat(id bigserial, name varchar(255) not null, PRIMARY KEY(id));
 
 create table dog(id bigserial, name varchar(255) not null, PRIMARY KEY(id));
 
-create table owner(id bigserial, PRIMARY KEY(id));
+create table owner(id bigserial,
+    name varchar(255) not null,
+    age int,
+    address varchar(255) not null,
+    phone varchar(255) not null,
+    PRIMARY KEY(id));
 
 create table adoption(id bigserial, PRIMARY KEY(id));
 
-create table volunteer(id bigserial, PRIMARY KEY(id));
+create table volunteer(id bigserial,
+    name varchar(255) not null,
+    phone varchar(255) not null,
+    PRIMARY KEY(id));

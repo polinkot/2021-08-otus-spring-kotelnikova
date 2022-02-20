@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest(classes = VolunteerServiceImpl.class)
 class VolunteerServiceImplTest {
 
-    private static final Volunteer EXPECTED_VOLUNTEER = new Volunteer(1L);
+    private static final Volunteer EXPECTED_VOLUNTEER = new Volunteer(1L, "Volunteer1", "89107776655");
 
     @MockBean
     private VolunteerRepository repository;

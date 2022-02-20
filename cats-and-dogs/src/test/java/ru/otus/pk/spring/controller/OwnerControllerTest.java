@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = OwnerController.class)
 public class OwnerControllerTest {
 
-    private static final Owner OWNER = new Owner(1L);
+    private static final Owner OWNER = new Owner(1L, "name1", 35, "address1", "89101112233");
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,6 +39,10 @@ public class OwnerControllerTest {
         this.mockMvc.perform(get("/api/v1/owners")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(OWNER.getId().intValue())));
+                .andExpect(jsonPath("$[0].id", is(OWNER.getId().intValue())))
+                .andExpect(jsonPath("$[0].name", is(OWNER.getName())))
+                .andExpect(jsonPath("$[0].age", is(OWNER.getAge())))
+                .andExpect(jsonPath("$[0].address", is(OWNER.getAddress())))
+                .andExpect(jsonPath("$[0].phone", is(OWNER.getPhone())));
     }
 }

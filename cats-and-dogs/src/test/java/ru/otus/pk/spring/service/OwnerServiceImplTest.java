@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest(classes = OwnerServiceImpl.class)
 class OwnerServiceImplTest {
 
-    private static final Owner EXPECTED_OWNER = new Owner(1L);
+    private static final Owner EXPECTED_OWNER = new Owner(1L, "name1", 35, "address1", "89101112233");
 
     @MockBean
     private OwnerRepository repository;
