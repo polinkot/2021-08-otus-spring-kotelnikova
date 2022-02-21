@@ -10,7 +10,10 @@ import ru.otus.pk.spring.domain.Dog;
 import ru.otus.pk.spring.repository.DogRepository;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static ru.otus.pk.spring.domain.Gender.MALE;
 
@@ -33,5 +36,33 @@ class DogServiceImplTest {
 
         List<Dog> actualList = service.findAll();
         Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(DOG);
+    }
+
+    @DisplayName("возвращать ожидаемую собаку по id")
+    @Test
+    void shouldReturnExpectedDogById() {
+        given(repository.findById(DOG.getId())).willReturn(Optional.of(DOG));
+
+        Dog actualDog = service.findById(DOG.getId());
+        assertThat(actualDog).usingRecursiveComparison().isEqualTo(DOG);
+    }
+
+    @DisplayName("добавлять собаку")
+    @Test
+    void shouldAddDog() {
+        given(repository.save(any(Dog.class))).willReturn(DOG);
+
+        Dog actualDog = service.save(new Dog(null, "Dog1", MALE, 1, true, true));
+        assertThat(actualDog).isEqualTo(DOG);
+    }
+
+    @DisplayName("редактировать собаку")
+    @Test
+    void shouldUpdateDog() {
+        given(repository.findById(DOG.getId())).willReturn(Optional.of(DOG));
+        given(repository.save(any(Dog.class))).willReturn(DOG);
+
+        Dog actualDog = service.save(DOG);
+        assertThat(actualDog).isEqualTo(DOG);
     }
 }

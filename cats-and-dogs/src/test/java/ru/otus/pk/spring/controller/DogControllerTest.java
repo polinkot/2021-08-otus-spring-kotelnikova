@@ -13,11 +13,15 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.otus.pk.spring.controller.Utils.asJsonString;
 import static ru.otus.pk.spring.domain.Gender.MALE;
 
 @DisplayName("Контроллер для работы с собаками должен ")
@@ -42,5 +46,54 @@ public class DogControllerTest {
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(DOG.getId().intValue())))
                 .andExpect(jsonPath("$[0].name", is(DOG.getName())));
+    }
+
+    @DisplayName("возвращать ожидаемую собаку по id")
+    @Test
+    public void shouldReturnExpectedDogById() throws Exception {
+        given(service.findById(DOG.getId())).willReturn(DOG);
+
+        this.mockMvc.perform(get("/api/v1/dogs/" + DOG.getId())).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", is(DOG.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(DOG.getName())));
+    }
+
+    @DisplayName("добавлять собаку")
+    @Test
+    public void shouldAddDog() throws Exception {
+        given(service.save(any(Dog.class))).willReturn(DOG);
+
+        this.mockMvc.perform(post("/api/v1/dogs")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(DOG)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", is(DOG.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(DOG.getName())));
+    }
+
+    @DisplayName("редактировать собаку")
+    @Test
+    public void shouldUpdateDog() throws Exception {
+        given(service.findById(anyLong())).willReturn(DOG);
+        given(service.save(any(Dog.class))).willReturn(DOG);
+
+        this.mockMvc.perform(put("/api/v1/dogs")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(DOG)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON))
+                .andExpect(jsonPath("$.id", is(DOG.getId().intValue())))
+                .andExpect(jsonPath("$.name", is(DOG.getName())));
+    }
+
+    @DisplayName("удалять собаку")
+    @Test
+    void shouldDeleteDog() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
+
+        this.mockMvc.perform(delete("/api/v1/dogs/" + DOG.getId()))
+                .andExpect(status().isOk());
     }
 }
