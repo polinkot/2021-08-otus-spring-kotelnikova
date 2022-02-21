@@ -1,21 +1,15 @@
 package ru.otus.pk.spring.domain;
 
-import lombok.*;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-@AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Entity
-@Table(name = "cat")
-public class Cat implements Animal {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-
-    @Column(name = "name", nullable = false)
-    private String name;
+@DiscriminatorValue("CAT")
+public class Cat extends Animal {
+    public Cat(Long id, String name, Gender gender, Integer age, Boolean sterilized, Boolean vaccinated) {
+        super(id, name, gender, age, sterilized, vaccinated);
+    }
 }

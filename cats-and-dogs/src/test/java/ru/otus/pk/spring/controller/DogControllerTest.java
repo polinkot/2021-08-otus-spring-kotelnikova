@@ -18,12 +18,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.otus.pk.spring.domain.Gender.MALE;
 
 @DisplayName("Контроллер для работы с собаками должен ")
 @WebMvcTest(controllers = DogController.class)
 public class DogControllerTest {
 
-    private static final Dog DOG = new Dog(1L, "Dog1");
+    private static final Dog DOG = new Dog(1L, "Dog1", MALE, 2, true, true);
 
     @Autowired
     private MockMvc mockMvc;

@@ -18,12 +18,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.otus.pk.spring.domain.Gender.FEMALE;
 
 @DisplayName("Контроллер для работы с кошками должен ")
 @WebMvcTest(controllers = CatController.class)
 public class CatControllerTest {
 
-    private static final Cat CAT = new Cat(1L, "Cat1");
+    private static final Cat CAT = new Cat(1L, "Cat1", FEMALE, 1, true, true);
 
     @Autowired
     private MockMvc mockMvc;

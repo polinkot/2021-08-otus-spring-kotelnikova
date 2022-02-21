@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest(classes = AdoptionServiceImpl.class)
 class AdoptionServiceImplTest {
 
-    private static final Adoption EXPECTED_ADOPTION = new Adoption(1L);
+    private static final Adoption ADOPTION = new Adoption(1L);
 
     @MockBean
     private AdoptionRepository repository;
@@ -28,9 +28,9 @@ class AdoptionServiceImplTest {
     @DisplayName("возвращать ожидаемый список пристройств")
     @Test
     void shouldReturnExpectedAdoptionsList() {
-        given(repository.findAll()).willReturn(List.of(EXPECTED_ADOPTION));
+        given(repository.findAll()).willReturn(List.of(ADOPTION));
 
         List<Adoption> actualList = service.findAll();
-        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(EXPECTED_ADOPTION);
+        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(ADOPTION);
     }
 }

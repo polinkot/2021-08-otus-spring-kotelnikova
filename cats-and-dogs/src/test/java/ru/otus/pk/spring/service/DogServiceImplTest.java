@@ -12,12 +12,13 @@ import ru.otus.pk.spring.repository.DogRepository;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
+import static ru.otus.pk.spring.domain.Gender.MALE;
 
 @DisplayName("Сервис для работы с собаками должен ")
 @SpringBootTest(classes = DogServiceImpl.class)
 class DogServiceImplTest {
 
-    private static final Dog EXPECTED_DOG = new Dog(1L, "Dog1");
+    private static final Dog DOG = new Dog(1L, "Dog1", MALE, 2, true, true);
 
     @MockBean
     private DogRepository repository;
@@ -28,9 +29,9 @@ class DogServiceImplTest {
     @DisplayName("возвращать ожидаемый список собак")
     @Test
     void shouldReturnExpectedDogsList() {
-        given(repository.findAll()).willReturn(List.of(EXPECTED_DOG));
+        given(repository.findAll()).willReturn(List.of(DOG));
 
         List<Dog> actualList = service.findAll();
-        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(EXPECTED_DOG);
+        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(DOG);
     }
 }
