@@ -3,6 +3,12 @@ drop table if exists owner;
 drop table if exists adoption;
 drop table if exists volunteer;
 
+create table adoption(id bigserial,
+    animal_id bigint,
+    owner_id bigint,
+    volunteer_id bigint,
+    PRIMARY KEY(id));
+
 create table animal(id bigserial,
     name varchar(255) not null,
     gender varchar(10),
@@ -17,13 +23,6 @@ create table owner(id bigserial,
     age int,
     address varchar(255) not null,
     phone varchar(255) not null,
-    PRIMARY KEY(id));
-
-create table adoption(id bigserial,
-    date date,
-    animal_id bigint,
-    owner_id bigint,
-    volunteer_id bigint,
     PRIMARY KEY(id));
 
 create table volunteer(id bigserial,

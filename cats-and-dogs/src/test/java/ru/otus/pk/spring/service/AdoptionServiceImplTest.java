@@ -9,9 +9,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.pk.spring.domain.*;
 import ru.otus.pk.spring.repository.AdoptionRepository;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static ru.otus.pk.spring.domain.Gender.FEMALE;
 
@@ -22,7 +24,7 @@ class AdoptionServiceImplTest {
     private static final Cat CAT = new Cat(1L, "Cat1", FEMALE, 1, true, true);
     private static final Owner OWNER = new Owner(1L, "name1", 35, "address1", "89101112233");
     private static final Volunteer VOLUNTEER = new Volunteer(1L, "Volunteer1", "89107776655");
-    private static final Adoption ADOPTION = new Adoption(1L, LocalDate.now(), CAT, OWNER, VOLUNTEER);
+    private static final Adoption ADOPTION = new Adoption(1L, CAT, OWNER, VOLUNTEER);
 
     @MockBean
     private AdoptionRepository repository;
@@ -37,5 +39,23 @@ class AdoptionServiceImplTest {
 
         List<Adoption> actualList = service.findAll();
         Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(ADOPTION);
+    }
+
+    @DisplayName("возвращать пристройство по id")
+    @Test
+    void shouldReturnExpectedAdoptionById() {
+        given(repository.findById(ADOPTION.getId())).willReturn(Optional.of(ADOPTION));
+
+        Adoption actualAdoption = service.findById(ADOPTION.getId());
+        assertThat(actualAdoption).usingRecursiveComparison().isEqualTo(ADOPTION);
+    }
+
+    @DisplayName("добавлять пристройство")
+    @Test
+    void shouldAddAdoption() {
+        given(repository.save(any(Adoption.class))).willReturn(ADOPTION);
+
+        Adoption actualAdoption = service.save(new Adoption(null, CAT, OWNER, VOLUNTEER));
+        assertThat(actualAdoption).isEqualTo(ADOPTION);
     }
 }
