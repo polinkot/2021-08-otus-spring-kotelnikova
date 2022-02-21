@@ -1,0 +1,114 @@
+
+###
+GET http://localhost:8080/api/v1/adoptions
+
+###
+GET http://localhost:8080/api/v1/cats
+
+###
+GET http://localhost:8080/api/v1/cats/1
+
+###
+POST http://localhost:8080/api/v1/cats
+Content-Type: application/json
+
+{
+  "id": null,
+  "name": "Cat1",
+  "gender":"FEMALE",
+  "age": 3,
+  "sterilized": true,
+  "vaccinated": true,
+  "type": "CAT"
+}
+
+###
+PUT http://localhost:8080/api/v1/cats
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Cat1_updated_name",
+  "gender":"FEMALE",
+  "age": 3,
+  "sterilized": true,
+  "vaccinated": true,
+  "type": "CAT"
+}
+
+###
+DELETE http://localhost:8080/api/v1/cats/1
+
+###
+GET http://localhost:8080/api/v1/dogs
+
+###
+GET http://localhost:8080/api/v1/dogs/1
+
+###
+POST http://localhost:8080/api/v1/dogs
+Content-Type: application/json
+
+{
+  "id": null,
+  "name": "Dog1",
+  "gender":"FEMALE",
+  "age": 5,
+  "sterilized": true,
+  "vaccinated": true,
+  "type": "DOG"
+}
+
+###
+PUT http://localhost:8080/api/v1/dogs
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "Dog1_updated_name",
+  "gender":"FEMALE",
+  "age": 5,
+  "sterilized": true,
+  "vaccinated": true,
+  "type": "DOG"
+}
+
+###
+DELETE http://localhost:8080/api/v1/dogs/1
+
+###
+GET http://localhost:8080/api/v1/owners
+
+###
+GET http://localhost:8080/api/v1/owners/1
+
+###
+POST http://localhost:8080/api/v1/owners
+Content-Type: application/json
+
+{
+  "id": null,
+  "name": "owner1",
+  "age": 35,
+  "address": "address1",
+  "phone": "89101112233"
+}
+
+###
+PUT http://localhost:8080/api/v1/owners
+Content-Type: application/json
+
+{
+  "id": 1,
+  "name": "owner1_updated_name",
+  "age": 35,
+  "address": "address1",
+  "phone": "89101112233"
+}
+
+###
+DELETE http://localhost:8080/api/v1/owners/1
+
+###
+GET http://localhost:8080/api/v1/volunteers
+

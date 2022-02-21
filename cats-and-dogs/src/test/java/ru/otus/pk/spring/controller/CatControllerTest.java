@@ -48,7 +48,7 @@ public class CatControllerTest {
                 .andExpect(jsonPath("$[0].name", is(CAT.getName())));
     }
 
-    @DisplayName("возвращать ожидаемого кота по id")
+    @DisplayName("возвращать кота по id")
     @Test
     public void shouldReturnExpectedCatById() throws Exception {
         given(service.findById(CAT.getId())).willReturn(CAT);

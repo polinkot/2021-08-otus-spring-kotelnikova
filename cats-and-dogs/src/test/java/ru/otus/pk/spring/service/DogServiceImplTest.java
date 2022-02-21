@@ -38,7 +38,7 @@ class DogServiceImplTest {
         Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(DOG);
     }
 
-    @DisplayName("возвращать ожидаемую собаку по id")
+    @DisplayName("возвращать собаку по id")
     @Test
     void shouldReturnExpectedDogById() {
         given(repository.findById(DOG.getId())).willReturn(Optional.of(DOG));

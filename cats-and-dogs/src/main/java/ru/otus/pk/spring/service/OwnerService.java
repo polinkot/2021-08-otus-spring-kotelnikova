@@ -7,4 +7,10 @@ import java.util.List;
 public interface OwnerService {
 
     List<Owner> findAll();
+
+    Owner findById(Long id);
+
+    Owner save(Owner owner);
+
+    void deleteById(Long id);
 }

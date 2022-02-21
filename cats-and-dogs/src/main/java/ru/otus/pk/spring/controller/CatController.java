@@ -32,7 +32,7 @@ public class CatController {
         return service.save(cat);
     }
 
-    @PutMapping(value = "/cats")
+    @PutMapping("/cats")
     public Cat update(@RequestBody Cat cat) {
         return service.save(cat);
     }

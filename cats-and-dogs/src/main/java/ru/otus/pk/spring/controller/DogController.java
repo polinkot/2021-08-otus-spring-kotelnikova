@@ -32,7 +32,7 @@ public class DogController {
         return service.save(dog);
     }
 
-    @PutMapping(value = "/dogs")
+    @PutMapping("/dogs")
     public Dog update(@RequestBody Dog dog) {
         return service.save(dog);
     }

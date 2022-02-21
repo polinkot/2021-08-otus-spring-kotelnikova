@@ -38,7 +38,7 @@ class CatServiceImplTest {
         Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(CAT);
     }
 
-    @DisplayName("возвращать ожидаемого кота по id")
+    @DisplayName("возвращать кота по id")
     @Test
     void shouldReturnExpectedCatById() {
         given(repository.findById(CAT.getId())).willReturn(Optional.of(CAT));

@@ -48,7 +48,7 @@ public class DogControllerTest {
                 .andExpect(jsonPath("$[0].name", is(DOG.getName())));
     }
 
-    @DisplayName("возвращать ожидаемую собаку по id")
+    @DisplayName("возвращать собаку по id")
     @Test
     public void shouldReturnExpectedDogById() throws Exception {
         given(service.findById(DOG.getId())).willReturn(DOG);

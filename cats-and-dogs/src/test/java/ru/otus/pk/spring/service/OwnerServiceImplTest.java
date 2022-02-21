@@ -10,7 +10,10 @@ import ru.otus.pk.spring.domain.Owner;
 import ru.otus.pk.spring.repository.OwnerRepository;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @DisplayName("Сервис для работы с хозяевами должен ")
@@ -32,5 +35,33 @@ class OwnerServiceImplTest {
 
         List<Owner> actualList = service.findAll();
         Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(OWNER);
+    }
+
+    @DisplayName("возвращать хозяина по id")
+    @Test
+    void shouldReturnExpectedOwnerById() {
+        given(repository.findById(OWNER.getId())).willReturn(Optional.of(OWNER));
+
+        Owner actualOwner = service.findById(OWNER.getId());
+        assertThat(actualOwner).usingRecursiveComparison().isEqualTo(OWNER);
+    }
+
+    @DisplayName("добавлять хозяина")
+    @Test
+    void shouldAddOwner() {
+        given(repository.save(any(Owner.class))).willReturn(OWNER);
+
+        Owner actualOwner = service.save(new Owner(null, "owner2", 35, "address1", "89101112233"));
+        assertThat(actualOwner).isEqualTo(OWNER);
+    }
+
+    @DisplayName("редактировать хозяина")
+    @Test
+    void shouldUpdateOwner() {
+        given(repository.findById(OWNER.getId())).willReturn(Optional.of(OWNER));
+        given(repository.save(any(Owner.class))).willReturn(OWNER);
+
+        Owner actualOwner = service.save(OWNER);
+        assertThat(actualOwner).isEqualTo(OWNER);
     }
 }
