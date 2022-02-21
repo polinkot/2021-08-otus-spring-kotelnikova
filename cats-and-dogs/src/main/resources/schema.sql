@@ -19,7 +19,12 @@ create table owner(id bigserial,
     phone varchar(255) not null,
     PRIMARY KEY(id));
 
-create table adoption(id bigserial, PRIMARY KEY(id));
+create table adoption(id bigserial,
+    date date,
+    animal_id bigint,
+    owner_id bigint,
+    volunteer_id bigint,
+    PRIMARY KEY(id));
 
 create table volunteer(id bigserial,
     name varchar(255) not null,
