@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest(classes = OwnerServiceImpl.class)
 class OwnerServiceImplTest {
 
-    private static final Owner EXPECTED_OWNER = new Owner(1L, "name1", 35, "address1", "89101112233");
+    private static final Owner OWNER = new Owner(1L, "name1", 35, "address1", "89101112233");
 
     @MockBean
     private OwnerRepository repository;
@@ -28,9 +28,9 @@ class OwnerServiceImplTest {
     @DisplayName("возвращать ожидаемый список хозяев")
     @Test
     void shouldReturnExpectedOwnersList() {
-        given(repository.findAll()).willReturn(List.of(EXPECTED_OWNER));
+        given(repository.findAll()).willReturn(List.of(OWNER));
 
         List<Owner> actualList = service.findAll();
-        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(EXPECTED_OWNER);
+        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(OWNER);
     }
 }

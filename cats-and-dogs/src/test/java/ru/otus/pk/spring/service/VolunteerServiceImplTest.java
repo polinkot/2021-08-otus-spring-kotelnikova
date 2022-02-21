@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest(classes = VolunteerServiceImpl.class)
 class VolunteerServiceImplTest {
 
-    private static final Volunteer EXPECTED_VOLUNTEER = new Volunteer(1L, "Volunteer1", "89107776655");
+    private static final Volunteer VOLUNTEER = new Volunteer(1L, "Volunteer1", "89107776655");
 
     @MockBean
     private VolunteerRepository repository;
@@ -28,9 +28,9 @@ class VolunteerServiceImplTest {
     @DisplayName("возвращать ожидаемый список волонтёров")
     @Test
     void shouldReturnExpectedVolunteersList() {
-        given(repository.findAll()).willReturn(List.of(EXPECTED_VOLUNTEER));
+        given(repository.findAll()).willReturn(List.of(VOLUNTEER));
 
         List<Volunteer> actualList = service.findAll();
-        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(EXPECTED_VOLUNTEER);
+        Assertions.assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(VOLUNTEER);
     }
 }
