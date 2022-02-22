@@ -12,8 +12,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-  sql:
-    init:
-      mode: always
-      data-locations: data.sql
+#  sql:
+#    init:
+#      mode: always
+#      data-locations: data.sql
