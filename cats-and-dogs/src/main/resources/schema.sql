@@ -51,3 +51,11 @@ CREATE TABLE IF NOT EXISTS authority(
 
 CREATE UNIQUE INDEX IF NOT EXISTS ix_auth_user
 ON authority(user_id, authority);
+
+
+-- INSERT INTO "user" (id, username, password, full_name, phone)
+--   values (1, 'user', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVymGe07xd00DMxs.AQubh4a', 'User User', '89105558833'),
+--          (2, 'admin', '$2a$10$YJM9Yq0rYD2kHPzr9.6e9OzbOScIIQIDzBrAAgmWVEk5tfvLOlSiS', 'Admin Admin', '89109992244');
+--
+-- INSERT INTO authority (id, user_id, authority)
+--   values (1, 1, 'ROLE_USER'), (2, 2, 'ROLE_ADMIN');
