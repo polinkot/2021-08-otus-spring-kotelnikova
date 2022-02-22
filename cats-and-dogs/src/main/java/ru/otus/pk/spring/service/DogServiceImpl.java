@@ -20,7 +20,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Service
 public class DogServiceImpl implements DogService {
 
-    public static final String DOG_NOT_FOUND = "Dog not found!!! id = %s";
+    private static final String DOG_NOT_FOUND = "Dog not found!!! id = %s";
 
     private final DogRepository repository;
 

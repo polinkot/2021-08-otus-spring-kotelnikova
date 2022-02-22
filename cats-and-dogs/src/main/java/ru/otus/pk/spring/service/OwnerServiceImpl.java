@@ -20,7 +20,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Service
 public class OwnerServiceImpl implements OwnerService {
 
-    public static final String OWNER_NOT_FOUND = "Owner not found!!! id = %s";
+    private static final String OWNER_NOT_FOUND = "Owner not found!!! id = %s";
 
     private final OwnerRepository repository;
 

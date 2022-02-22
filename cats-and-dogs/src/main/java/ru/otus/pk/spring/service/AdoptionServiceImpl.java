@@ -20,7 +20,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Service
 public class AdoptionServiceImpl implements AdoptionService {
 
-    public static final String ADOPTION_NOT_FOUND = "Adoption not found!!! id = %s";
+    private static final String ADOPTION_NOT_FOUND = "Adoption not found!!! id = %s";
 
     private final AdoptionRepository repository;
 

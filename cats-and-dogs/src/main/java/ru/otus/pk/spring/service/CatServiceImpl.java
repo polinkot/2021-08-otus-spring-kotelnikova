@@ -20,7 +20,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @Service
 public class CatServiceImpl implements CatService {
 
-    public static final String CAT_NOT_FOUND = "Cat not found!!! id = %s";
+    private static final String CAT_NOT_FOUND = "Cat not found!!! id = %s";
 
     private final CatRepository repository;
 
