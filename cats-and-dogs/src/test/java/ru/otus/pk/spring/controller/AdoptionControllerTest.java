@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.domain.*;
 import ru.otus.pk.spring.service.AdoptionService;
@@ -18,6 +20,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -37,11 +40,15 @@ public class AdoptionControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
     private AdoptionService service;
 
-    @DisplayName("возвращать ожидаемый список пристройств")
+    @DisplayName("для авторизованного возвращать ожидаемый список пристройств")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
-    public void shouldReturnExpectedAdoptionsList() throws Exception {
+    public void returnList() throws Exception {
         given(service.findAll()).willReturn(List.of(ADOPTION));
 
         this.mockMvc.perform(get("/api/v1/adoptions")).andDo(print()).andExpect(status().isOk())
@@ -50,23 +57,43 @@ public class AdoptionControllerTest {
                 .andExpect(jsonPath("$[0].id", is(ADOPTION.getId().intValue())));
     }
 
-    @DisplayName("возвращать пристройство по id")
+    @DisplayName("для неавторизованного не возвращать список пристройств (редирект на логин)")
     @Test
-    public void shouldReturnExpectedAdoptionById() throws Exception {
+    public void notReturnList() throws Exception {
+        given(service.findAll()).willReturn(List.of(ADOPTION));
+
+        this.mockMvc.perform(get("/api/v1/adoptions")).andDo(print()).andExpect(status().isFound());
+    }
+
+    @DisplayName("для авторизованного возвращать пристройство по id")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @Test
+    public void returnById() throws Exception {
         given(service.findById(ADOPTION.getId())).willReturn(ADOPTION);
 
-        this.mockMvc.perform(get("/api/v1/adoptions/" + ADOPTION.getId())).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/v1/adoptions/" + ADOPTION.getId()))
+                .andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(ADOPTION.getId().intValue())))
                 .andExpect(jsonPath("$.animal.name", is(ADOPTION.getAnimal().getName())));
     }
 
-    @DisplayName("добавлять пристройство")
+    @DisplayName("для неавторизованного не возвращать пристройство по id (редирект на логин)")
     @Test
-    public void shouldAddAdoption() throws Exception {
+    public void notReturnById() throws Exception {
+        given(service.findById(ADOPTION.getId())).willReturn(ADOPTION);
+
+        this.mockMvc.perform(get("/api/v1/adoptions/" + ADOPTION.getId()))
+                .andDo(print()).andExpect(status().isFound());
+    }
+
+    @DisplayName("для авторизованного добавлять пристройство")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @Test
+    public void addForUser() throws Exception {
         given(service.save(any(Adoption.class))).willReturn(ADOPTION);
 
-        this.mockMvc.perform(post("/api/v1/adoptions")
+        this.mockMvc.perform(post("/api/v1/adoptions").with(csrf())
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(ADOPTION)))
                 .andExpect(status().isCreated())
@@ -75,12 +102,43 @@ public class AdoptionControllerTest {
                 .andExpect(jsonPath("$.animal.name", is(ADOPTION.getAnimal().getName())));
     }
 
-    @DisplayName("удалять пристройство")
+    @DisplayName("для неавторизованного не добавлять пристройство")
     @Test
-    void shouldDeleteAdoption() throws Exception {
+    public void notAddForNotAuth() throws Exception {
+        given(service.save(any(Adoption.class))).willReturn(ADOPTION);
+
+        this.mockMvc.perform(post("/api/v1/adoptions")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(ADOPTION)))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("для админа удалять пристройство")
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    @Test
+    void deleteForAdmin() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
+
+        this.mockMvc.perform(delete("/api/v1/adoptions/" + ADOPTION.getId()).with(csrf()))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("для не админа не удалять пристройство")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @Test
+    void notDeleteForUser() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
+
+        this.mockMvc.perform(delete("/api/v1/adoptions/" + ADOPTION.getId()).with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("для неавторизованного не удалять пристройство")
+    @Test
+    void notDeleteForNotAuth() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
         this.mockMvc.perform(delete("/api/v1/adoptions/" + ADOPTION.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
     }
 }

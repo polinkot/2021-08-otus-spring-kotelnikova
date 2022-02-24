@@ -27,6 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers(DELETE, "/api/v1/**").hasAnyRole("ADMIN")
                 .and().authorizeRequests().antMatchers("/api/v1/**").authenticated()
                 .and().authorizeRequests().antMatchers("/**").denyAll()
+
                 .and().formLogin().defaultSuccessUrl("/api/v1/adoptions")
                 .and().logout().logoutSuccessUrl("/login").permitAll()
                 .and().exceptionHandling().accessDeniedPage("/error403");
