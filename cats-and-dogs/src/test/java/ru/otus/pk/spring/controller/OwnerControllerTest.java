@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.domain.Owner;
 import ru.otus.pk.spring.service.OwnerService;
@@ -18,12 +20,13 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.otus.pk.spring.controller.Utils.asJsonString;
 
-@DisplayName("Контроллер для работы с хозяевами должен ")
+@DisplayName("Контроллер для работы с хозяевами. ")
 @WebMvcTest(controllers = OwnerController.class)
 public class OwnerControllerTest {
 
@@ -33,11 +36,15 @@ public class OwnerControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
     private OwnerService service;
 
-    @DisplayName("возвращать ожидаемый список хозяев")
+    @DisplayName("для авторизованного возвращать ожидаемый список хозяев")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
-    public void shouldReturnExpectedOwnersList() throws Exception {
+    public void returnList() throws Exception {
         given(service.findAll()).willReturn(List.of(OWNER));
 
         this.mockMvc.perform(get("/api/v1/owners")).andDo(print()).andExpect(status().isOk())
@@ -50,23 +57,43 @@ public class OwnerControllerTest {
                 .andExpect(jsonPath("$[0].phone", is(OWNER.getPhone())));
     }
 
-    @DisplayName("возвращать хозяина по id")
+    @DisplayName("для неавторизованного не возвращать ожидаемый список хозяев")
     @Test
-    public void shouldReturnExpectedOwnerById() throws Exception {
+    public void notReturnList() throws Exception {
+        given(service.findAll()).willReturn(List.of(OWNER));
+
+        this.mockMvc.perform(get("/api/v1/owners")).andDo(print()).andExpect(status().isFound());
+    }
+
+    @DisplayName("для авторизованного возвращать хозяина по id")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @Test
+    public void returnById() throws Exception {
         given(service.findById(OWNER.getId())).willReturn(OWNER);
 
-        this.mockMvc.perform(get("/api/v1/owners/" + OWNER.getId())).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get("/api/v1/owners/" + OWNER.getId()))
+                .andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(OWNER.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(OWNER.getName())));
     }
 
-    @DisplayName("добавлять хозяина")
+    @DisplayName("для неавторизованного не возвращать хозяина по id")
     @Test
-    public void shouldAddOwner() throws Exception {
+    public void notReturnById() throws Exception {
+        given(service.findById(OWNER.getId())).willReturn(OWNER);
+
+        this.mockMvc.perform(get("/api/v1/owners/" + OWNER.getId()))
+                .andDo(print()).andExpect(status().isFound());
+    }
+
+    @DisplayName("авторизованный может добавлять хозяина")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @Test
+    public void addForUser() throws Exception {
         given(service.save(any(Owner.class))).willReturn(OWNER);
 
-        this.mockMvc.perform(post("/api/v1/owners")
+        this.mockMvc.perform(post("/api/v1/owners").with(csrf())
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(OWNER)))
                 .andExpect(status().isCreated())
@@ -75,13 +102,25 @@ public class OwnerControllerTest {
                 .andExpect(jsonPath("$.name", is(OWNER.getName())));
     }
 
-    @DisplayName("редактировать хозяина")
+    @DisplayName("неавторизованный не может добавлять хозяина")
     @Test
-    public void shouldUpdateOwner() throws Exception {
+    public void notAddForNotAuth() throws Exception {
+        given(service.save(any(Owner.class))).willReturn(OWNER);
+
+        this.mockMvc.perform(post("/api/v1/owners")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(OWNER)))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("авторизованный может редактировать хозяина")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @Test
+    public void updateForUser() throws Exception {
         given(service.findById(anyLong())).willReturn(OWNER);
         given(service.save(any(Owner.class))).willReturn(OWNER);
 
-        this.mockMvc.perform(put("/api/v1/owners")
+        this.mockMvc.perform(put("/api/v1/owners").with(csrf())
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(OWNER)))
                 .andExpect(status().isOk())
@@ -90,12 +129,44 @@ public class OwnerControllerTest {
                 .andExpect(jsonPath("$.name", is(OWNER.getName())));
     }
 
-    @DisplayName("удалять хозяина")
+    @DisplayName("неавторизованный не может редактировать хозяина")
     @Test
-    void shouldDeleteOwner() throws Exception {
+    public void notUpdateForNotAuth() throws Exception {
+        given(service.findById(anyLong())).willReturn(OWNER);
+        given(service.save(any(Owner.class))).willReturn(OWNER);
+
+        this.mockMvc.perform(put("/api/v1/owners")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(OWNER)))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("админ может удалять хозяина")
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    @Test
+    void deleteForAdmin() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
+
+        this.mockMvc.perform(delete("/api/v1/owners/" + OWNER.getId()).with(csrf()))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("не админ не может удалять хозяина")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @Test
+    void notDeleteForUser() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
+
+        this.mockMvc.perform(delete("/api/v1/owners/" + OWNER.getId()).with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("неавторизованный не может удалять хозяина")
+    @Test
+    void notDeleteForNotAuth() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
         this.mockMvc.perform(delete("/api/v1/owners/" + OWNER.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
     }
 }
