@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.otus.pk.spring.controller.Utils.asJsonString;
 import static ru.otus.pk.spring.domain.Gender.FEMALE;
 
-@DisplayName("Контроллер для работы с пристройствами должен ")
+@DisplayName("Контроллер для работы с пристройствами. ")
 @WebMvcTest(controllers = AdoptionController.class)
 public class AdoptionControllerTest {
 

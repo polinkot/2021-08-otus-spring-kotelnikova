@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.domain.Cat;
 import ru.otus.pk.spring.service.CatService;
@@ -18,13 +20,14 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.otus.pk.spring.controller.Utils.asJsonString;
 import static ru.otus.pk.spring.domain.Gender.FEMALE;
 
-@DisplayName("Контроллер для работы с кошками должен ")
+@DisplayName("Контроллер для работы с кошками. ")
 @WebMvcTest(controllers = CatController.class)
 public class CatControllerTest {
 
@@ -34,9 +37,12 @@ public class CatControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private UserDetailsService userDetailsService;
+
+    @MockBean
     private CatService service;
 
-    @DisplayName("возвращать ожидаемый список кошек")
+    @DisplayName("для всех возвращать ожидаемый список кошек")
     @Test
     public void shouldReturnExpectedCatsList() throws Exception {
         given(service.findAll()).willReturn(List.of(CAT));
@@ -48,7 +54,7 @@ public class CatControllerTest {
                 .andExpect(jsonPath("$[0].name", is(CAT.getName())));
     }
 
-    @DisplayName("возвращать кота по id")
+    @DisplayName("для всех возвращать кота по id")
     @Test
     public void shouldReturnExpectedCatById() throws Exception {
         given(service.findById(CAT.getId())).willReturn(CAT);
@@ -59,12 +65,13 @@ public class CatControllerTest {
                 .andExpect(jsonPath("$.name", is(CAT.getName())));
     }
 
-    @DisplayName("добавлять кота")
+    @DisplayName("авторизованный может добавлять кота")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
-    public void shouldAddCat() throws Exception {
+    public void addForUser() throws Exception {
         given(service.save(any(Cat.class))).willReturn(CAT);
 
-        this.mockMvc.perform(post("/api/v1/cats")
+        this.mockMvc.perform(post("/api/v1/cats").with(csrf())
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(CAT)))
                 .andExpect(status().isCreated())
@@ -73,13 +80,25 @@ public class CatControllerTest {
                 .andExpect(jsonPath("$.name", is(CAT.getName())));
     }
 
-    @DisplayName("редактировать кота")
+    @DisplayName("неавторизованный не может добавлять кота")
     @Test
-    public void shouldUpdateCat() throws Exception {
+    public void notAddForNotAuth() throws Exception {
+        given(service.save(any(Cat.class))).willReturn(CAT);
+
+        this.mockMvc.perform(post("/api/v1/cats")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(CAT)))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("авторизованный может редактировать кота")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @Test
+    public void updateForUser() throws Exception {
         given(service.findById(anyLong())).willReturn(CAT);
         given(service.save(any(Cat.class))).willReturn(CAT);
 
-        this.mockMvc.perform(put("/api/v1/cats")
+        this.mockMvc.perform(put("/api/v1/cats").with(csrf())
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(CAT)))
                 .andExpect(status().isOk())
@@ -88,12 +107,44 @@ public class CatControllerTest {
                 .andExpect(jsonPath("$.name", is(CAT.getName())));
     }
 
-    @DisplayName("удалять кота")
+    @DisplayName("неавторизованный не может редактировать кота")
     @Test
-    void shouldDeleteCat() throws Exception {
+    public void notUpdateForNotAuth() throws Exception {
+        given(service.findById(anyLong())).willReturn(CAT);
+        given(service.save(any(Cat.class))).willReturn(CAT);
+
+        this.mockMvc.perform(put("/api/v1/cats")
+                .contentType(APPLICATION_JSON)
+                .content(asJsonString(CAT)))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("админ может удалять кота")
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    @Test
+    void deleteForAdmin() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
+
+        this.mockMvc.perform(delete("/api/v1/cats/" + CAT.getId()).with(csrf()))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("не админ не может удалять кота")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
+    @Test
+    void notDeleteForUser() throws Exception {
+        doNothing().when(service).deleteById(anyLong());
+
+        this.mockMvc.perform(delete("/api/v1/cats/" + CAT.getId()).with(csrf()))
+                .andExpect(status().isForbidden());
+    }
+
+    @DisplayName("неавторизованный не может удалять кота")
+    @Test
+    void notDeleteForNotAuth() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
         this.mockMvc.perform(delete("/api/v1/cats/" + CAT.getId()))
-                .andExpect(status().isOk());
+                .andExpect(status().isForbidden());
     }
 }
