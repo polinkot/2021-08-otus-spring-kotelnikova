@@ -87,7 +87,7 @@ public class AdoptionControllerTest {
                 .andDo(print()).andExpect(status().isFound());
     }
 
-    @DisplayName("для авторизованного добавлять пристройство")
+    @DisplayName("авторизованный может добавлять пристройство")
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     public void addForUser() throws Exception {
@@ -102,7 +102,7 @@ public class AdoptionControllerTest {
                 .andExpect(jsonPath("$.animal.name", is(ADOPTION.getAnimal().getName())));
     }
 
-    @DisplayName("для неавторизованного не добавлять пристройство")
+    @DisplayName("неавторизованный не может добавлять пристройство")
     @Test
     public void notAddForNotAuth() throws Exception {
         given(service.save(any(Adoption.class))).willReturn(ADOPTION);
@@ -113,7 +113,7 @@ public class AdoptionControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    @DisplayName("для админа удалять пристройство")
+    @DisplayName("админ может удалять пристройство")
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     @Test
     void deleteForAdmin() throws Exception {
@@ -123,7 +123,7 @@ public class AdoptionControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("для не админа не удалять пристройство")
+    @DisplayName("не админ не может удалять пристройство")
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     void notDeleteForUser() throws Exception {
@@ -133,7 +133,7 @@ public class AdoptionControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    @DisplayName("для неавторизованного не удалять пристройство")
+    @DisplayName("неавторизованный не может удалять пристройство")
     @Test
     void notDeleteForNotAuth() throws Exception {
         doNothing().when(service).deleteById(anyLong());
