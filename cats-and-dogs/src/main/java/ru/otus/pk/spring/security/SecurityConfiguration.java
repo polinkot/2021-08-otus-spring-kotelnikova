@@ -23,7 +23,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().antMatchers(GET, "/api/v1/cats/**", "/api/v1/dogs/**").permitAll()
+                .authorizeRequests().antMatchers("/actuator/**").permitAll()
+                .and().authorizeRequests().antMatchers(GET, "/api/v1/cats/**", "/api/v1/dogs/**").permitAll()
                 .and().authorizeRequests().antMatchers(DELETE, "/api/v1/**").hasAnyRole("ADMIN")
                 .and().authorizeRequests().antMatchers("/api/v1/**").authenticated()
                 .and().authorizeRequests().antMatchers("/**").denyAll()
