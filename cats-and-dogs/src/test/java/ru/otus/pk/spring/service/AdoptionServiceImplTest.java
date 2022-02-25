@@ -23,8 +23,7 @@ class AdoptionServiceImplTest {
 
     private static final Cat CAT = new Cat(1L, "Cat1", FEMALE, 1, true, true);
     private static final Owner OWNER = new Owner(1L, "name1", 35, "address1", "89101112233");
-    private static final Volunteer VOLUNTEER = new Volunteer(1L, "Volunteer1", "89107776655");
-    private static final Adoption ADOPTION = new Adoption(1L, CAT, OWNER, VOLUNTEER);
+    private static final Adoption ADOPTION = new Adoption(1L, CAT, OWNER);
 
     @MockBean
     private AdoptionRepository repository;
@@ -55,7 +54,7 @@ class AdoptionServiceImplTest {
     void shouldAddAdoption() {
         given(repository.save(any(Adoption.class))).willReturn(ADOPTION);
 
-        Adoption actualAdoption = service.save(new Adoption(null, CAT, OWNER, VOLUNTEER));
+        Adoption actualAdoption = service.save(new Adoption(null, CAT, OWNER));
         assertThat(actualAdoption).isEqualTo(ADOPTION);
     }
 }

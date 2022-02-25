@@ -24,7 +24,4 @@ public class Adoption {
 
     @ManyToOne
     private Owner owner;
-
-    @ManyToOne
-    private Volunteer volunteer;
 }

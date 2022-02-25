@@ -68,10 +68,6 @@ public class AdoptionServiceImpl implements AdoptionService {
             errors.add("Adoption owner is null or empty!");
         }
 
-//        if (isEmpty(adoption.getVolunteer())) {
-//            errors.add("Adoption volunteer is null or empty!");
-//        }
-
         if (!isEmpty(errors)) {
             throw new AppException(join("\n", errors));
         }
