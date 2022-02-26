@@ -34,3 +34,8 @@ logging:
     root: info
   file:
     name: logs/app.log
+
+springdoc:
+  swagger-ui:
+    csrf:
+      enabled: true

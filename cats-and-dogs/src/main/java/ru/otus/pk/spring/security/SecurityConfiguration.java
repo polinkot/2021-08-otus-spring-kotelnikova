@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -23,15 +24,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests().antMatchers("/actuator/**").permitAll()
+                .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+
+                .and().authorizeRequests().antMatchers("/actuator/**").authenticated()
+                .and().authorizeRequests().antMatchers("/swagger-ui/**", "/v3/api-docs/**").authenticated()
+
                 .and().authorizeRequests().antMatchers(GET, "/api/v1/cats/**", "/api/v1/dogs/**").permitAll()
                 .and().authorizeRequests().antMatchers(DELETE, "/api/v1/**").hasAnyRole("ADMIN")
                 .and().authorizeRequests().antMatchers("/api/v1/**").authenticated()
                 .and().authorizeRequests().antMatchers("/**").denyAll()
 
-                .and().formLogin().defaultSuccessUrl("/api/v1/adoptions")
-                .and().logout().logoutSuccessUrl("/login").permitAll()
-                .and().exceptionHandling().accessDeniedPage("/error403");
+                .and().formLogin().defaultSuccessUrl("/swagger-ui/index.html")
+                .and().logout().logoutSuccessUrl("/login").permitAll();
+//                .and().exceptionHandling().accessDeniedPage("/error403");
     }
 
     @Bean
