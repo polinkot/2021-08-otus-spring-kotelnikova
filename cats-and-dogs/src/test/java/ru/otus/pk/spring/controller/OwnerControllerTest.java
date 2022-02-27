@@ -31,6 +31,7 @@ import static ru.otus.pk.spring.controller.Utils.asJsonString;
 public class OwnerControllerTest {
 
     private static final Owner OWNER = new Owner(1L, "owner1", 35, "address1", "89101112233");
+    public static final String OWNERS_URL = "/api/v1/owners";
 
     @Autowired
     private MockMvc mockMvc;
@@ -47,7 +48,7 @@ public class OwnerControllerTest {
     public void returnList() throws Exception {
         given(service.findAll()).willReturn(List.of(OWNER));
 
-        this.mockMvc.perform(get("/api/v1/owners")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get(OWNERS_URL)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(OWNER.getId().intValue())))
@@ -62,7 +63,7 @@ public class OwnerControllerTest {
     public void notReturnList() throws Exception {
         given(service.findAll()).willReturn(List.of(OWNER));
 
-        this.mockMvc.perform(get("/api/v1/owners")).andDo(print()).andExpect(status().isFound());
+        this.mockMvc.perform(get(OWNERS_URL)).andDo(print()).andExpect(status().isFound());
     }
 
     @DisplayName("для авторизованного возвращать хозяина по id")
@@ -93,7 +94,7 @@ public class OwnerControllerTest {
     public void addForUser() throws Exception {
         given(service.save(any(Owner.class))).willReturn(OWNER);
 
-        this.mockMvc.perform(post("/api/v1/owners").with(csrf())
+        this.mockMvc.perform(post(OWNERS_URL).with(csrf())
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(OWNER)))
                 .andExpect(status().isCreated())
@@ -107,7 +108,7 @@ public class OwnerControllerTest {
     public void notAddForNotAuth() throws Exception {
         given(service.save(any(Owner.class))).willReturn(OWNER);
 
-        this.mockMvc.perform(post("/api/v1/owners")
+        this.mockMvc.perform(post(OWNERS_URL)
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(OWNER)))
                 .andExpect(status().isForbidden());
@@ -120,7 +121,7 @@ public class OwnerControllerTest {
         given(service.findById(anyLong())).willReturn(OWNER);
         given(service.save(any(Owner.class))).willReturn(OWNER);
 
-        this.mockMvc.perform(put("/api/v1/owners").with(csrf())
+        this.mockMvc.perform(put(OWNERS_URL).with(csrf())
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(OWNER)))
                 .andExpect(status().isOk())
@@ -135,7 +136,7 @@ public class OwnerControllerTest {
         given(service.findById(anyLong())).willReturn(OWNER);
         given(service.save(any(Owner.class))).willReturn(OWNER);
 
-        this.mockMvc.perform(put("/api/v1/owners")
+        this.mockMvc.perform(put(OWNERS_URL)
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(OWNER)))
                 .andExpect(status().isForbidden());

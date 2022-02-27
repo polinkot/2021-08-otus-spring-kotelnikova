@@ -8,8 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.otus.pk.spring.domain.Cat;
-import ru.otus.pk.spring.service.CatService;
+import ru.otus.pk.spring.domain.Animal;
+import ru.otus.pk.spring.service.AnimalService;
 
 import java.util.List;
 
@@ -25,13 +25,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.otus.pk.spring.controller.Utils.asJsonString;
+import static ru.otus.pk.spring.domain.Animal.AnimalStatus.NOT_ADOPTED;
 import static ru.otus.pk.spring.domain.Gender.FEMALE;
 
 @DisplayName("Контроллер для работы с кошками. ")
-@WebMvcTest(controllers = CatController.class)
-public class CatControllerTest {
+@WebMvcTest(controllers = AnimalController.class)
+public class AnimalControllerTest {
 
-    private static final Cat CAT = new Cat(1L, "Cat1", FEMALE, 1, true, true);
+    public static final String ANIMALS_URL = "/api/v1/animals/";
+
+    private static final Animal CAT = new Animal(1L, "Cat1", FEMALE, 1, true, true, NOT_ADOPTED, Animal.AnimalType.CAT);
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,14 +43,14 @@ public class CatControllerTest {
     private UserDetailsService userDetailsService;
 
     @MockBean
-    private CatService service;
+    private AnimalService service;
 
     @DisplayName("для всех возвращать ожидаемый список кошек")
     @Test
     public void shouldReturnExpectedCatsList() throws Exception {
         given(service.findAll()).willReturn(List.of(CAT));
 
-        this.mockMvc.perform(get("/api/v1/cats")).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get(ANIMALS_URL)).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(CAT.getId().intValue())))
@@ -59,7 +62,7 @@ public class CatControllerTest {
     public void shouldReturnExpectedCatById() throws Exception {
         given(service.findById(CAT.getId())).willReturn(CAT);
 
-        this.mockMvc.perform(get("/api/v1/cats/" + CAT.getId())).andDo(print()).andExpect(status().isOk())
+        this.mockMvc.perform(get(ANIMALS_URL + CAT.getId())).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(CAT.getId().intValue())))
                 .andExpect(jsonPath("$.name", is(CAT.getName())));
@@ -69,9 +72,9 @@ public class CatControllerTest {
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     public void addForUser() throws Exception {
-        given(service.save(any(Cat.class))).willReturn(CAT);
+        given(service.save(any(Animal.class))).willReturn(CAT);
 
-        this.mockMvc.perform(post("/api/v1/cats").with(csrf())
+        this.mockMvc.perform(post(ANIMALS_URL).with(csrf())
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(CAT)))
                 .andExpect(status().isCreated())
@@ -83,9 +86,9 @@ public class CatControllerTest {
     @DisplayName("неавторизованный не может добавлять кота")
     @Test
     public void notAddForNotAuth() throws Exception {
-        given(service.save(any(Cat.class))).willReturn(CAT);
+        given(service.save(any(Animal.class))).willReturn(CAT);
 
-        this.mockMvc.perform(post("/api/v1/cats")
+        this.mockMvc.perform(post(ANIMALS_URL)
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(CAT)))
                 .andExpect(status().isForbidden());
@@ -96,9 +99,9 @@ public class CatControllerTest {
     @Test
     public void updateForUser() throws Exception {
         given(service.findById(anyLong())).willReturn(CAT);
-        given(service.save(any(Cat.class))).willReturn(CAT);
+        given(service.save(any(Animal.class))).willReturn(CAT);
 
-        this.mockMvc.perform(put("/api/v1/cats").with(csrf())
+        this.mockMvc.perform(put(ANIMALS_URL).with(csrf())
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(CAT)))
                 .andExpect(status().isOk())
@@ -111,9 +114,9 @@ public class CatControllerTest {
     @Test
     public void notUpdateForNotAuth() throws Exception {
         given(service.findById(anyLong())).willReturn(CAT);
-        given(service.save(any(Cat.class))).willReturn(CAT);
+        given(service.save(any(Animal.class))).willReturn(CAT);
 
-        this.mockMvc.perform(put("/api/v1/cats")
+        this.mockMvc.perform(put(ANIMALS_URL)
                 .contentType(APPLICATION_JSON)
                 .content(asJsonString(CAT)))
                 .andExpect(status().isForbidden());
@@ -125,7 +128,7 @@ public class CatControllerTest {
     void deleteForAdmin() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
-        this.mockMvc.perform(delete("/api/v1/cats/" + CAT.getId()).with(csrf()))
+        this.mockMvc.perform(delete(ANIMALS_URL + CAT.getId()).with(csrf()))
                 .andExpect(status().isOk());
     }
 
@@ -135,7 +138,7 @@ public class CatControllerTest {
     void notDeleteForUser() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
-        this.mockMvc.perform(delete("/api/v1/cats/" + CAT.getId()).with(csrf()))
+        this.mockMvc.perform(delete(ANIMALS_URL + CAT.getId()).with(csrf()))
                 .andExpect(status().isForbidden());
     }
 
@@ -144,7 +147,7 @@ public class CatControllerTest {
     void notDeleteForNotAuth() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
-        this.mockMvc.perform(delete("/api/v1/cats/" + CAT.getId()))
+        this.mockMvc.perform(delete(ANIMALS_URL + CAT.getId()))
                 .andExpect(status().isForbidden());
     }
 }

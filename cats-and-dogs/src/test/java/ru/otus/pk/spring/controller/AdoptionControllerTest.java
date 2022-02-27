@@ -25,15 +25,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.otus.pk.spring.controller.Utils.asJsonString;
+import static ru.otus.pk.spring.domain.Animal.AnimalStatus.NOT_ADOPTED;
 import static ru.otus.pk.spring.domain.Gender.FEMALE;
 
 @DisplayName("Контроллер для работы с пристройствами. ")
 @WebMvcTest(controllers = AdoptionController.class)
 public class AdoptionControllerTest {
 
-    private static final Cat CAT = new Cat(1L, "Cat1", FEMALE, 1, true, true);
+    private static final Animal CAT = new Animal(1L, "Cat1", FEMALE, 1, true, true, NOT_ADOPTED, Animal.AnimalType.CAT);
     private static final Owner OWNER = new Owner(1L, "name1", 35, "address1", "89101112233");
     private static final Adoption ADOPTION = new Adoption(1L, CAT, OWNER);
+    public static final String ADOPTIONS_URL = "/api/v1/adoptions/";
 
     @Autowired
     private MockMvc mockMvc;
@@ -70,7 +72,7 @@ public class AdoptionControllerTest {
     public void returnById() throws Exception {
         given(service.findById(ADOPTION.getId())).willReturn(ADOPTION);
 
-        this.mockMvc.perform(get("/api/v1/adoptions/" + ADOPTION.getId()))
+        this.mockMvc.perform(get(ADOPTIONS_URL + ADOPTION.getId()))
                 .andDo(print()).andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON))
                 .andExpect(jsonPath("$.id", is(ADOPTION.getId().intValue())))
@@ -82,7 +84,7 @@ public class AdoptionControllerTest {
     public void notReturnById() throws Exception {
         given(service.findById(ADOPTION.getId())).willReturn(ADOPTION);
 
-        this.mockMvc.perform(get("/api/v1/adoptions/" + ADOPTION.getId()))
+        this.mockMvc.perform(get(ADOPTIONS_URL + ADOPTION.getId()))
                 .andDo(print()).andExpect(status().isFound());
     }
 
@@ -118,7 +120,7 @@ public class AdoptionControllerTest {
     void deleteForAdmin() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
-        this.mockMvc.perform(delete("/api/v1/adoptions/" + ADOPTION.getId()).with(csrf()))
+        this.mockMvc.perform(delete(ADOPTIONS_URL + ADOPTION.getId()).with(csrf()))
                 .andExpect(status().isOk());
     }
 
@@ -128,7 +130,7 @@ public class AdoptionControllerTest {
     void notDeleteForUser() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
-        this.mockMvc.perform(delete("/api/v1/adoptions/" + ADOPTION.getId()).with(csrf()))
+        this.mockMvc.perform(delete(ADOPTIONS_URL + ADOPTION.getId()).with(csrf()))
                 .andExpect(status().isForbidden());
     }
 
@@ -137,7 +139,7 @@ public class AdoptionControllerTest {
     void notDeleteForNotAuth() throws Exception {
         doNothing().when(service).deleteById(anyLong());
 
-        this.mockMvc.perform(delete("/api/v1/adoptions/" + ADOPTION.getId()))
+        this.mockMvc.perform(delete(ADOPTIONS_URL + ADOPTION.getId()))
                 .andExpect(status().isForbidden());
     }
 }

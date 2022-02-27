@@ -5,16 +5,18 @@ import lombok.*;
 import javax.persistence.*;
 
 import static javax.persistence.GenerationType.IDENTITY;
-import static javax.persistence.InheritanceType.SINGLE_TABLE;
+import static ru.otus.pk.spring.domain.Animal.AnimalStatus.NOT_ADOPTED;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@Inheritance(strategy = SINGLE_TABLE)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "animal")
 public class Animal {
+    public enum AnimalStatus {NOT_ADOPTED, ADOPTED}
+
+    public enum AnimalType {CAT, DOG}
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -34,4 +36,12 @@ public class Animal {
 
     @Column(name = "vaccinated")
     private Boolean vaccinated;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private AnimalStatus status = NOT_ADOPTED;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private AnimalType type;
 }

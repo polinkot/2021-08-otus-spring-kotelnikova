@@ -5,6 +5,7 @@ create table IF NOT EXISTS animal(id bigserial,
     age int,
     sterilized boolean not null default false,
     vaccinated boolean not null default false,
+    status varchar(30) not null default 'NOT_ADOPTED',
     type varchar(10) not null,
     PRIMARY KEY(id));
 
