@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.otus.pk.spring.domain.Adoption;
-import ru.otus.pk.spring.domain.Animal;
+import ru.otus.pk.spring.domain.*;
 import ru.otus.pk.spring.exception.AppException;
 import ru.otus.pk.spring.exception.ObjectNotFoundException;
 import ru.otus.pk.spring.repository.AdoptionRepository;
@@ -16,6 +15,8 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.util.ObjectUtils.isEmpty;
 import static ru.otus.pk.spring.domain.Animal.AnimalStatus.ADOPTED;
 import static ru.otus.pk.spring.domain.Animal.AnimalStatus.NOT_ADOPTED;
@@ -65,6 +66,22 @@ public class AdoptionServiceImpl implements AdoptionService {
         } catch (EmptyResultDataAccessException e) {
             throw new ObjectNotFoundException(format(ADOPTION_NOT_FOUND, id), e);
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Owner findByAnimalId(Long animalId) {
+        return ofNullable(repository.findFirstByAnimalId(animalId))
+                .map(Adoption::getOwner)
+                .orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Animal> findByOwnerId(Long ownerId) {
+        return repository.findByOwnerId(ownerId).stream()
+                .map(Adoption::getAnimal)
+                .collect(toList());
     }
 
     private void validate(Adoption adoption) {
