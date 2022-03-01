@@ -18,17 +18,21 @@
 </head>
 <body>
 
-<div>
+<span>
     <a href="/animals.html">Animals</a>
-</div>
+</span>
 
-<div>
+<span style="display: none;" id="ownersLink">
+    <a href="/owners.html">Owners</a>
+</span>
+
+<span id="ownersNoLink">
     Owners
-</div>
+</span>
 
-<div>
+<span>
     <a href="/adoptions.html">Adoptions</a>
-</div>
+</span>
 
 <span id="ownerList">
 <h1>Owners:</h1>
@@ -56,10 +60,7 @@
 
 <span id="ownerEditor" hidden="hidden">
 
-<table>
-    <tr>
-        <td colspan="2"><a href="#" onclick="showList()">List</a></td>
-    </tr>
+<table style="padding-top: 50px;">
     <tr>
         <td><label for="ownerId">ID</label></td>
         <td><input type="text" readonly id="ownerId"></td>

@@ -35,6 +35,9 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
     }
 
     function showList() {
+        $('#animalsLink').hide();
+        $('#animalsNoLink').show();
+
         $('#animalEditor').hide();
         clearEditBlock();
 
@@ -43,6 +46,9 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
     }
 
     function showEditor(animalId) {
+        $('#animalsLink').show();
+        $('#animalsNoLink').hide();
+
         $('#animalList').hide();
         $('#animalEditor').show();
     }

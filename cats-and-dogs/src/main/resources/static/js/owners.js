@@ -32,6 +32,9 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
     }
 
     function showList() {
+        $('#ownersLink').hide();
+        $('#ownersNoLink').show();
+
         $('#ownerEditor').hide();
         clearEditBlock();
 
@@ -40,6 +43,9 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
     }
 
     function showEditor(ownerId) {
+        $('#ownersLink').show();
+        $('#ownersNoLink').hide();
+
         $('#ownerList').hide();
         $('#ownerEditor').show();
     }
