@@ -71,7 +71,12 @@
     </tr>
     <tr>
         <td><label for="animalGender">Gender</label></td>
-        <td><input type="text" id="animalGender"></td>
+        <td>
+             <select id="animalGender">
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+            </select>
+        </td>
     </tr>
     <tr>
         <td><label for="animalAge">Age</label></td>
@@ -79,19 +84,29 @@
     </tr>
     <tr>
         <td><label for="animalSterilized">Sterilized</label></td>
-        <td><input type="text" id="animalSterilized"></td>
+        <td><input type="checkbox" id="animalSterilized"/></td>
     </tr>
     <tr>
         <td><label for="animalVaccinated">Vaccinated</label></td>
-        <td><input type="text" id="animalVaccinated"></td>
+        <td><input type="checkbox" id="animalVaccinated"/></td>
     </tr>
     <tr>
         <td><label for="animalStatus">Status</label></td>
-        <td><input type="text" id="animalStatus"></td>
+        <td>
+            <select id="animalStatus">
+                <option value="NOT_ADOPTED">Not Adopted</option>
+                <option value="ADOPTED">Adopted</option>
+            </select>
+        </td>
     </tr>
     <tr>
         <td><label for="animalType">Type</label></td>
-        <td><input type="text" id="animalType"></td>
+        <td>
+            <select id="animalType">
+                <option value="CAT">Cat</option>
+                <option value="DOG">Dog</option>
+            </select>
+        </td>
     </tr>
     <tr>
         <td colspan="2"><input type="button" onclick="saveAnimal()" value="Save"></td>

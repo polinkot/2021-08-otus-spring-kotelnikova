@@ -61,8 +61,8 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
             $('#animalName').val(animal.name);
             $('#animalGender').val(animal.gender);
             $('#animalAge').val(animal.age);
-            $('#animalSterilized').val(animal.sterilized);
-            $('#animalVaccinated').val(animal.vaccinated);
+            $('#animalSterilized').prop('checked', animal.sterilized);
+            $('#animalVaccinated').prop('checked', animal.vaccinated);
             $('#animalStatus').val(animal.status);
             $('#animalType').val(animal.type);
         })
@@ -80,8 +80,8 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
                 name: $('#animalName').val(),
                 gender: $('#animalGender').val(),
                 age: $('#animalAge').val(),
-                sterilized: $('#animalSterilized').val(),
-                vaccinated: $('#animalVaccinated').val(),
+                sterilized: $('#animalSterilized').is(':checked'),
+                vaccinated: $('#animalVaccinated').is(':checked'),
                 status: $('#animalStatus').val(),
                 type: $('#animalType').val()
             }),
