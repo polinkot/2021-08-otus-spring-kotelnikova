@@ -29,7 +29,7 @@ import static ru.otus.pk.spring.controller.Utils.asJsonString;
 import static ru.otus.pk.spring.domain.Animal.AnimalStatus.NOT_ADOPTED;
 import static ru.otus.pk.spring.domain.Gender.FEMALE;
 
-@DisplayName("Контроллер для работы с кошками. ")
+@DisplayName("Контроллер для работы с животными. ")
 @WebMvcTest(controllers = AnimalController.class)
 public class AnimalControllerTest {
 
@@ -49,7 +49,7 @@ public class AnimalControllerTest {
     @MockBean
     private AnimalService service;
 
-    @DisplayName("для авторизованных возвращать ожидаемый список кошек")
+    @DisplayName("для авторизованных возвращать ожидаемый список животных")
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     public void shouldReturnExpectedCatsList() throws Exception {
@@ -62,7 +62,7 @@ public class AnimalControllerTest {
                 .andExpect(jsonPath("$[0].name", is(CAT.getName())));
     }
 
-    @DisplayName("для всех возвращать кота по id")
+    @DisplayName("для всех возвращать животное по id")
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     public void shouldReturnExpectedCatById() throws Exception {
@@ -74,7 +74,7 @@ public class AnimalControllerTest {
                 .andExpect(jsonPath("$.name", is(CAT.getName())));
     }
 
-    @DisplayName("авторизованный может добавлять кота")
+    @DisplayName("авторизованный может добавлять животное")
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     public void addForUser() throws Exception {
@@ -89,7 +89,7 @@ public class AnimalControllerTest {
                 .andExpect(jsonPath("$.name", is(CAT.getName())));
     }
 
-    @DisplayName("неавторизованный не может добавлять кота")
+    @DisplayName("неавторизованный не может добавлять животное")
     @Test
     public void notAddForNotAuth() throws Exception {
         given(service.save(any(Animal.class))).willReturn(CAT);
@@ -100,7 +100,7 @@ public class AnimalControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    @DisplayName("авторизованный может редактировать кота")
+    @DisplayName("авторизованный может редактировать животное")
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     public void updateForUser() throws Exception {
@@ -116,7 +116,7 @@ public class AnimalControllerTest {
                 .andExpect(jsonPath("$.name", is(CAT.getName())));
     }
 
-    @DisplayName("неавторизованный не может редактировать кота")
+    @DisplayName("неавторизованный не может редактировать животное")
     @Test
     public void notUpdateForNotAuth() throws Exception {
         given(service.findById(anyLong())).willReturn(CAT);
@@ -128,7 +128,7 @@ public class AnimalControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    @DisplayName("админ может удалять кота")
+    @DisplayName("админ может удалять животное")
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     @Test
     void deleteForAdmin() throws Exception {
@@ -138,7 +138,7 @@ public class AnimalControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("не админ не может удалять кота")
+    @DisplayName("не админ не может удалять животное")
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     void notDeleteForUser() throws Exception {
@@ -148,7 +148,7 @@ public class AnimalControllerTest {
                 .andExpect(status().isForbidden());
     }
 
-    @DisplayName("неавторизованный не может удалять кота")
+    @DisplayName("неавторизованный не может удалять животное")
     @Test
     void notDeleteForNotAuth() throws Exception {
         doNothing().when(service).deleteById(anyLong());

@@ -17,7 +17,7 @@ import static org.mockito.BDDMockito.given;
 import static ru.otus.pk.spring.domain.Animal.AnimalStatus.NOT_ADOPTED;
 import static ru.otus.pk.spring.domain.Gender.MALE;
 
-@DisplayName("Сервис для работы с кошками должен ")
+@DisplayName("Сервис для работы с животными должен ")
 @SpringBootTest(classes = AnimalServiceImpl.class)
 class AnimalServiceImplTest {
 
@@ -29,7 +29,7 @@ class AnimalServiceImplTest {
     @Autowired
     private AnimalServiceImpl service;
 
-    @DisplayName("возвращать ожидаемый список кошек")
+    @DisplayName("возвращать ожидаемый список животных")
     @Test
     void shouldReturnExpectedCatsList() {
         given(repository.findAll()).willReturn(List.of(CAT));
@@ -38,7 +38,7 @@ class AnimalServiceImplTest {
         assertThat(actualList).usingFieldByFieldElementComparator().containsExactly(CAT);
     }
 
-    @DisplayName("возвращать кота по id")
+    @DisplayName("возвращать животное по id")
     @Test
     void shouldReturnExpectedCatById() {
         given(repository.findById(CAT.getId())).willReturn(Optional.of(CAT));
@@ -47,7 +47,7 @@ class AnimalServiceImplTest {
         assertThat(actualCat).usingRecursiveComparison().isEqualTo(CAT);
     }
 
-    @DisplayName("добавлять кота")
+    @DisplayName("добавлять животное")
     @Test
     void shouldAddCat() {
         given(repository.save(any(Animal.class))).willReturn(CAT);
@@ -56,7 +56,7 @@ class AnimalServiceImplTest {
         assertThat(actualCat).isEqualTo(CAT);
     }
 
-    @DisplayName("редактировать кота")
+    @DisplayName("редактировать животное")
     @Test
     void shouldUpdateCat() {
         given(repository.findById(CAT.getId())).willReturn(Optional.of(CAT));
