@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all animals</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .animals, .animals td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/animals.js"></script>
+</head>
+<body>
+
+<div>
+    Animals
+</div>
+
+<div>
+    <a href="/owners.html">Owners</a>
+</div>
+
+<div>
+    <a href="/adoptions.html">Adoptions</a>
+</div>
+
+<span id="animalList">
+<h1>Animals:</h1>
+
+<table class="animals" id="animals">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Status</th>
+        <th>Type</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div style="padding-top: 10px;">
+    <input type="button" onclick="showEditor()" value="Add Animal">
+</div>
+
+</span>
+
+<span id="animalEditor" hidden="hidden">
+
+<table>
+    <tr>
+        <td colspan="2"><a href="#" onclick="showList()">List</a></td>
+    </tr>
+    <tr>
+        <td><label for="animalId">ID</label></td>
+        <td><input type="text" readonly id="animalId"></td>
+    </tr>
+    <tr>
+        <td><label for="animalName">Name</label></td>
+        <td><input type="text" id="animalName"></td>
+    </tr>
+    <tr>
+        <td><label for="animalGender">Gender</label></td>
+        <td><input type="text" id="animalGender"></td>
+    </tr>
+    <tr>
+        <td><label for="animalAge">Age</label></td>
+        <td><input type="text" id="animalAge"></td>
+    </tr>
+    <tr>
+        <td><label for="animalSterilized">Sterilized</label></td>
+        <td><input type="text" id="animalSterilized"></td>
+    </tr>
+    <tr>
+        <td><label for="animalVaccinated">Vaccinated</label></td>
+        <td><input type="text" id="animalVaccinated"></td>
+    </tr>
+    <tr>
+        <td><label for="animalStatus">Status</label></td>
+        <td><input type="text" id="animalStatus"></td>
+    </tr>
+    <tr>
+        <td><label for="animalType">Type</label></td>
+        <td><input type="text" id="animalType"></td>
+    </tr>
+    <tr>
+        <td colspan="2"><input type="button" onclick="saveAnimal()" value="Save"></td>
+    </tr>
+</table>
+
+</span>
+
+<script>
+    $(document).ready(loadAnimals());
+</script>
+
+</body>
+</html>

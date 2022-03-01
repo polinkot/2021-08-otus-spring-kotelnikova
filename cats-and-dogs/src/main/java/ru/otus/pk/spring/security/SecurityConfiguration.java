@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.GET;
 
 @RequiredArgsConstructor
 @EnableWebSecurity
@@ -26,15 +25,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http
                 .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
 
+                .and().authorizeRequests().antMatchers("/", "/animals.html", "/owners.html", "/adoptions.html",
+                        "/js/**").authenticated()
+
                 .and().authorizeRequests().antMatchers("/actuator/**").authenticated()
                 .and().authorizeRequests().antMatchers("/swagger-ui/**", "/v3/api-docs/**").authenticated()
 
-                .and().authorizeRequests().antMatchers(GET, "/api/v1/animals/**").permitAll()
+//                .and().authorizeRequests().antMatchers(GET, "/api/v1/animals/**").permitAll()
                 .and().authorizeRequests().antMatchers(DELETE, "/api/v1/**").hasAnyRole("ADMIN")
                 .and().authorizeRequests().antMatchers("/api/v1/**").authenticated()
                 .and().authorizeRequests().antMatchers("/**").denyAll()
 
-                .and().formLogin().defaultSuccessUrl("/swagger-ui/index.html")
+                .and().formLogin() //.defaultSuccessUrl("/animals.html")
                 .and().logout().logoutSuccessUrl("/login").permitAll();
 //                .and().exceptionHandling().accessDeniedPage("/error403");
     }

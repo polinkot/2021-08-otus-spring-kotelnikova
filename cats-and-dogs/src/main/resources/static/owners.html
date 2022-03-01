@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all owners</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .owners, .owners td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/owners.js"></script>
+</head>
+<body>
+
+<div>
+    <a href="/animals.html">Animals</a>
+</div>
+
+<div>
+    Owners
+</div>
+
+<div>
+    <a href="/adoptions.html">Adoptions</a>
+</div>
+
+<span id="ownerList">
+<h1>Owners:</h1>
+
+<table class="owners" id="owners">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Address</th>
+        <th>Phone</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div style="padding-top: 10px;">
+    <input type="button" onclick="showEditor()" value="Add Owner">
+</div>
+
+</span>
+
+<span id="ownerEditor" hidden="hidden">
+
+<table>
+    <tr>
+        <td colspan="2"><a href="#" onclick="showList()">List</a></td>
+    </tr>
+    <tr>
+        <td><label for="ownerId">ID</label></td>
+        <td><input type="text" readonly id="ownerId"></td>
+    </tr>
+    <tr>
+        <td><label for="ownerName">Name</label></td>
+        <td><input type="text" id="ownerName"></td>
+    </tr>
+    <tr>
+        <td><label for="ownerAge">Age</label></td>
+        <td><input type="text" id="ownerAge"></td>
+    </tr>
+    <tr>
+        <td><label for="ownerAddress">Address</label></td>
+        <td><input type="text" id="ownerAddress"></td>
+    </tr>
+    <tr>
+        <td><label for="ownerPhone">Phone</label></td>
+        <td><input type="text" id="ownerPhone"></td>
+    </tr>
+    <tr>
+        <td colspan="2"><input type="button" onclick="saveOwner()" value="Save"></td>
+    </tr>
+</table>
+
+</span>
+
+<script>
+    $(document).ready(loadOwners());
+</script>
+
+</body>
+</html>
