@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.domain.*;
-import ru.otus.pk.spring.service.AdoptionService;
+import ru.otus.pk.spring.service.*;
 
 import java.util.List;
 
@@ -42,6 +42,12 @@ public class AdoptionControllerTest {
 
     @MockBean
     private UserDetailsService userDetailsService;
+
+    @MockBean
+    private OwnerService ownerService;
+
+    @MockBean
+    private AnimalService animalService;
 
     @MockBean
     private AdoptionService service;

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.domain.Animal;
+import ru.otus.pk.spring.service.AdoptionService;
 import ru.otus.pk.spring.service.AnimalService;
 
 import java.util.List;
@@ -43,9 +44,13 @@ public class AnimalControllerTest {
     private UserDetailsService userDetailsService;
 
     @MockBean
+    private AdoptionService adoptionService;
+
+    @MockBean
     private AnimalService service;
 
-    @DisplayName("для всех возвращать ожидаемый список кошек")
+    @DisplayName("для авторизованных возвращать ожидаемый список кошек")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     public void shouldReturnExpectedCatsList() throws Exception {
         given(service.findAll()).willReturn(List.of(CAT));
@@ -58,6 +63,7 @@ public class AnimalControllerTest {
     }
 
     @DisplayName("для всех возвращать кота по id")
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     public void shouldReturnExpectedCatById() throws Exception {
         given(service.findById(CAT.getId())).willReturn(CAT);

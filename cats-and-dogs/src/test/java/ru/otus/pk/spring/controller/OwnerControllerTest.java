@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.otus.pk.spring.domain.Owner;
+import ru.otus.pk.spring.service.AdoptionService;
 import ru.otus.pk.spring.service.OwnerService;
 
 import java.util.List;
@@ -38,6 +39,9 @@ public class OwnerControllerTest {
 
     @MockBean
     private UserDetailsService userDetailsService;
+
+    @MockBean
+    private AdoptionService adoptionService;
 
     @MockBean
     private OwnerService service;

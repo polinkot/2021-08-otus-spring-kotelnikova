@@ -2,32 +2,46 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <title>List of all books</title>
+    <title>List of all adoptions</title>
     <style type="text/css">
         body {
             padding: 50px;
         }
 
-        .books, .books td {
+        .adoptions, .adoptions td {
             border: 1px solid lightgray;
             padding: 5px;
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="js/animals.js"></script>
+    <script src="js/animalAdoptions.js"></script>
 </head>
 <body>
 
-<span id="bookList">
-<h1>adoptions:</h1>
+<span>
+    <a href="/animals.html">Animals</a>
+</span>
 
-<table class="books" id="books">
+<span>
+    <a href="/owners.html">Owners</a>
+</span>
+
+<span style="display: none;" id="adoptionsLink">
+    <a href="/adoptions.html">Adoptions</a>
+</span>
+<span id="adoptionsNoLink">
+    Adoptions
+</span>
+
+<span id="adoptionList">
+<h1>Adoptions:</h1>
+
+<table class="adoptions" id="adoptions">
     <thead>
     <tr>
         <th>ID</th>
-        <th>Name</th>
-        <th>Author</th>
-        <th>Genre</th>
+        <th>Owner</th>
+        <th>Animal</th>
         <th>Actions</th>
     </tr>
     </thead>
@@ -35,62 +49,33 @@
     </tbody>
 </table>
 
-<div>
-    <input type="button" onclick="showEditor()" value="Add Book">
+<div style="padding-top: 10px;">
+    <input type="button" onclick="showEditor()" value="Add Adoption">
 </div>
 
 </span>
 
-<span id="bookEditor" hidden="hidden">
+<span id="adoptionEditor" hidden="hidden">
 
-<table>
+<table style="padding-top: 50px;">
+    <input type="hidden" readonly id="adoptionId">
     <tr>
-        <td colspan="2"><a href="#" onclick="showList()">List</a></td>
+        <td><label for="adoptionOwnerId">Owner</label></td>
+        <td><select id="adoptionOwnerId"></select></td>
     </tr>
     <tr>
-        <td><label for="bookId">ID</label></td>
-        <td><input type="text" readonly id="bookId"></td>
+        <td><label for="adoptionAnimalId">Animal</label></td>
+        <td><select id="adoptionAnimalId"></select></td>
     </tr>
     <tr>
-        <td><label for="bookName">Name</label></td>
-        <td><input type="text" id="bookName"></td>
-    </tr>
-    <tr>
-        <td><label for="bookAuthorId">Author</label></td>
-        <td><select id="bookAuthorId"></select></td>
-    </tr>
-    <tr>
-        <td><label for="bookGenreId">Genre</label></td>
-        <td><select id="bookGenreId"></select></td>
-    </tr>
-    <tr>
-        <td colspan="2"><input type="button" onclick="saveBook()" value="Save"></td>
+        <td colspan="2"><input type="button" onclick="saveAdoption()" value="Save"></td>
     </tr>
 </table>
-
-<span id="commentList">
-    <table class="books" id="comments">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Text</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <div>
-        <input type="text" id="commentText">
-        <input type="button" onclick="addComment()" value="Add Comment">
-    </div>
-</span>
 
 </span>
 
 <script>
-    $(document).ready(loadBooks());
+    $(document).ready(loadAdoptions());
 </script>
 
 </body>
