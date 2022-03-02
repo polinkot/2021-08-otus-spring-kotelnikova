@@ -11,8 +11,8 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
                         <td>${animal.id}</td>
                         <td>${animal.name}</td>
                         <td>${animal.age}</td>
-                        <td>${animal.status}</td>
-                        <td>${animal.type}</td>
+                        <td>${animal.status == 'ADOPTED' ? 'Adopted' : 'Not adopted'}</td>
+                        <td>${animal.type == 'CAT' ? 'Cat' : 'Dog'}</td>
                         <td>
                             <a href="#" onclick="editAnimal(${animal.id})">Edit</a>
                             <a href="#" onclick="deleteAnimal(${animal.id})">Delete</a>
