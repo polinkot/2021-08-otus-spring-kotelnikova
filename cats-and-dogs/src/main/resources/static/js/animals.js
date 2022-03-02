@@ -23,6 +23,17 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
         })
     }
 
+    function loadOwner(animalId) {
+        if (!animalId) {
+            return;
+        }
+
+        $.get('/api/v1/animals/' + animalId + '/owner').done(function (owner) {
+            $('#ownerId').val(owner.id);
+            $('#ownerName').val(owner.name);
+        })
+    }
+
     function clearEditBlock() {
         $('#animalId').val('');
         $('#animalName').val('');
@@ -66,6 +77,8 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
             $('#animalStatus').val(animal.status);
             $('#animalType').val(animal.type);
         })
+
+        loadOwner(id);
     }
 
     function saveAnimal() {

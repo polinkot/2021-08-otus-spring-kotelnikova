@@ -23,6 +23,26 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
         })
     }
 
+    function loadAnimals(ownerId) {
+        if (!ownerId) {
+            return;
+        }
+
+        $.get('/api/v1/owners/' + ownerId + '/animals').done(function (animals) {
+            $('#comments > tbody').empty();
+
+            animals.forEach(function (animal) {
+                $('#animals > tbody').append(`
+                        <tr>
+                            <td>${animal.id}</td>
+                            <td>${animal.name}</td>
+                            <td>${animal.type == 'CAT' ? 'Кошка' : 'Собака'}</td>
+                        </tr>
+                    `)
+            });
+        })
+    }
+
     function clearEditBlock() {
         $('#ownerId').val('');
         $('#ownerName').val('');
@@ -59,7 +79,9 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
             $('#ownerAge').val(owner.age);
             $('#ownerAddress').val(owner.address);
             $('#ownerPhone').val(owner.phone);
-        })
+        });
+
+        loadAnimals(id);
     }
 
     function saveOwner() {
