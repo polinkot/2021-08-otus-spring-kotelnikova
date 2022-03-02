@@ -31,14 +31,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/actuator/**").authenticated()
                 .and().authorizeRequests().antMatchers("/swagger-ui/**", "/v3/api-docs/**").authenticated()
 
-//                .and().authorizeRequests().antMatchers(GET, "/api/v1/animals/**").permitAll()
                 .and().authorizeRequests().antMatchers(DELETE, "/api/v1/**").hasAnyRole("ADMIN")
                 .and().authorizeRequests().antMatchers("/api/v1/**").authenticated()
                 .and().authorizeRequests().antMatchers("/**").denyAll()
 
-                .and().formLogin() //.defaultSuccessUrl("/animals.html")
+                .and().formLogin()
                 .and().logout().logoutSuccessUrl("/login").permitAll();
-//                .and().exceptionHandling().accessDeniedPage("/error403");
     }
 
     @Bean
