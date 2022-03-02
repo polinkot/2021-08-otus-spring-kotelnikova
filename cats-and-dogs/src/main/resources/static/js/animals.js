@@ -11,11 +11,11 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
                         <td>${animal.id}</td>
                         <td>${animal.name}</td>
                         <td>${animal.age}</td>
-                        <td>${animal.status == 'ADOPTED' ? 'Adopted' : 'Not adopted'}</td>
-                        <td>${animal.type == 'CAT' ? 'Cat' : 'Dog'}</td>
+                        <td>${animal.status == 'ADOPTED' ? 'Пристроено' : 'Не пристроено'}</td>
+                        <td>${animal.type == 'CAT' ? 'Кошка' : 'Собака'}</td>
                         <td>
-                            <a href="#" onclick="editAnimal(${animal.id})">Edit</a>
-                            <a href="#" onclick="deleteAnimal(${animal.id})">Delete</a>
+                            <a href="#" onclick="editAnimal(${animal.id})">Редактировать</a>
+                            <a href="#" onclick="deleteAnimal(${animal.id})">Удалить</a>
                         </td>
                     </tr>
                 `)
@@ -95,7 +95,7 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
     }
 
     function deleteAnimal(id) {
-        if (!confirm('Are you sure you want to delete this animal?')) {
+        if (!confirm('Вы уверены?')) {
             return;
         }
 

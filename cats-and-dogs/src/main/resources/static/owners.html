@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <title>List of all owners</title>
+    <title>Список хозяев</title>
     <style type="text/css">
         body {
             padding: 50px;
@@ -19,19 +19,19 @@
 <body>
 
 <span>
-    <a href="/animals.html">Animals</a>
+    <a href="/animals.html">Животные</a>
 </span>
 
 <span style="display: none;" id="ownersLink">
-    <a href="/owners.html">Owners</a>
+    <a href="/owners.html">Хозяева</a>
 </span>
 
 <span id="ownersNoLink">
-    Owners
+    Хозяева
 </span>
 
 <span>
-    <a href="/adoptions.html">Adoptions</a>
+    <a href="/adoptions.html">Пристройства</a>
 </span>
 
 <span>
@@ -43,17 +43,17 @@
 </span>
 
 <span id="ownerList">
-<h1>Owners:</h1>
+<h1>Хозяева:</h1>
 
 <table class="owners" id="owners">
     <thead>
     <tr>
         <th>ID</th>
-        <th>Name</th>
-        <th>Age</th>
-        <th>Address</th>
-        <th>Phone</th>
-        <th>Actions</th>
+        <th>Имя</th>
+        <th>Возраст</th>
+        <th>Адрес</th>
+        <th>Телефон</th>
+        <th>Действия</th>
     </tr>
     </thead>
     <tbody>
@@ -61,7 +61,7 @@
 </table>
 
 <div style="padding-top: 10px;">
-    <input type="button" onclick="showEditor()" value="Add Owner">
+    <input type="button" onclick="showEditor()" value="Добавить">
 </div>
 
 </span>
@@ -74,23 +74,23 @@
         <td><input type="text" readonly id="ownerId"></td>
     </tr>
     <tr>
-        <td><label for="ownerName">Name</label></td>
+        <td><label for="ownerName">Имя</label></td>
         <td><input type="text" id="ownerName"></td>
     </tr>
     <tr>
-        <td><label for="ownerAge">Age</label></td>
+        <td><label for="ownerAge">Возраст</label></td>
         <td><input type="text" id="ownerAge"></td>
     </tr>
     <tr>
-        <td><label for="ownerAddress">Address</label></td>
+        <td><label for="ownerAddress">Адрес</label></td>
         <td><input type="text" id="ownerAddress"></td>
     </tr>
     <tr>
-        <td><label for="ownerPhone">Phone</label></td>
+        <td><label for="ownerPhone">Телефон</label></td>
         <td><input type="text" id="ownerPhone"></td>
     </tr>
     <tr>
-        <td colspan="2"><input type="button" onclick="saveOwner()" value="Save"></td>
+        <td colspan="2"><input type="button" onclick="saveOwner()" value="Сохранить"></td>
     </tr>
 </table>
 

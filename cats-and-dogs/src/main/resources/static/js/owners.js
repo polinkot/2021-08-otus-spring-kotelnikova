@@ -14,8 +14,8 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
                         <td>${owner.address}</td>
                         <td>${owner.phone}</td>
                         <td>
-                            <a href="#" onclick="editOwner(${owner.id})">Edit</a>
-                            <a href="#" onclick="deleteOwner(${owner.id})">Delete</a>
+                            <a href="#" onclick="editOwner(${owner.id})">Редактировать</a>
+                            <a href="#" onclick="deleteOwner(${owner.id})">Удалить</a>
                         </td>
                     </tr>
                 `)
@@ -86,7 +86,7 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
     }
 
     function deleteOwner(id) {
-        if (!confirm('Are you sure you want to delete this owner?')) {
+        if (!confirm('Вы уверены?')) {
             return;
         }
 

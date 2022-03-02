@@ -13,7 +13,7 @@ function loadAdoptions() {
                         <td>${adoption.owner.name}</td>
                         <td>${adoption.animal.name}</td>
                         <td>
-                            <a href="#" onclick="deleteAdoption(${adoption.id})">Delete</a>
+                            <a href="#" onclick="deleteAdoption(${adoption.id})">Удалить</a>
                         </td>
                     </tr>
                 `)
@@ -94,7 +94,7 @@ function saveAdoption() {
 }
 
 function deleteAdoption(id) {
-    if (!confirm('Are you sure you want to delete this adoption?')) {
+    if (!confirm('Вы уверены?')) {
         return;
     }
 

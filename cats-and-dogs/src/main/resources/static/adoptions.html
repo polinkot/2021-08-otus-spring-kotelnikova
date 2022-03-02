@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"/>
-    <title>List of all adoptions</title>
+    <title>Список пристройств</title>
     <style type="text/css">
         body {
             padding: 50px;
@@ -19,18 +19,18 @@
 <body>
 
 <span>
-    <a href="/animals.html">Animals</a>
+    <a href="/animals.html">Животные</a>
 </span>
 
 <span>
-    <a href="/owners.html">Owners</a>
+    <a href="/owners.html">Хозяева</a>
 </span>
 
 <span style="display: none;" id="adoptionsLink">
-    <a href="/adoptions.html">Adoptions</a>
+    <a href="/adoptions.html">Пристройства</a>
 </span>
 <span id="adoptionsNoLink">
-    Adoptions
+    Пристройства
 </span>
 
 <span>
@@ -42,15 +42,15 @@
 </span>
 
 <span id="adoptionList">
-<h1>Adoptions:</h1>
+<h1>Пристройства:</h1>
 
 <table class="adoptions" id="adoptions">
     <thead>
     <tr>
         <th>ID</th>
-        <th>Owner</th>
-        <th>Animal</th>
-        <th>Actions</th>
+        <th>Хозяин</th>
+        <th>Животное</th>
+        <th>Действия</th>
     </tr>
     </thead>
     <tbody>
@@ -58,7 +58,7 @@
 </table>
 
 <div style="padding-top: 10px;">
-    <input type="button" onclick="showEditor()" value="Add Adoption">
+    <input type="button" onclick="showEditor()" value="Добавить">
 </div>
 
 </span>
@@ -68,15 +68,15 @@
 <table style="padding-top: 50px;">
     <input type="hidden" readonly id="adoptionId">
     <tr>
-        <td><label for="adoptionOwnerId">Owner</label></td>
+        <td><label for="adoptionOwnerId">Хозяин</label></td>
         <td><select id="adoptionOwnerId"></select></td>
     </tr>
     <tr>
-        <td><label for="adoptionAnimalId">Animal</label></td>
+        <td><label for="adoptionAnimalId">Животное</label></td>
         <td><select id="adoptionAnimalId"></select></td>
     </tr>
     <tr>
-        <td colspan="2"><input type="button" onclick="saveAdoption()" value="Save"></td>
+        <td colspan="2"><input type="button" onclick="saveAdoption()" value="Сохранить"></td>
     </tr>
 </table>
 
