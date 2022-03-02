@@ -3,6 +3,7 @@ package ru.otus.pk.spring.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.otus.pk.spring.domain.Animal;
+import ru.otus.pk.spring.domain.Animal.AnimalStatus;
 import ru.otus.pk.spring.domain.Owner;
 import ru.otus.pk.spring.service.AdoptionService;
 import ru.otus.pk.spring.service.AnimalService;
@@ -49,5 +50,10 @@ public class AnimalController {
     @GetMapping("/animals/{id}/owner")
     public Owner findOwner(@PathVariable("id") Long id) {
         return adoptionService.findByAnimalId(id);
+    }
+
+    @GetMapping("/animals/by/{status}")
+    public List<Animal> findByStatus(@PathVariable("status") AnimalStatus status) {
+        return service.findByStatus(status);
     }
 }

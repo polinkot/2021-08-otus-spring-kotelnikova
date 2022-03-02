@@ -62,7 +62,7 @@ public class AnimalControllerTest {
                 .andExpect(jsonPath("$[0].name", is(CAT.getName())));
     }
 
-    @DisplayName("для всех возвращать животное по id")
+    @DisplayName("для авторизованных возвращать животное по id")
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     @Test
     public void shouldReturnExpectedCatById() throws Exception {

@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.otus.pk.spring.domain.Animal;
+import ru.otus.pk.spring.domain.Animal.AnimalStatus;
 import ru.otus.pk.spring.exception.AppException;
 import ru.otus.pk.spring.exception.ObjectNotFoundException;
 import ru.otus.pk.spring.repository.AnimalRepository;
@@ -51,6 +52,12 @@ public class AnimalServiceImpl implements AnimalService {
         } catch (EmptyResultDataAccessException e) {
             throw new ObjectNotFoundException(format(ANIMAL_NOT_FOUND, id), e);
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Animal> findByStatus(AnimalStatus status) {
+        return repository.findByStatus(status);
     }
 
     private void validate(Animal animal) {

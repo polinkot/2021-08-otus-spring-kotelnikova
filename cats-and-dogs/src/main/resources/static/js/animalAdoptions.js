@@ -34,7 +34,7 @@ function loadOwners() {
 }
 
 function loadAnimals() {
-    $.get('/api/v1/animals').done(function (animals) {
+    $.get('/api/v1/animals/by/NOT_ADOPTED').done(function (animals) {
         $('#adoptionAnimalId').empty();
 
         animals.forEach(function (animal) {
