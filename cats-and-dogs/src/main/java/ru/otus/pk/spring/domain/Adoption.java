@@ -4,8 +4,10 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.GenerationType.IDENTITY;
 
+@NamedEntityGraph(name = "Adoption.Animal.Owner", attributeNodes = {@NamedAttributeNode("animal"), @NamedAttributeNode("owner")})
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -19,9 +21,9 @@ public class Adoption {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     private Animal animal;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     private Owner owner;
 }
