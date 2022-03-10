@@ -52,7 +52,7 @@ public class AnimalController {
         return adoptionService.findByAnimalId(id);
     }
 
-    @GetMapping("/animals/by/{status}")
+    @GetMapping("/animals/bystatus/{status}")
     public List<Animal> findByStatus(@PathVariable("status") AnimalStatus status) {
         return service.findByStatus(status);
     }
