@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Список животных</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .animals, .animals td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/animals.js"></script>
+</head>
+<body>
+
+<span id="animalsNoLink">
+    Животные
+</span>
+
+<span style="display: none;" id="animalsLink">
+    <a href="/animals.html">Животные</a>
+</span>
+
+<span>
+    <a href="/owners.html">Хозяева</a>
+</span>
+
+<span>
+    <a href="/adoptions.html">Пристройства</a>
+</span>
+
+<span>
+    <a href="/actuator">Actuator</a>
+</span>
+
+<span>
+    <a href="/swagger-ui/index.html">Swagger</a>
+</span>
+
+<span>
+    <a href="/logout">Выйти</a>
+</span>
+
+<span id="animalList">
+<h1>Животные:</h1>
+
+<table class="animals" id="animals">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Возраст</th>
+        <th>Статус</th>
+        <th>Вид</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div style="padding-top: 10px;">
+    <input type="button" onclick="showEditor()" value="Добавить">
+</div>
+
+</span>
+
+<span id="animalEditor" hidden="hidden">
+
+<table style="padding-top: 50px;">
+    <tr>
+        <td><label for="animalId">ID</label></td>
+        <td><input type="text" readonly id="animalId"></td>
+    </tr>
+    <tr>
+        <td><label for="animalName">Имя</label></td>
+        <td><input type="text" id="animalName"></td>
+    </tr>
+    <tr>
+        <td><label for="animalGender">Пол</label></td>
+        <td>
+             <select id="animalGender">
+                <option value="MALE" selected>жен</option>
+                <option value="FEMALE">муж</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td><label for="animalAge">Возраст</label></td>
+        <td><input type="text" id="animalAge"></td>
+    </tr>
+    <tr>
+        <td><label for="animalSterilized">Стерилизовано</label></td>
+        <td><input type="checkbox" id="animalSterilized"/></td>
+    </tr>
+    <tr>
+        <td><label for="animalVaccinated">Привито</label></td>
+        <td><input type="checkbox" id="animalVaccinated"/></td>
+    </tr>
+    <tr>
+        <td><label for="animalStatus">Статус</label></td>
+        <td>
+            <select id="animalStatus">
+                <option value="NOT_ADOPTED" selected>Не пристроено</option>
+                <option value="ADOPTED">Пристроено</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td><label for="animalType">Вид</label></td>
+        <td>
+            <select id="animalType">
+                <option value="CAT" selected>Кошка</option>
+                <option value="DOG">Собака</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2"><input type="button" onclick="saveAnimal()" value="Сохранить"></td>
+    </tr>
+</table>
+
+<span id="ownerSpan">
+    <h3>Хозяин:</h3>
+
+    <table>
+        <tr>
+            <td><label for="ownerId">ID</label></td>
+            <td><input type="text" readonly id="ownerId"></td>
+        </tr>
+        <tr>
+            <td><label for="ownerName">Имя</label></td>
+            <td><input type="text" readonly id="ownerName"></td>
+        </tr>
+    </table>
+</span>
+
+</span>
+
+<script>
+    $(document).ready(loadAnimals());
+</script>
+
+</body>
+</html>

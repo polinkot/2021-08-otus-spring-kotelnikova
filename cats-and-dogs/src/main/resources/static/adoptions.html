@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Список пристройств</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .adoptions, .adoptions td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/animalAdoptions.js"></script>
+</head>
+<body>
+
+<span>
+    <a href="/animals.html">Животные</a>
+</span>
+
+<span>
+    <a href="/owners.html">Хозяева</a>
+</span>
+
+<span style="display: none;" id="adoptionsLink">
+    <a href="/adoptions.html">Пристройства</a>
+</span>
+<span id="adoptionsNoLink">
+    Пристройства
+</span>
+
+<span>
+    <a href="/actuator">Actuator</a>
+</span>
+
+<span>
+    <a href="/swagger-ui/index.html">Swagger</a>
+</span>
+
+<span>
+    <a href="/logout">Выйти</a>
+</span>
+
+<span id="adoptionList">
+<h1>Пристройства:</h1>
+
+<table class="adoptions" id="adoptions">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Хозяин</th>
+        <th>Животное</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div style="padding-top: 10px;">
+    <input type="button" onclick="showEditor()" value="Добавить">
+</div>
+
+</span>
+
+<span id="adoptionEditor" hidden="hidden">
+
+<table style="padding-top: 50px;">
+    <input type="hidden" readonly id="adoptionId">
+    <tr>
+        <td><label for="adoptionOwnerId">Хозяин</label></td>
+        <td><select id="adoptionOwnerId"></select></td>
+    </tr>
+    <tr>
+        <td><label for="adoptionAnimalId">Животное</label></td>
+        <td><select id="adoptionAnimalId"></select></td>
+    </tr>
+    <tr>
+        <td colspan="2"><input type="button" onclick="saveAdoption()" value="Сохранить"></td>
+    </tr>
+</table>
+
+</span>
+
+<script>
+    $(document).ready(loadAdoptions());
+</script>
+
+</body>
+</html>
