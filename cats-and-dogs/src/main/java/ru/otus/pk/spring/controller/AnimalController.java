@@ -56,4 +56,9 @@ public class AnimalController {
     public List<Animal> findByStatus(@PathVariable("status") AnimalStatus status) {
         return service.findByStatus(status);
     }
+
+    @GetMapping("/animals/byOwnerId/{ownerId}")
+    public List<Animal> findByOwnerId(@PathVariable("ownerId") Long ownerId) {
+        return adoptionService.findByOwnerId(ownerId);
+    }
 }

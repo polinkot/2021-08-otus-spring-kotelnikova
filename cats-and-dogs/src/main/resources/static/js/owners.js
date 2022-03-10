@@ -28,7 +28,7 @@ const csrfToken = document.cookie.replace(/(?:(?:^|.*;\s*)XSRF-TOKEN\s*\=\s*([^;
             return;
         }
 
-        $.get('/api/v1/owners/' + ownerId + '/animals').done(function (animals) {
+        $.get('/api/v1/animals/byOwnerId/' + ownerId).done(function (animals) {
             $('#comments > tbody').empty();
 
             animals.forEach(function (animal) {

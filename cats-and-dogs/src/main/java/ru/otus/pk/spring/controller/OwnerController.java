@@ -2,9 +2,7 @@ package ru.otus.pk.spring.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.otus.pk.spring.domain.Animal;
 import ru.otus.pk.spring.domain.Owner;
-import ru.otus.pk.spring.service.AdoptionService;
 import ru.otus.pk.spring.service.OwnerService;
 
 import java.util.List;
@@ -17,8 +15,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class OwnerController {
 
     private final OwnerService service;
-
-    private final AdoptionService adoptionService;
 
     @GetMapping("/owners")
     public List<Owner> findAll() {
@@ -44,10 +40,5 @@ public class OwnerController {
     @DeleteMapping("/owners/{id}")
     public void delete(@PathVariable("id") Long id) {
         service.deleteById(id);
-    }
-
-    @GetMapping("/owners/{id}/animals")
-    public List<Animal> findAnimals(@PathVariable("id") Long id) {
-        return adoptionService.findByOwnerId(id);
     }
 }
