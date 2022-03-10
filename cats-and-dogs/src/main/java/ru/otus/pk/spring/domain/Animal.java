@@ -32,10 +32,10 @@ public class Animal {
     private Integer age;
 
     @Column(name = "sterilized")
-    private Boolean sterilized;
+    private boolean sterilized;
 
     @Column(name = "vaccinated")
-    private Boolean vaccinated;
+    private boolean vaccinated;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
